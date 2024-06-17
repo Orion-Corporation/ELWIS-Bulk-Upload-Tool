@@ -1,0 +1,8 @@
+kivy
+pandas
+numpy
+rdkit
+requests
+python-dotenv
+logging
+DateTime

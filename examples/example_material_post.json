@@ -1,0 +1,119 @@
+{
+  "data": {
+    "type": "asset",
+    "id": "00002",
+    "attributes": {
+      "synonyms": [
+        "synonyms1",
+        "synonyms2"
+      ],
+      "fields": [
+        {
+          "id": "5eaa8792b5ed583958f447cb",
+          "value": "cyclopenta-1,3-dien-1-ylcyclooctane"
+        },
+        {
+          "id": "5eaa8792b5ed583958f447cc",
+          "value": {
+            "rawValue": "176.3",
+            "displayValue": "176.30 g/mol"
+          }
+        },
+        {
+          "id": "5eaa8792b5ed583958f447cd",
+          "value": "176.156501"
+        },
+        {
+          "id": "5eaa8792b5ed583958f447ce",
+          "value": {
+            "rawValue": "C13H20",
+            "displayValue": "C<sub>13</sub>H<sub>20</sub>"
+          }
+        },
+        {
+          "id": "5eaa8792b5ed583958f44778",
+          "value": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<!DOCTYPE CDXML SYSTEM \"http://www.cambridgesoft.com/xml/cdxml.dtd\" >\n<CDXML\n ......>.......</CDXML>"
+        },
+        {
+          "id": "5eaa8792b5ed583958f447de",
+          "value": {
+            "filename": "example.png",
+            "base64": "ZXhhbXBsZS5wbmcK"
+          }
+        }
+      ]
+    },
+    "relationships": {
+      "batch": {
+        "data": {
+          "type": "batch",
+          "id": "00011",
+          "attributes": {
+            "fields": [
+              {
+                "id": "5eaa8792b5ed583958f447d0",
+                "value": {
+                  "rawValue": "100",
+                  "displayValue": "100 g"
+                }
+              },
+              {
+                "id": "5eaa8792b5ed583958f447d2",
+                "value": {
+                  "rawValue": "100",
+                  "displayValue": "100 %"
+                }
+              },
+              {
+                "id": "5eaa8792b5ed583958f447d3",
+                "value": "cyclopenta-1,3-dien-1-ylcyclooctane, Formic Acid, 2-methylpropan-2-ol"
+              },
+              {
+                "id": "5eaa8792b5ed583958f447d4",
+                "value": {
+                  "rawValue": "C13H20·CH2O2·C4H10O",
+                  "displayValue": "C<sub>13</sub>H<sub>20</sub>&middot;CH<sub>2</sub>O<sub>2</sub>&middot;C<sub>4</sub>H<sub>10</sub>O"
+                }
+              },
+              {
+                "id": "5f02947e9a3a272654dfeb28",
+                "value": {
+                  "rawValue": 296.448,
+                  "displayValue": "296.448 g/mol"
+                }
+              }
+            ],
+            "fragments": {
+              "salts": [
+                {
+                  "type": "SALT",
+                  "name": "Formic Acid",
+                  "mf": "CH2O2",
+                  "mw": {
+                    "rawValue": "46.0250",
+                    "displayValue": "46.0250 g/mol"
+                  },
+                  "id": "SALT:17",
+                  "coefficient": 1
+                }
+              ],
+              "solvates": [
+                {
+                  "type": "SOLVATE",
+                  "name": "2-methylpropan-2-ol",
+                  "mf": "C4H10O",
+                  "mw": {
+                    "rawValue": "74.1230",
+                    "displayValue": "74.1230 g/mol"
+                  },
+                  "id": "SOLVATE:17",
+                  "coefficient": 1
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

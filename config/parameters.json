@@ -1,0 +1,6 @@
+{
+    "Create Salt": ["Salt_name", "Formula", "MW_salt"],
+    "Create Solvate": ["Solvate_name", "Formula", "MW"],
+    "Create Compound (Does not work)": true
+}
+

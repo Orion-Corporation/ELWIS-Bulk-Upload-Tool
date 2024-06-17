@@ -1,0 +1,8 @@
+{
+    "successful_files": "Successfull",
+    "failed_files": "Failed files",
+    "duplicate_files": "Failed files/Duplicates",
+    "success_log": "Successfull/success.txt",
+    "duplicate_log": "Failed files/Duplicates/duplicates.txt",
+    "general_log": "logs.txt"
+}
