@@ -1,10 +1,9 @@
-import json
-import requests
 import os
+import requests
 import shutil
-from app.key import api_key
+import json
 
-def post_to_api(molecule_data, file, callback, endpoint, param_set):
+def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUTPUT_PATHS):
     print(f"PARAMS: {param_set}")
     if not api_key:
         callback("Error: API key not found. Cannot proceed with the upload.")
@@ -66,9 +65,7 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set):
                     "batch": {
                         "data": {
                             "type": "batch",
-                            "id": "00011",  # Can this be assigned by the api? 
-                                            # How do we know the batch id? 
-                                            # Do we need to create it separately?
+                            "id": "00011",
                             "attributes": {
                                 "fields": [
                                     {

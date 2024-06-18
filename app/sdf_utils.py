@@ -5,7 +5,6 @@ def process_sdf(files, params, callback):
     for sdf_file in files:
         callback(f"Processing file: {sdf_file}")
         supplier = Chem.SDMolSupplier(sdf_file)
-        print(f"Supplier: {supplier}")
         for mol in supplier:
             if mol is not None:
                 molecule_data = {}
