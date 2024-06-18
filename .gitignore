@@ -3,3 +3,7 @@ app/api_key.py
 sorted_files/salts_solvate.sdf
 /erat
 .env
+Failed files/Duplicates/duplicates.txt
+Failed files/Duplicates/salts_solvate.sdf
+Failed files/salts_solvate.sdf
+logs.txt
