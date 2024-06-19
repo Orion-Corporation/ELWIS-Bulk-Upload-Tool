@@ -10,7 +10,7 @@ API_KEY = os.getenv("API_KEY")
 
 # Define the list of salts to delete
 salts_to_delete = [
-
+    
 ]
 
 # Base URL for the API
