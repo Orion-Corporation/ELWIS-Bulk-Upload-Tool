@@ -1,5 +1,4 @@
 from kivy.config import Config
-# Set the window icon
 Config.set('kivy', 'window_icon', 'burana.ico')
 
 import kivy
@@ -28,22 +27,15 @@ import shutil
 from api_utils import post_to_api
 from sdf_utils import process_sdf
 
-# Load environment variables from .env file
 load_dotenv()
-
-# Retrieve the API key from environment variables
 api_key = os.getenv('API_KEY')
-
-# Setting the log level to ERROR to suppress warnings
 kivy.logger.Logger.setLevel(logging.ERROR)
-
-# Load the Kv file
 try:
     Builder.load_file('styles.kv')
 except Exception as e:
     print(f"Error loading Kv file: {e}")
 
-# Load parameter sets from a JSON file
+# Load parameter sets from JSON
 def load_parameter_sets(file_path='config/parameters.json'):
     try:
         with open(file_path, 'r') as file:
@@ -53,7 +45,7 @@ def load_parameter_sets(file_path='config/parameters.json'):
             'Salt': ['Salt_name', 'Formula', 'MW_salt']
         }
 
-# Load API endpoints from a JSON file
+# Load API endpoints from JSON 
 def load_api_endpoints(file_path='config/api_endpoints.json'):
     try:
         with open(file_path, 'r') as file:
@@ -129,7 +121,7 @@ class FileChooserPopup(Popup):
         selected_files = self.filechooser.selection
         if selected_files:
             self.select_callback(selected_files)
-            self.dismiss()  # Close the file chooser
+            self.dismiss()
 
     def on_close(self, *args):
         self.dismiss()
@@ -139,23 +131,16 @@ class ReadmePopup(Popup):
         super().__init__(**kwargs)
         self.title = "README"
         self.size_hint = (0.8, 0.8)
-        
         layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
-        
         scrollview = ScrollView()
         self.text_input = TextInput(readonly=True, font_size='14sp', size_hint_y=None)
         self.text_input.bind(minimum_height=self.text_input.setter('height'))
         scrollview.add_widget(self.text_input)
-        
         layout.add_widget(scrollview)
-        
         close_button = Button(text="Close", size_hint_y=None, height='48dp', background_normal='', background_color=[0.5, 0, 0, 1], color=[1, 1, 1, 1])
         close_button.bind(on_release=self.dismiss)
         layout.add_widget(close_button)
-        
         self.add_widget(layout)
-        
-        # Load README content
         self.load_readme()
 
     def load_readme(self):
@@ -166,33 +151,32 @@ class ReadmePopup(Popup):
             self.text_input.text = f"Failed to load README file:\n{str(e)}"
             
 class MyApp(App):
-    filechooser_popup_open = False  # Class variable to track the file chooser state
+    filechooser_popup_open = False
     PARAMETER_SETS = PARAMETER_SETS
     API_ENDPOINTS = API_ENDPOINTS
     OUTPUT_PATHS = OUTPUT_PATHS
 
-    upload_in_progress = BooleanProperty(False)  # Class variable to track upload status
+    upload_in_progress = BooleanProperty(False)
 
     def build(self):
         self.title = "Structure-Data Format (SDF) File Processor"
-        # Load the root widget from the KV file
         self.root = Builder.load_file('styles.kv')
 
         self.label = self.root.ids.label
         
         self.button_select = self.root.ids.button_select
         self.button_upload = self.root.ids.button_upload
-        self.button_stop_upload = self.root.ids.button_stop_upload  # New stop upload button
+        self.button_stop_upload = self.root.ids.button_stop_upload
         self.button_readme = self.root.ids.button_readme
         self.button_clear_folders = self.root.ids.button_clear_folders
         self.terminal_output = self.root.ids.terminal_output
         self.param_spinner = self.root.ids.param_spinner
-        self.progress_bar = self.root.ids.progress_bar  # New progress bar
+        self.progress_bar = self.root.ids.progress_bar
 
         # Ensure buttons are bound only once
         self.button_select.bind(on_release=self.show_filechooser)
         self.button_upload.bind(on_release=self.upload_files)
-        self.button_stop_upload.bind(on_release=self.stop_upload)  # Bind stop upload button
+        self.button_stop_upload.bind(on_release=self.stop_upload)
         self.button_readme.bind(on_release=self.show_readme)
         self.button_clear_folders.bind(on_release=self.clear_output_folders)
         
@@ -212,8 +196,6 @@ class MyApp(App):
         if MyApp.filechooser_popup_open:
             self.print_terminal("File chooser is already open, not opening another one.")
             return
-
-        # self.print_terminal("File chooser opened")
         MyApp.filechooser_popup_open = True
         self.filechooser_popup = FileChooserPopup(select_callback=self.process_files)
         self.filechooser_popup.bind(on_dismiss=self.on_filechooser_dismiss)
@@ -221,7 +203,6 @@ class MyApp(App):
     
     def on_filechooser_dismiss(self, instance):
         MyApp.filechooser_popup_open = False
-        # self.print_terminal("File chooser closed")
 
     def show_readme(self, instance=None):
         self.readme_popup = ReadmePopup()
@@ -229,6 +210,7 @@ class MyApp(App):
 
     def clear_output_folders(self, instance=None):
         folders = [OUTPUT_PATHS['successful_files'], OUTPUT_PATHS['failed_files'], OUTPUT_PATHS['duplicate_files']]
+        # clear output folders
         for folder in folders:
             if os.path.exists(folder):
                 for filename in os.listdir(folder):
@@ -264,8 +246,8 @@ class MyApp(App):
             return
 
         self.upload_in_progress = True
-        self.button_stop_upload.disabled = False  # Enable stop upload button
-        self.progress_bar.value = 0  # Reset progress bar
+        self.button_stop_upload.disabled = False
+        self.progress_bar.value = 0
 
         selected_param_set = self.param_spinner.text
 
@@ -293,6 +275,7 @@ class MyApp(App):
         self.print_terminal("Uploading files to API...")
         
         # Schedule the upload process to allow frequent checking of the stop condition
+        # and allow multithreading in the future
         self.schedule_upload(0, params, endpoint, update_progress_bar)
         
     def schedule_upload(self, file_index, params, endpoint, update_progress_bar):
@@ -336,7 +319,7 @@ class MyApp(App):
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         log_message = f"{timestamp} - {message}"
         
-        # Write to log file specified in OUTPUT_PATHS
+        # Write to log file specified in OUTPUT_PATHS JSON file
         with open(OUTPUT_PATHS['general_log'], 'a') as f:
             f.write(log_message + '\n')
             f.flush()

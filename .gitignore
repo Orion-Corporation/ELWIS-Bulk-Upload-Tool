@@ -7,4 +7,6 @@ Failed files/Duplicates/duplicates.txt
 Failed files/Duplicates/salts_solvate.sdf
 Failed files/salts_solvate.sdf
 logs.txt
+*.pyc
+/app/__pycache__
 logs.txt

@@ -16,6 +16,7 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
     }
 
     # Construct the API request payload based on the parameter set
+    # Todo: load the structure from a json file
     if param_set == "Create Compound (Does not work)":
         data = {
             "data": {
@@ -166,7 +167,7 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
     else:
         callback(f"Invalid parameter in molecule {molecule_data}. Cannot proceed with the upload.")
 
-    # write data to json file
+    # Write data to json file
     with open('data.json', 'w') as f:
         f.write(json.dumps(data, indent=4))
     data_json = json.dumps(data)
@@ -181,7 +182,7 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
             os.makedirs(OUTPUT_PATHS['successful_files'])
         shutil.copy(file, OUTPUT_PATHS['successful_files'])
         
-        # Log success to success log specified in OUTPUT_PATHS
+        # Log successes
         with open(OUTPUT_PATHS['success_log'], 'a') as success_log:
             success_log.write(f"File: {file}, Molecule: {molecule_data.get('Chemical name', 'Unknown')}, {molecule_data.get('Formula', 'Unknown')}, API Response Status Code: {response.status_code}, response text: {response.text})\n")
         
@@ -194,7 +195,7 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
                 os.makedirs(duplicate_folder)
             shutil.copy(file, duplicate_folder)
             
-            # Log duplicate to duplicates log specified in OUTPUT_PATHS
+            # Log duplicates
             with open(OUTPUT_PATHS['duplicate_log'], 'a') as duplicate_log:
                 duplicate_log.write(f"File: {file}, Molecule: {molecule_data.get('Chemical name', 'Unknown')}, {molecule_data.get('Formula', 'Unknown')}, API Response Status Code: {response.status_code}, response text: {response.text})\n")
             
