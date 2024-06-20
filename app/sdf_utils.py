@@ -37,7 +37,7 @@ def process_sdf(files, params, callback):
 
                 molecules.append(molecule_data)
             else:
-                callback(f"Warning: Molecule in file {sdf_file} could not be parsed and will be skipped.")
+                callback(f"Error: Molecule in file {sdf_file} could not be parsed and will be skipped.")
 
     callback(f"Total molecules extracted: {len(molecules)}")
     return molecules

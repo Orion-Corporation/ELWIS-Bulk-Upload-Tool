@@ -269,7 +269,7 @@ class MyApp(App):
         self.print_terminal("Uploading files to API...")
         
         # Schedule the upload process to allow frequent checking of the stop condition
-        # and allow multithreading in the future
+        # and allow multithreading in the future, if the API can keep up
         self.schedule_upload(0, params, endpoint, update_progress_bar)
         
     def schedule_upload(self, file_index, params, endpoint, update_progress_bar):
@@ -280,6 +280,7 @@ class MyApp(App):
         
         file = self.selected_files[file_index]
         molecules = process_sdf([file], params, self.print_terminal)
+        print(molecules)
         if len(molecules) == 0:
             self.print_terminal(f"No valid molecules found in file: {file}")
             self.schedule_next_file(file_index, params, endpoint, update_progress_bar)
@@ -292,11 +293,11 @@ class MyApp(App):
                 return
 
             molecule_data = molecules[molecule_index]
-            success = post_to_api(molecule_data, file, self.print_terminal, endpoint, self.param_spinner.text, api_key, OUTPUT_PATHS)
-            if success:
-                self.print_terminal(f'Successfully uploaded file: {file}')
-            else:
-                self.print_terminal(f'Failed to upload file: {file}')
+            # success = post_to_api(molecule_data, file, self.print_terminal, endpoint, self.param_spinner.text, api_key, OUTPUT_PATHS)
+            # if success:
+            #     self.print_terminal(f'Successfully uploaded file: {file}')
+            # else:
+            #     self.print_terminal(f'Failed to upload file: {file}')
             
             Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
 
