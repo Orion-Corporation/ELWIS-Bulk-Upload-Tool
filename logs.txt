@@ -495,3 +495,8 @@
 2024-06-20 10:06:23 - API request failed for C:\EXAMPLES\salts_solvate.sdf with status code 400, response: {"errors":[{"status":"400","code":"BadRequest","detail":"[ERROR - [Path '/data/attributes/name'] ECMA 262 regex \"^(?!\\s*$).+\" does not match input string \"\": []]"}]}. Copying file to 'Failed files' folder.
 2024-06-20 10:06:23 - Failed to upload file: C:\EXAMPLES\salts_solvate.sdf
 2024-06-20 10:06:23 - Upload stopped.
+2024-06-20 10:26:54 - Selected files: ['C:\\EXAMPLES\\salts_solvate.sdf']
+2024-06-20 10:27:03 - Invalid parameter set selected
+2024-06-20 10:27:04 - Upload stopped.
+2024-06-20 10:27:07 - Invalid parameter set selected
+2024-06-20 10:27:09 - Upload stopped.
