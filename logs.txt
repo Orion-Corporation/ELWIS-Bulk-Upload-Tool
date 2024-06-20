@@ -80,3 +80,10 @@
 2024-06-20 11:52:50 - Error: Molecule in file C:\EXAMPLES\salt_test.sdf could not be parsed and will be skipped.
 2024-06-20 11:52:50 - Error: Molecule in file C:\EXAMPLES\salt_test.sdf could not be parsed and will be skipped.
 2024-06-20 11:52:50 - Total molecules extracted: 1
+2024-06-20 16:28:24 - Selected files: ['C:\\EXAMPLES\\salts_solvate.sdf']
+2024-06-20 16:28:28 - Upload button pressed
+2024-06-20 16:28:28 - Uploading files to API...
+2024-06-20 16:28:28 - Processing file: C:\EXAMPLES\salts_solvate.sdf
+2024-06-20 16:28:28 - Total molecules extracted: 299
+2024-06-20 16:28:29 - Upload stopped.
+2024-06-20 16:28:41 - Selected files: ['C:\\EXAMPLES\\compound_test.sdf', 'C:\\EXAMPLES\\salt_test.sdf', 'C:\\EXAMPLES\\salts_solvate.sdf']

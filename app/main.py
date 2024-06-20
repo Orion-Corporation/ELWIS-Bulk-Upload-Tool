@@ -26,6 +26,8 @@ import shutil
 from api_utils import post_to_api
 from sdf_utils import process_sdf
 
+Window.size = (1200, 600)
+
 load_dotenv()
 api_key = os.getenv('API_KEY')
 kivy.logger.Logger.setLevel(logging.ERROR)
