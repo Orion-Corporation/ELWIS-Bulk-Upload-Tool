@@ -7,9 +7,17 @@
     size_hint_y: None
     height: self.texture_size[1]
 
+<TabbedPanelItem>:
+    canvas.after:
+        Color:
+            rgba: (0, 0.14, 0.29, 1) if self.state == 'down' else (0, 0, 0, 0)
+        Line:
+            points: [self.x, self.y, self.right, self.y]
+            width: 2
+
 BoxLayout:
-    orientation: 'vertical'
-    padding: [10, 0, 10, 10]
+    orientation: 'horizontal'
+    padding: [10, 10, 10, 10]
     spacing: 10
     canvas.before:
         Color:
@@ -19,133 +27,132 @@ BoxLayout:
             pos: self.pos
 
     BoxLayout:
-        size_hint_y: None
-        height: '48dp'
+        orientation: 'vertical'
+        width: 300
+        size_hint_x: None
         spacing: 10
 
-        Label:
-            id: label
-            text: "Select SDF Files to Process"
-            font_size: '20sp'
-            color: [0, 0, 0, 1]
-            size_hint_y: None
-            height: '40dp'
-
-        Button:
-            id: button_readme
-            text: "README"
-            background_normal: ''
-            background_color: [0.5, 0.5, 0.5, 1]
-            color: [1, 1, 1, 1]
-            size_hint: None, None
-            size: '100dp', '40dp'
-            pos_hint: {'right': 1}
-            on_release: app.show_readme
-
-        Button:
-            id: button_clear_folders
-            text: "Clear Output Folders"
-            background_normal: ''
-            background_color: [0.5, 0.5, 0.5, 1]
-            color: [1, 1, 1, 1]
-            size_hint: None, None
-            size: '200dp', '40dp'
-            pos_hint: {'right': 1}
-            on_release: app.clear_output_folders
-
-    BoxLayout:
-        size_hint_y: None
-        height: '48dp'
-        spacing: 10
-
-        Spinner:
-            id: param_spinner
-            text: 'Select Parameter Set'
-            size_hint: None, None
-            size: '200dp', '40dp'
-            option_cls: 'CustomSpinnerOption'  # Use the custom option class
-
-        Button:
-            id: button_select
-            text: "Choose Files"
-            background_normal: ''
-            background_color: [0, 0.14, 0.29, 1]
-            color: [1, 1, 1, 1]
-            on_release: app.show_filechooser
-
-        Button:
-            id: button_upload
-            text: "Upload to API"
-            background_normal: ''
-            background_color: [0.04, 0.33, 0.64, 1]
-            color: [1, 1, 1, 1]
-            disabled: True
-            on_release: app.upload_files
-
-        Button:
-            id: button_stop_upload
-            text: "Stop Upload"
-            background_normal: ''
-            background_color: [1, 0, 0, 1]
-            color: [1, 1, 1, 1]
-            disabled: True  # Initially disabled
-
-    ProgressBar:
-        id: progress_bar
-        max: 100
-        value: 0
-        size_hint_y: None
-        height: '20dp'
-
-    ScrollView:
-        size_hint: (1, 0.2)
-        GridLayout:
-            id: file_list
-            cols: 1
+        BoxLayout:
+            orientation: 'vertical'
             size_hint_y: None
             height: self.minimum_height
             spacing: 10
 
-    Label:
-        text: "Terminal Output"
-        font_size: '18sp'
-        size_hint_y: None
-        height: '30dp'
-        color: [0, 0, 0, 1]
+            Label:
+                id: label
+                text: "Select SDF Files to Process"
+                font_size: '20sp'
+                color: [0, 0, 0, 1]
+                size_hint_y: None
+                height: '40dp'
 
-    Splitter:
-        sizable_from: 'top'
-        size_hint_y: None
-        height: '10dp'
-        strip_size: '10dp'
-        canvas.before:
-            Color:
-                rgba: 0.7, 0.7, 0.7, 1
-            Rectangle:
-                size: self.size
-                pos: self.pos
+            Spinner:
+                id: param_spinner
+                text: 'Select Parameter Set'
+                size_hint_y: None
+                height: '48dp'
+                option_cls: 'CustomSpinnerOption'
+
+            Button:
+                id: button_select
+                text: "Choose Files"
+                background_normal: ''
+                background_color: [0, 0.14, 0.29, 1]
+                color: [1, 1, 1, 1]
+                size_hint_y: None
+                height: '48dp'
+
+            Button:
+                id: button_upload
+                text: "Upload to API"
+                background_normal: ''
+                background_color: [0.04, 0.33, 0.64, 1]
+                color: [1, 1, 1, 1]
+                size_hint_y: None
+                height: '48dp'
+                disabled: True
+
+            Button:
+                id: button_stop_upload
+                text: "Stop Upload"
+                background_normal: ''
+                background_color: [1, 0, 0, 1]
+                color: [1, 1, 1, 1]
+                size_hint_y: None
+                height: '48dp'
+                disabled: True
+
+            Button:
+                id: button_readme
+                text: "README"
+                background_normal: ''
+                background_color: [0.5, 0.5, 0.5, 1]
+                color: [1, 1, 1, 1]
+                size_hint_y: None
+                height: '48dp'
+
+            Button:
+                id: button_clear_folders
+                text: "Clear Output Folders"
+                background_normal: ''
+                background_color: [0.5, 0.5, 0.5, 1]
+                color: [1, 1, 1, 1]
+                size_hint_y: None
+                height: '48dp'
+
+        Widget:
+            size_hint_y: 1
 
     BoxLayout:
         orientation: 'vertical'
-        size_hint_y: 0.4
-        canvas.before:
-            Color:
-                rgba: 0.9, 0.9, 0.9, 1
-            Rectangle:
-                size: self.size
-                pos: self.pos
+        size_hint_x: 1
+        padding: [0, 0, 0, 0]
+        spacing: 10
 
-        ScrollView:
-            size_hint_y: 1
-            TextInput:
-                id: terminal_output
-                text: ''
-                readonly: True
-                font_size: '14sp'
-                background_color: [0.9, 0.9, 0.9, 1]
-                foreground_color: [0, 0, 0, 1]
-                halign: 'left'
-                valign: 'top'
-                text_size: self.width, None
-                size_hint_y: None
-                height: self.minimum_height
+        TabbedPanel:
+            do_default_tab: False
+            tab_width: 150  # Adjust the tab width here
+
+            TabbedPanelItem:
+                text: 'Selected Files'
+                ScrollView:
+                    size_hint: (1, 1)
+                    canvas.before:
+                        Color:
+                            rgba: 0.9, 0.9, 0.9, 1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+                    GridLayout:
+                        id: file_list
+                        cols: 1
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: 10
+
+            TabbedPanelItem:
+                text: 'Terminal Output'
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: 1
+                    canvas.before:
+                        Color:
+                            rgba: 0.9, 0.9, 0.9, 1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+
+                    ScrollView:
+                        size_hint_y: 1
+                        TextInput:
+                            id: terminal_output
+                            text: ''
+                            readonly: True
+                            font_size: '14sp'
+                            background_color: [0.9, 0.9, 0.9, 1]
+                            foreground_color: [0, 0, 0, 1]
+                            halign: 'left'
+                            valign: 'top'
+                            text_size: self.width, None
+                            size_hint_y: None
+                            height: self.minimum_height

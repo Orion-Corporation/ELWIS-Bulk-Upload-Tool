@@ -16,7 +16,6 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner
-from kivy.uix.progressbar import ProgressBar
 from kivy.core.window import Window
 from kivy.properties import ListProperty, BooleanProperty
 from kivy.lang import Builder
@@ -26,6 +25,8 @@ import shutil
 
 from api_utils import post_to_api
 from sdf_utils import process_sdf
+
+Window.size = (1200, 600)
 
 load_dotenv()
 api_key = os.getenv('API_KEY')
@@ -169,7 +170,6 @@ class MyApp(App):
         self.button_clear_folders = self.root.ids.button_clear_folders
         self.terminal_output = self.root.ids.terminal_output
         self.param_spinner = self.root.ids.param_spinner
-        self.progress_bar = self.root.ids.progress_bar
 
         # Ensure buttons are bound only once
         self.button_select.bind(on_release=self.show_filechooser)
@@ -245,7 +245,6 @@ class MyApp(App):
 
         self.upload_in_progress = True
         self.button_stop_upload.disabled = False
-        self.progress_bar.value = 0
 
         selected_param_set = self.param_spinner.text
 
@@ -265,15 +264,14 @@ class MyApp(App):
         self.print_terminal("Upload button pressed")
 
         total_files = len(self.selected_files)
-        self.progress_bar.max = total_files
 
         def update_progress_bar(dt):
-            self.progress_bar.value += 1
+            pass
 
         self.print_terminal("Uploading files to API...")
         
         # Schedule the upload process to allow frequent checking of the stop condition
-        # and allow multithreading in the future
+        # and allow multithreading in the future, if the API can keep up
         self.schedule_upload(0, params, endpoint, update_progress_bar)
         
     def schedule_upload(self, file_index, params, endpoint, update_progress_bar):
@@ -284,6 +282,7 @@ class MyApp(App):
         
         file = self.selected_files[file_index]
         molecules = process_sdf([file], params, self.print_terminal)
+        print(molecules)
         if len(molecules) == 0:
             self.print_terminal(f"No valid molecules found in file: {file}")
             self.schedule_next_file(file_index, params, endpoint, update_progress_bar)
@@ -296,11 +295,11 @@ class MyApp(App):
                 return
 
             molecule_data = molecules[molecule_index]
-            success = post_to_api(molecule_data, file, self.print_terminal, endpoint, self.param_spinner.text, api_key, OUTPUT_PATHS)
-            if success:
-                self.print_terminal(f'Successfully uploaded file: {file}')
-            else:
-                self.print_terminal(f'Failed to upload file: {file}')
+            # success = post_to_api(molecule_data, file, self.print_terminal, endpoint, self.param_spinner.text, api_key, OUTPUT_PATHS)
+            # if success:
+            #     self.print_terminal(f'Successfully uploaded file: {file}')
+            # else:
+            #     self.print_terminal(f'Failed to upload file: {file}')
             
             Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
 
