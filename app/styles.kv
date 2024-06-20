@@ -7,6 +7,14 @@
     size_hint_y: None
     height: self.texture_size[1]
 
+<TabbedPanelItem>:
+    canvas.after:
+        Color:
+            rgba: (0, 0.14, 0.29, 1) if self.state == 'down' else (0, 0, 0, 0)
+        Line:
+            points: [self.x, self.y, self.right, self.y]
+            width: 2
+
 BoxLayout:
     orientation: 'horizontal'
     padding: [10, 10, 10, 10]
@@ -20,7 +28,8 @@ BoxLayout:
 
     BoxLayout:
         orientation: 'vertical'
-        size_hint_x: 0.25  # Adjusted to make the left column narrower
+        width: 300  # Set explicit width for the left column
+        size_hint_x: None  # Disable size_hint_x to use explicit width
         spacing: 10
 
         Label:
@@ -94,12 +103,13 @@ BoxLayout:
 
     BoxLayout:
         orientation: 'vertical'
-        size_hint_x: 0.75  # Adjusted to make the right column wider
+        size_hint_x: 1  # Ensure the right column takes up the remaining space
         padding: [0, 0, 0, 0]
         spacing: 10
 
         TabbedPanel:
             do_default_tab: False
+            tab_width: 150  # Adjust the tab width here
 
             TabbedPanelItem:
                 text: 'Selected Files'
@@ -107,7 +117,7 @@ BoxLayout:
                     size_hint: (1, 1)
                     canvas.before:
                         Color:
-                            rgba: 1, 1, 1, 1
+                            rgba: 1, 1, 1, 1  # Ensure white background for ScrollView
                         Rectangle:
                             size: self.size
                             pos: self.pos
