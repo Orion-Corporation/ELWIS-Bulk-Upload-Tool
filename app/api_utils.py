@@ -204,5 +204,11 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
             if not os.path.exists(OUTPUT_PATHS['failed_files']):
                 os.makedirs(OUTPUT_PATHS['failed_files'])
             shutil.copy(file, OUTPUT_PATHS['failed_files'])
+                        # Log duplicates
+            with open(OUTPUT_PATHS['failed_log'], 'a') as duplicate_log:
+                duplicate_log.write(f"File: {file}, Molecule: {molecule_data.get('Chemical name', 'Unknown')}, {molecule_data.get('Formula', 'Unknown')}, API Response Status Code: {response.status_code}, response text: {response.text})\n")
+            
+            callback(f"API request failed for {file} with status code {response.status_code}, response: {response.text}. Copying file to '{OUTPUT_PATHS['failed_files']}' folder.")
+
 
         return False

@@ -5,5 +5,6 @@
     "success_log": "Successfull/success.txt",
     "duplicate_log": "Failed files/Duplicates/duplicates.txt",
     "general_log": "logs.txt",
-    "download_folder": "downloads"
+    "download_folder": "downloads",
+    "failed_log": "Failed files/failed.txt"
 }

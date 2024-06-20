@@ -161,9 +161,7 @@ class MyApp(App):
     def build(self):
         self.title = "Structure-Data Format (SDF) File Processor"
         self.root = Builder.load_file('styles.kv')
-
         self.label = self.root.ids.label
-        
         self.button_select = self.root.ids.button_select
         self.button_upload = self.root.ids.button_upload
         self.button_stop_upload = self.root.ids.button_stop_upload
