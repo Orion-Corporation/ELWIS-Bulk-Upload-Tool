@@ -16,7 +16,6 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner
-from kivy.uix.progressbar import ProgressBar
 from kivy.core.window import Window
 from kivy.properties import ListProperty, BooleanProperty
 from kivy.lang import Builder
@@ -169,7 +168,6 @@ class MyApp(App):
         self.button_clear_folders = self.root.ids.button_clear_folders
         self.terminal_output = self.root.ids.terminal_output
         self.param_spinner = self.root.ids.param_spinner
-        self.progress_bar = self.root.ids.progress_bar
 
         # Ensure buttons are bound only once
         self.button_select.bind(on_release=self.show_filechooser)
@@ -245,7 +243,6 @@ class MyApp(App):
 
         self.upload_in_progress = True
         self.button_stop_upload.disabled = False
-        self.progress_bar.value = 0
 
         selected_param_set = self.param_spinner.text
 
@@ -265,10 +262,9 @@ class MyApp(App):
         self.print_terminal("Upload button pressed")
 
         total_files = len(self.selected_files)
-        self.progress_bar.max = total_files
 
         def update_progress_bar(dt):
-            self.progress_bar.value += 1
+            pass
 
         self.print_terminal("Uploading files to API...")
         

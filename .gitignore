@@ -10,3 +10,5 @@ logs.txt
 *.pyc
 /app/__pycache__
 logs.txt
+/Successfull
+/Failed files

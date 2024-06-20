@@ -28,13 +28,13 @@ BoxLayout:
 
     BoxLayout:
         orientation: 'vertical'
-        width: 300  # Set explicit width for the left column
-        size_hint_x: None  # Disable size_hint_x to use explicit width
+        width: 300
+        size_hint_x: None
         spacing: 10
 
         BoxLayout:
             orientation: 'vertical'
-            size_hint_y: None  # Do not stretch vertically
+            size_hint_y: None
             height: self.minimum_height
             spacing: 10
 
@@ -51,7 +51,7 @@ BoxLayout:
                 text: 'Select Parameter Set'
                 size_hint_y: None
                 height: '48dp'
-                option_cls: 'CustomSpinnerOption'  # Use the custom option class
+                option_cls: 'CustomSpinnerOption'
 
             Button:
                 id: button_select
@@ -80,7 +80,7 @@ BoxLayout:
                 color: [1, 1, 1, 1]
                 size_hint_y: None
                 height: '48dp'
-                disabled: True  # Initially disabled
+                disabled: True
 
             Button:
                 id: button_readme
@@ -100,19 +100,12 @@ BoxLayout:
                 size_hint_y: None
                 height: '48dp'
 
-            ProgressBar:
-                id: progress_bar
-                max: 100
-                value: 0
-                size_hint_y: None
-                height: '20dp'
-
-        Widget:  # Spacer to push content to the top
+        Widget:
             size_hint_y: 1
 
     BoxLayout:
         orientation: 'vertical'
-        size_hint_x: 1  # Ensure the right column takes up the remaining space
+        size_hint_x: 1
         padding: [0, 0, 0, 0]
         spacing: 10
 
@@ -126,7 +119,7 @@ BoxLayout:
                     size_hint: (1, 1)
                     canvas.before:
                         Color:
-                            rgba: 0.9, 0.9, 0.9, 1  # Ensure white background for ScrollView
+                            rgba: 0.9, 0.9, 0.9, 1
                         Rectangle:
                             size: self.size
                             pos: self.pos
@@ -141,7 +134,7 @@ BoxLayout:
                 text: 'Terminal Output'
                 BoxLayout:
                     orientation: 'vertical'
-                    size_hint_y: 1  # Fill the entire vertical space
+                    size_hint_y: 1
                     canvas.before:
                         Color:
                             rgba: 0.9, 0.9, 0.9, 1
@@ -150,7 +143,7 @@ BoxLayout:
                             pos: self.pos
 
                     ScrollView:
-                        size_hint_y: 1  # Fill the entire vertical space
+                        size_hint_y: 1
                         TextInput:
                             id: terminal_output
                             text: ''
