@@ -337,135 +337,23 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
         'Content-Type': 'application/vnd.api+json',
     }
 
-    # Construct the API request payload based on the parameter set
-    # Todo: load the structure from a json file
-    if param_set == "Create Compound (Does not work)":
-        data = {
-            "data": {
-                "type": "asset",
-                "attributes": {
-                    "synonyms": [
-                        molecule_data.get('Chemical name', ''),
-                        molecule_data.get('Smile', '')
-                    ],
-                    "fields": [
-                        {
-                            "id": "5eaa8792b5ed583958f447cb",
-                            "value": molecule_data.get('Chemical name', '')
-                        },
-                        {
-                            "id": "5eaa8792b5ed583958f447cc",
-                            "value": {
-                                "rawValue": molecule_data.get('MW', ''),
-                                "displayValue": f"{molecule_data.get('MW', '')} g/mol"
-                            }
-                        },
-                        {
-                            "id": "5eaa8792b5ed583958f447cd",
-                            "value": molecule_data.get('MW_salt', '0')
-                        },
-                        {
-                            "id": "5eaa8792b5ed583958f447ce",
-                            "value": {
-                                "rawValue": molecule_data.get('Formula', ''),
-                                "displayValue": molecule_data.get('Formula', '')
-                            }
-                        },
-                        {
-                            "id": "5eaa8792b5ed583958f44778",
-                            "value": molecule_data.get('CDXML', '')
-                        },
-                        {
-                            "id": "5eaa8792b5ed583958f447de",
-                            "value": {
-                                "filename": f"{molecule_data.get('Chemical name', '')}.png",
-                                "base64": molecule_data.get('Base64', '')
-                            }
-                        }
-                    ]
-                },
-                "relationships": {
-                    "batch": {
-                        "data": {
-                            "type": "batch",
-                            "id": "00011",
-                            "attributes": {
-                                "fields": [
-                                    {
-                                        "id": "5eaa8792b5ed583958f447d0",
-                                        "value": {
-                                            "rawValue": molecule_data.get('Amount_mg', ''),
-                                            "displayValue": f"{molecule_data.get('Amount_mg', '')} mg"
-                                        }
-                                    },
-                                    {
-                                        "id": "5eaa8792b5ed583958f447d2",
-                                        "value": {
-                                            "rawValue": molecule_data.get('Purity', ''),
-                                            "displayValue": f"{molecule_data.get('Purity', '')} %"
-                                        }
-                                    },
-                                    {
-                                        "id": "5eaa8792b5ed583958f447d3",
-                                        "value": molecule_data.get('Chemical name', '')
-                                    },
-                                    {
-                                        "id": "5eaa8792b5ed583958f447d4",
-                                        "value": {
-                                            "rawValue": molecule_data.get('Formula', ''),
-                                            "displayValue": molecule_data.get('Formula', '')
-                                        }
-                                    },
-                                    {
-                                        "id": "5f02947e9a3a272654dfeb28",
-                                        "value": {
-                                            "rawValue": molecule_data.get('MW', ''),
-                                            "displayValue": f"{molecule_data.get('MW', '')} g/mol"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    # Function to upload fragment (salt or solvate)
+    def upload_fragment(fragment_data, fragment_type):
+        fragment_endpoint = f"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/{fragment_type}s"
+        response = requests.post(fragment_endpoint, data=json.dumps(fragment_data), headers=headers)
+        if response.status_code == 200:
+            fragment_id = response.json()['data']['id']
+            return fragment_id
+        else:
+            callback(f"Failed to upload {fragment_type}. Status code: {response.status_code}, response: {response.text}")
+            return None
 
-        fragments = {}
-        if 'Salt_name' in molecule_data:
-            fragments["salts"] = [
-                {
-                    "type": "SALT",
-                    "name": molecule_data.get('Salt_name', ''),
-                    "mf": molecule_data.get('Salt smiles', ''),
-                    "mw": {
-                        "rawValue": molecule_data.get('MW_salt', ''),
-                        "displayValue": f"{molecule_data.get('MW_salt', '')} g/mol"
-                    },
-                    "id": "SALT:17",
-                    "coefficient": 1
-                }
-            ]
-        if 'Solvate_name' in molecule_data:
-            fragments["solvates"] = [
-                {
-                    "type": "SOLVATE",
-                    "name": molecule_data.get('Solvate_name', ''),
-                    "mf": molecule_data.get('Solvate smiles', ''),
-                    "mw": {
-                        "rawValue": molecule_data.get('MW_solvate', ''),
-                        "displayValue": f"{molecule_data.get('MW_solvate', '')} g/mol"
-                    },
-                    "id": "Solvate:17",
-                    "coefficient": 1
-                }
-            ]
-        
-        if fragments:
-            data["data"]["relationships"]["batch"]["data"]["attributes"]["fragments"] = fragments
+    salt_id = None
+    solvate_id = None
 
-    elif param_set == "Create Salt":
-        data = {
+    # Check and upload salt if it exists
+    if 'Salt_name' in molecule_data:
+        salt_data = {
             "data": {
                 "type": "salt",
                 "attributes": {
@@ -475,8 +363,11 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
                 }
             }
         }
-    elif param_set == "Create Solvate":
-        data = {
+        salt_id = upload_fragment(salt_data, "salt")
+
+    # Check and upload solvate if it exists
+    if 'Solvate_name' in molecule_data:
+        solvate_data = {
             "data": {
                 "type": "solvate",
                 "attributes": {
@@ -486,8 +377,130 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
                 }
             }
         }
-    else:
-        callback(f"Invalid parameter in molecule {molecule_data}. Cannot proceed with the upload.")
+        solvate_id = upload_fragment(solvate_data, "solvate")
+
+    # Construct the API request payload for the main compound
+    data = {
+        "data": {
+            "type": "asset",
+            "attributes": {
+                "synonyms": [
+                    molecule_data.get('Chemical name', ''),
+                    molecule_data.get('Smile', '')
+                ],
+                "fields": [
+                    {
+                        "id": "5eaa8792b5ed583958f447cb",
+                        "value": molecule_data.get('Chemical name', '')
+                    },
+                    {
+                        "id": "5eaa8792b5ed583958f447cc",
+                        "value": {
+                            "rawValue": molecule_data.get('MW', ''),
+                            "displayValue": f"{molecule_data.get('MW', '')} g/mol"
+                        }
+                    },
+                    {
+                        "id": "5eaa8792b5ed583958f447cd",
+                        "value": molecule_data.get('MW_salt', '0')
+                    },
+                    {
+                        "id": "5eaa8792b5ed583958f447ce",
+                        "value": {
+                            "rawValue": molecule_data.get('Formula', ''),
+                            "displayValue": molecule_data.get('Formula', '')
+                        }
+                    },
+                    {
+                        "id": "5eaa8792b5ed583958f44778",
+                        "value": molecule_data.get('CDXML', '')
+                    },
+                    {
+                        "id": "5eaa8792b5ed583958f447de",
+                        "value": {
+                            "filename": f"{molecule_data.get('Chemical name', '')}.png",
+                            "base64": molecule_data.get('Base64', '')
+                        }
+                    }
+                ]
+            },
+            "relationships": {
+                "batch": {
+                    "data": {
+                        "type": "batch",
+                        "id": "00011", # How can we get the batch ID?
+                        "attributes": {
+                            "fields": [
+                                {
+                                    "id": "5eaa8792b5ed583958f447d0",
+                                    "value": {
+                                        "rawValue": molecule_data.get('Amount_mg', ''),
+                                        "displayValue": f"{molecule_data.get('Amount_mg', '')} mg"
+                                    }
+                                },
+                                {
+                                    "id": "5eaa8792b5ed583958f447d2",
+                                    "value": {
+                                        "rawValue": molecule_data.get('Purity', ''),
+                                        "displayValue": f"{molecule_data.get('Purity', '')} %"
+                                    }
+                                },
+                                {
+                                    "id": "5eaa8792b5ed583958f447d3",
+                                    "value": molecule_data.get('Chemical name', '')
+                                },
+                                {
+                                    "id": "5eaa8792b5ed583958f447d4",
+                                    "value": {
+                                        "rawValue": molecule_data.get('Formula', ''),
+                                        "displayValue": molecule_data.get('Formula', '')
+                                    }
+                                },
+                                {
+                                    "id": "5f02947e9a3a272654dfeb28",
+                                    "value": {
+                                        "rawValue": molecule_data.get('MW', ''),
+                                        "displayValue": f"{molecule_data.get('MW', '')} g/mol"
+                                    }
+                                }
+                            ],
+                            "fragments": {
+                                "salts": [],
+                                "solvates": []
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    # Add fragments if they exist
+    if salt_id:
+        data["data"]["relationships"]["batch"]["data"]["attributes"]["fragments"]["salts"].append({
+            "type": "SALT",
+            "id": salt_id,
+            "name": molecule_data.get('Salt_name', ''),
+            "mf": molecule_data.get('Formula', ''),
+            "mw": {
+                "rawValue": molecule_data.get('MW_salt', ''),
+                "displayValue": f"{molecule_data.get('MW_salt', '')} g/mol"
+            },
+            "coefficient": 1
+        })
+
+    if solvate_id:
+        data["data"]["relationships"]["batch"]["data"]["attributes"]["fragments"]["solvates"].append({
+            "type": "SOLVATE",
+            "id": solvate_id,
+            "name": molecule_data.get('Solvate_name', ''),
+            "mf": molecule_data.get('Formula', ''),
+            "mw": {
+                "rawValue": molecule_data.get('MW', ''),
+                "displayValue": f"{molecule_data.get('MW', '')} g/mol"
+            },
+            "coefficient": 1
+        })
 
     # Write data to json file
     with open('data.json', 'w') as f:
@@ -526,14 +539,15 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
             if not os.path.exists(OUTPUT_PATHS['failed_files']):
                 os.makedirs(OUTPUT_PATHS['failed_files'])
             shutil.copy(file, OUTPUT_PATHS['failed_files'])
-                        # Log duplicates
-            with open(OUTPUT_PATHS['failed_log'], 'a') as duplicate_log:
-                duplicate_log.write(f"File: {file}, Molecule: {molecule_data.get('Chemical name', 'Unknown')}, {molecule_data.get('Formula', 'Unknown')}, API Response Status Code: {response.status_code}, response text: {response.text})\n")
+            
+            # Log failures
+            with open(OUTPUT_PATHS['general_log'], 'a') as general_log:
+                general_log.write(f"File: {file}, Molecule: {molecule_data.get('Chemical name', 'Unknown')}, {molecule_data.get('Formula', 'Unknown')}, API Response Status Code: {response.status_code}, response text: {response.text})\n")
             
             callback(f"API request failed for {file} with status code {response.status_code}, response: {response.text}. Copying file to '{OUTPUT_PATHS['failed_files']}' folder.")
 
-
         return False
+
 
 from rdkit import Chem
 
