@@ -1,6 +1,5 @@
 {
-    "Create Salt": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts",
-    "Create Solvate": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/solvates",
-    "Create Compound": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/Compounds/assets",
+    "Fragment Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments",
+    "Compound Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/Compounds/assets",
     "Delete Salt": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/"
 }

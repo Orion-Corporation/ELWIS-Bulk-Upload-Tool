@@ -1,10 +1,90 @@
 {
     "data": {
-        "type": "salt",
+        "type": "asset",
         "attributes": {
-            "name": "",
-            "mf": "C25H43NO18",
-            "mw": "0 g/mol"
+            "synonyms": [
+                "2-[2-(hydroxymethyl)-5-nitro-1H-imidazol-1-yl]ethan-1-ol",
+                ""
+            ],
+            "fields": [
+                {
+                    "id": "5eaa8792b5ed583958f447cb",
+                    "value": "2-[2-(hydroxymethyl)-5-nitro-1H-imidazol-1-yl]ethan-1-ol"
+                },
+                {
+                    "id": "5eaa8792b5ed583958f447cc",
+                    "value": {
+                        "rawValue": "187.1534",
+                        "displayValue": "187.1534 g/mol"
+                    }
+                },
+                {
+                    "id": "5eaa8792b5ed583958f447cd",
+                    "value": "0"
+                },
+                {
+                    "id": "5eaa8792b5ed583958f447ce",
+                    "value": {
+                        "rawValue": "C6H9N3O4",
+                        "displayValue": "C6H9N3O4"
+                    }
+                },
+                {
+                    "id": "5eaa8792b5ed583958f44778",
+                    "value": ""
+                },
+                {
+                    "id": "5eaa8792b5ed583958f447de",
+                    "value": {
+                        "filename": "2-[2-(hydroxymethyl)-5-nitro-1H-imidazol-1-yl]ethan-1-ol.png",
+                        "base64": ""
+                    }
+                }
+            ]
+        },
+        "relationships": {
+            "batch": {
+                "data": {
+                    "type": "batch",
+                    "id": "00011",
+                    "attributes": {
+                        "fields": [
+                            {
+                                "id": "5eaa8792b5ed583958f447d0",
+                                "value": {
+                                    "rawValue": "",
+                                    "displayValue": " mg"
+                                }
+                            },
+                            {
+                                "id": "5eaa8792b5ed583958f447d2",
+                                "value": {
+                                    "rawValue": "100",
+                                    "displayValue": "100 %"
+                                }
+                            },
+                            {
+                                "id": "5eaa8792b5ed583958f447d3",
+                                "value": "2-[2-(hydroxymethyl)-5-nitro-1H-imidazol-1-yl]ethan-1-ol"
+                            },
+                            {
+                                "id": "5eaa8792b5ed583958f447d4",
+                                "value": {
+                                    "rawValue": "C6H9N3O4",
+                                    "displayValue": "C6H9N3O4"
+                                }
+                            },
+                            {
+                                "id": "5f02947e9a3a272654dfeb28",
+                                "value": {
+                                    "rawValue": "187.1534",
+                                    "displayValue": "187.1534 g/mol"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
         }
     }
 }

@@ -13,18 +13,14 @@ from kivy.uix.label import Label
 from kivy.uix.filechooser import FileChooserIconView
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
-from kivy.uix.spinner import Spinner
 from kivy.core.window import Window
 from kivy.properties import ListProperty, BooleanProperty
 from kivy.lang import Builder
 from kivy.clock import Clock
 import json
 import shutil
-
-from api_utils import post_to_api
-from sdf_utils import process_sdf
+from rdkit import Chem
 
 Window.size = (1200, 600)
 
@@ -36,42 +32,26 @@ try:
 except Exception as e:
     print(f"Error loading Kv file: {e}")
 
-# Load parameter sets from JSON
-def load_parameter_sets(file_path='config/parameters.json'):
-    try:
-        with open(file_path, 'r') as file:
-            return json.load(file)
-    except FileNotFoundError: 
-        return {
-            'Salt': ['Salt_name', 'Formula', 'MW_salt']
-        }
-
-# Load API endpoints from JSON 
-def load_api_endpoints(file_path='config/api_endpoints.json'):
+# Load configuration files
+def load_config(file_path, default):
     try:
         with open(file_path, 'r') as file:
             return json.load(file)
     except FileNotFoundError:
-        return {
-            "Default Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts"
-        }
-def load_output_paths(file_path='config/output_paths.json'):
-    try:
-        with open(file_path, 'r') as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return {
-            "successful_files": "Successfully uploaded files",
-            "failed_files": "Failed files",
-            "duplicate_files": "Failed files/Duplicate compounds",
-            "success_log": "Successfully uploaded files/success.txt",
-            "duplicate_log": "Failed files/Duplicate compounds/duplicates.txt",
-            "general_log": "logs.txt"
-        }
+        return default
 
-OUTPUT_PATHS = load_output_paths()
-PARAMETER_SETS = load_parameter_sets()
-API_ENDPOINTS = load_api_endpoints()
+OUTPUT_PATHS = load_config('config/output_paths.json', {
+    "successful_files": "Successfully uploaded files",
+    "failed_files": "Failed files",
+    "duplicate_files": "Failed files/Duplicate compounds",
+    "success_log": "Successfully uploaded files/success.txt",
+    "duplicate_log": "Failed files/Duplicate compounds/duplicates.txt",
+    "general_log": "logs.txt"
+})
+API_ENDPOINTS = load_config('config/api_endpoints.json', {
+    "Fragment Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments",
+    "Compound Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/Compounds/assets"
+})
 
 class CustomFileChooserIconView(FileChooserIconView):
     selection = ListProperty([])
@@ -150,10 +130,9 @@ class ReadmePopup(Popup):
                 self.text_input.text = file.read()
         except Exception as e:
             self.text_input.text = f"Failed to load README file:\n{str(e)}"
-            
+
 class MyApp(App):
     filechooser_popup_open = False
-    PARAMETER_SETS = PARAMETER_SETS
     API_ENDPOINTS = API_ENDPOINTS
     OUTPUT_PATHS = OUTPUT_PATHS
 
@@ -169,7 +148,6 @@ class MyApp(App):
         self.button_readme = self.root.ids.button_readme
         self.button_clear_folders = self.root.ids.button_clear_folders
         self.terminal_output = self.root.ids.terminal_output
-        self.param_spinner = self.root.ids.param_spinner
 
         # Ensure buttons are bound only once
         self.button_select.bind(on_release=self.show_filechooser)
@@ -179,9 +157,6 @@ class MyApp(App):
         self.button_clear_folders.bind(on_release=self.clear_output_folders)
         
         self.upload_in_progress = False  
-
-        # Set the values for the spinners
-        self.param_spinner.values = list(PARAMETER_SETS.keys())
 
         # Check if the API key is set
         if not api_key:
@@ -246,21 +221,6 @@ class MyApp(App):
         self.upload_in_progress = True
         self.button_stop_upload.disabled = False
 
-        selected_param_set = self.param_spinner.text
-
-        # Automatically select endpoint based on parameter set
-        endpoint = None
-        if selected_param_set == "Create Salt":
-            endpoint = "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts"
-        elif selected_param_set == "Create Solvate":
-            endpoint = "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/solvates"
-        elif selected_param_set == "Create Compound (Does not work)":
-            endpoint = "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/Compounds/assets"
-        else:
-            self.print_terminal("Invalid parameter set selected")
-            return
-
-        params = PARAMETER_SETS[selected_param_set]
         self.print_terminal("Upload button pressed")
 
         def update_progress_bar(dt):
@@ -269,31 +229,29 @@ class MyApp(App):
         self.print_terminal("Uploading files to API...")
         
         # Schedule the upload process to allow frequent checking of the stop condition
-        # and allow multithreading in the future, if the API can keep up
-        self.schedule_upload(0, params, endpoint, update_progress_bar)
+        self.schedule_upload(0, update_progress_bar)
         
-    def schedule_upload(self, file_index, params, endpoint, update_progress_bar):
+    def schedule_upload(self, file_index, update_progress_bar):
         if not self.upload_in_progress or file_index >= len(self.selected_files):
             self.upload_in_progress = False
             self.button_stop_upload.disabled = True
             return
         
         file = self.selected_files[file_index]
-        molecules = process_sdf([file], params, self.print_terminal)
-        print(molecules)
+        molecules = process_sdf([file], self.print_terminal)
         if len(molecules) == 0:
             self.print_terminal(f"No valid molecules found in file: {file}")
-            self.schedule_next_file(file_index, params, endpoint, update_progress_bar)
+            self.schedule_next_file(file_index, update_progress_bar)
             return
 
         def process_molecule(molecule_index):
             if not self.upload_in_progress or molecule_index >= len(molecules):
                 Clock.schedule_once(update_progress_bar)
-                self.schedule_next_file(file_index, params, endpoint, update_progress_bar)
+                self.schedule_next_file(file_index, update_progress_bar)
                 return
 
             molecule_data = molecules[molecule_index]
-            success = post_to_api(molecule_data, file, self.print_terminal, endpoint, self.param_spinner.text, api_key, OUTPUT_PATHS)
+            success = post_to_api(molecule_data, file, self.print_terminal, api_key, OUTPUT_PATHS)
             if success:
                 self.print_terminal(f'Successfully uploaded file: {file}')
             else:
@@ -303,8 +261,8 @@ class MyApp(App):
 
         process_molecule(0)
 
-    def schedule_next_file(self, file_index, params, endpoint, update_progress_bar):
-        Clock.schedule_once(lambda dt: self.schedule_upload(file_index + 1, params, endpoint, update_progress_bar))
+    def schedule_next_file(self, file_index, update_progress_bar):
+        Clock.schedule_once(lambda dt: self.schedule_upload(file_index + 1, update_progress_bar))
 
     def stop_upload(self, instance=None):
         self.upload_in_progress = False
@@ -320,13 +278,13 @@ class MyApp(App):
             f.flush()
         self.terminal_output.text += log_message + '\n'
 
+
 import os
 import requests
 import shutil
 import json
 
-def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUTPUT_PATHS):
-    print(f"PARAMS: {param_set}")
+def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
     if not api_key:
         callback("Error: API key not found. Cannot proceed with the upload.")
         return False
@@ -337,49 +295,79 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
         'Content-Type': 'application/vnd.api+json',
     }
 
-    # Function to upload fragment (salt or solvate)
-    def upload_fragment(fragment_data, fragment_type):
-        fragment_endpoint = f"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/{fragment_type}s"
-        response = requests.post(fragment_endpoint, data=json.dumps(fragment_data), headers=headers)
-        if response.status_code == 200:
-            fragment_id = response.json()['data']['id']
-            return fragment_id
-        else:
-            callback(f"Failed to upload {fragment_type}. Status code: {response.status_code}, response: {response.text}")
-            return None
+    try:
+        # Always attempt to upload salts and solvates
+        salt_id, solvate_id = upload_fragments(molecule_data, callback, headers)
+    except Exception as e:
+        callback(f"Error uploading fragments: {str(e)}")
+        return False
 
+    try:
+        data = construct_payload(molecule_data, salt_id, solvate_id)
+    except Exception as e:
+        callback(f"Error constructing payload: {str(e)}")
+        return False
+
+    if not data:
+        callback("Invalid payload data")
+        return False
+
+    try:
+        return send_request(data, file, callback, API_ENDPOINTS['Compound Endpoint'], headers, OUTPUT_PATHS)
+    except Exception as e:
+        callback(f"Error sending request: {str(e)}")
+        return False
+
+
+def upload_fragments(molecule_data, callback, headers):
     salt_id = None
     solvate_id = None
 
-    # Check and upload salt if it exists
-    if 'Salt_name' in molecule_data:
-        salt_data = {
-            "data": {
-                "type": "salt",
-                "attributes": {
-                    "name": molecule_data.get('Salt_name', ''),
-                    "mf": molecule_data.get('Formula', ''),
-                    "mw": f"{molecule_data.get('MW_salt', '')} g/mol"
+    try:
+        if 'Salt_name' in molecule_data:
+            salt_data = {
+                "data": {
+                    "type": "salt",
+                    "attributes": {
+                        "name": molecule_data.get('Salt_name', ''),
+                        "mf": molecule_data.get('Formula', ''),
+                        "mw": f"{molecule_data.get('MW_salt', '')} g/mol"
+                    }
                 }
             }
-        }
-        salt_id = upload_fragment(salt_data, "salt")
+            salt_id = upload_fragment(salt_data, "salts", callback, headers)
+    except Exception as e:
+        callback(f"Error uploading salt: {str(e)}")
 
-    # Check and upload solvate if it exists
-    if 'Solvate_name' in molecule_data:
-        solvate_data = {
-            "data": {
-                "type": "solvate",
-                "attributes": {
-                    "name": molecule_data.get('Solvate_name', ''),
-                    "mf": molecule_data.get('Formula', ''),
-                    "mw": f"{molecule_data.get('MW', '')} g/mol"
+    try:
+        if 'Solvate_name' in molecule_data:
+            solvate_data = {
+                "data": {
+                    "type": "solvate",
+                    "attributes": {
+                        "name": molecule_data.get('Solvate_name', ''),
+                        "mf": molecule_data.get('Formula', ''),
+                        "mw": f"{molecule_data.get('MW', '')} g/mol"
+                    }
                 }
             }
-        }
-        solvate_id = upload_fragment(solvate_data, "solvate")
+            solvate_id = upload_fragment(solvate_data, "solvates", callback, headers)
+    except Exception as e:
+        callback(f"Error uploading solvate: {str(e)}")
 
-    # Construct the API request payload for the main compound
+    return salt_id, solvate_id
+
+def upload_fragment(fragment_data, fragment_type, callback, headers):
+    fragment_endpoint = f"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/{fragment_type}s"
+    response = requests.post(fragment_endpoint, data=json.dumps(fragment_data), headers=headers)
+    if response.status_code == 200:
+        fragment_id = response.json()['data']['id']
+        return fragment_id
+    else:
+        callback(f"Failed to upload {fragment_type}. Status code: {response.status_code}, response: {response.text}")
+        return None
+
+def construct_payload(molecule_data, salt_id, solvate_id):
     data = {
         "data": {
             "type": "asset",
@@ -428,7 +416,7 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
                 "batch": {
                     "data": {
                         "type": "batch",
-                        "id": "00011", # How can we get the batch ID?
+                        "id": "00011",
                         "attributes": {
                             "fields": [
                                 {
@@ -463,11 +451,7 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
                                         "displayValue": f"{molecule_data.get('MW', '')} g/mol"
                                     }
                                 }
-                            ],
-                            "fragments": {
-                                "salts": [],
-                                "solvates": []
-                            }
+                            ]
                         }
                     }
                 }
@@ -475,120 +459,124 @@ def post_to_api(molecule_data, file, callback, endpoint, param_set, api_key, OUT
         }
     }
 
-    # Add fragments if they exist
-    if salt_id:
-        data["data"]["relationships"]["batch"]["data"]["attributes"]["fragments"]["salts"].append({
-            "type": "SALT",
-            "id": salt_id,
-            "name": molecule_data.get('Salt_name', ''),
-            "mf": molecule_data.get('Formula', ''),
-            "mw": {
-                "rawValue": molecule_data.get('MW_salt', ''),
-                "displayValue": f"{molecule_data.get('MW_salt', '')} g/mol"
-            },
-            "coefficient": 1
-        })
+    # Only add fragments if they exist
+    if salt_id or solvate_id:
+        fragments = {}
+        if salt_id:
+            fragments["salts"] = [{
+                "type": "SALT",
+                "id": salt_id,
+                "name": molecule_data.get('Salt_name', ''),
+                "mf": molecule_data.get('Formula', ''),
+                "mw": {
+                    "rawValue": molecule_data.get('MW_salt', ''),
+                    "displayValue": f"{molecule_data.get('MW_salt', '')} g/mol"
+                },
+                "coefficient": 1
+            }]
+        if solvate_id:
+            fragments["solvates"] = [{
+                "type": "SOLVATE",
+                "id": solvate_id,
+                "name": molecule_data.get('Solvate_name', ''),
+                "mf": molecule_data.get('Formula', ''),
+                "mw": {
+                    "rawValue": molecule_data.get('MW', ''),
+                    "displayValue": f"{molecule_data.get('MW', '')} g/mol"
+                },
+                "coefficient": 1
+            }]
+        data["data"]["relationships"]["batch"]["data"]["attributes"]["fragments"] = fragments
 
-    if solvate_id:
-        data["data"]["relationships"]["batch"]["data"]["attributes"]["fragments"]["solvates"].append({
-            "type": "SOLVATE",
-            "id": solvate_id,
-            "name": molecule_data.get('Solvate_name', ''),
-            "mf": molecule_data.get('Formula', ''),
-            "mw": {
-                "rawValue": molecule_data.get('MW', ''),
-                "displayValue": f"{molecule_data.get('MW', '')} g/mol"
-            },
-            "coefficient": 1
-        })
+    return data
 
+def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
     # Write data to json file
     with open('data.json', 'w') as f:
         f.write(json.dumps(data, indent=4))
     data_json = json.dumps(data)
-    callback(f"Sending POST request for molecule: {molecule_data.get('Chemical name', 'Unknown')} to endpoint: {endpoint}")
+    callback(f"Sending POST request for molecule: {data['data']['attributes']['synonyms'][0]} to endpoint: {endpoint}")
     callback(f"POST payload: {data_json}")
 
     response = requests.post(endpoint, data=data_json, headers=headers)
     callback(f"Response status code: {response.status_code}, response text: {response.text}")
 
     if response.status_code == 200:
-        if not os.path.exists(OUTPUT_PATHS['successful_files']):
-            os.makedirs(OUTPUT_PATHS['successful_files'])
-        shutil.copy(file, OUTPUT_PATHS['successful_files'])
-        
-        # Log successes
-        with open(OUTPUT_PATHS['success_log'], 'a') as success_log:
-            success_log.write(f"File: {file}, Molecule: {molecule_data.get('Chemical name', 'Unknown')}, {molecule_data.get('Formula', 'Unknown')}, API Response Status Code: {response.status_code}, response text: {response.text})\n")
-        
-        callback(f"Successfully uploaded {file} with molecule data {molecule_data}. Copying file to '{OUTPUT_PATHS['successful_files']}' folder.")
+        handle_success(file, data, OUTPUT_PATHS, callback)
         return True
     else:
-        if "duplicate" in response.text.lower():
-            duplicate_folder = OUTPUT_PATHS['duplicate_files']
-            if not os.path.exists(duplicate_folder):
-                os.makedirs(duplicate_folder)
-            shutil.copy(file, duplicate_folder)
-            
-            # Log duplicates
-            with open(OUTPUT_PATHS['duplicate_log'], 'a') as duplicate_log:
-                duplicate_log.write(f"File: {file}, Molecule: {molecule_data.get('Chemical name', 'Unknown')}, {molecule_data.get('Formula', 'Unknown')}, API Response Status Code: {response.status_code}, response text: {response.text})\n")
-            
-            callback(f"API request failed for {file} with status code {response.status_code}, response: {response.text}. Copying file to '{OUTPUT_PATHS['duplicate_files']}' folder.")
-        else:
-            if not os.path.exists(OUTPUT_PATHS['failed_files']):
-                os.makedirs(OUTPUT_PATHS['failed_files'])
-            shutil.copy(file, OUTPUT_PATHS['failed_files'])
-            
-            # Log failures
-            with open(OUTPUT_PATHS['general_log'], 'a') as general_log:
-                general_log.write(f"File: {file}, Molecule: {molecule_data.get('Chemical name', 'Unknown')}, {molecule_data.get('Formula', 'Unknown')}, API Response Status Code: {response.status_code}, response text: {response.text})\n")
-            
-            callback(f"API request failed for {file} with status code {response.status_code}, response: {response.text}. Copying file to '{OUTPUT_PATHS['failed_files']}' folder.")
-
+        handle_failure(file, data, response, OUTPUT_PATHS, callback)
         return False
 
+def handle_success(file, data, OUTPUT_PATHS, callback):
+    if not os.path.exists(OUTPUT_PATHS['successful_files']):
+        os.makedirs(OUTPUT_PATHS['successful_files'])
+    shutil.copy(file, OUTPUT_PATHS['successful_files'])
+    
+    with open(OUTPUT_PATHS['success_log'], 'a') as success_log:
+        success_log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: 200\n")
+    
+    callback(f"Successfully uploaded {file}. Copying file to '{OUTPUT_PATHS['successful_files']}' folder.")
 
-from rdkit import Chem
+def handle_failure(file, data, response, OUTPUT_PATHS, callback):
+    if "duplicate" in response.text.lower():
+        log_folder = OUTPUT_PATHS['duplicate_files']
+        log_file = OUTPUT_PATHS['duplicate_log']
+    else:
+        log_folder = OUTPUT_PATHS['failed_files']
+        log_file = OUTPUT_PATHS['general_log']
 
-def process_sdf(files, params, callback):
+    if not os.path.exists(log_folder):
+        os.makedirs(log_folder)
+    shutil.copy(file, log_folder)
+    
+    with open(log_file, 'a') as log:
+        log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: {response.status_code}, response text: {response.text}\n")
+    
+    callback(f"API request failed for {file} with status code {response.status_code}, response: {response.text}. Copying file to '{log_folder}' folder.")
+
+
+def process_sdf(files, callback):
     molecules = []
     for sdf_file in files:
         callback(f"Processing file: {sdf_file}")
-        supplier = Chem.SDMolSupplier(sdf_file)
-        for mol in supplier:
-            if mol is not None:
-                molecule_data = {}
-                for prop_name in mol.GetPropNames():
-                    molecule_data[prop_name] = mol.GetProp(prop_name)
+        try:
+            supplier = Chem.SDMolSupplier(sdf_file)
+            for mol in supplier:
+                if mol is not None:
+                    molecule_data = {}
+                    for prop_name in mol.GetPropNames():
+                        molecule_data[prop_name] = mol.GetProp(prop_name)
 
-                # Extract atomic coordinates and bonds
-                atom_block = []
-                for atom in mol.GetAtoms():
-                    pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
-                    atom_info = {
-                        "symbol": atom.GetSymbol(),
-                        "x": pos.x,
-                        "y": pos.y,
-                        "z": pos.z
-                    }
-                    atom_block.append(atom_info)
+                    # Extract atomic coordinates and bonds
+                    atom_block = []
+                    for atom in mol.GetAtoms():
+                        pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
+                        atom_info = {
+                            "symbol": atom.GetSymbol(),
+                            "x": pos.x,
+                            "y": pos.y,
+                            "z": pos.z
+                        }
+                        atom_block.append(atom_info)
 
-                bond_block = []
-                for bond in mol.GetBonds():
-                    bond_info = {
-                        "begin_atom_idx": bond.GetBeginAtomIdx(),
-                        "end_atom_idx": bond.GetEndAtomIdx(),
-                        "bond_type": bond.GetBondTypeAsDouble()
-                    }
-                    bond_block.append(bond_info)
+                    bond_block = []
+                    for bond in mol.GetBonds():
+                        bond_info = {
+                            "begin_atom_idx": bond.GetBeginAtomIdx(),
+                            "end_atom_idx": bond.GetEndAtomIdx(),
+                            "bond_type": bond.GetBondTypeAsDouble()
+                        }
+                        bond_block.append(bond_info)
 
-                molecule_data["atom_block"] = atom_block
-                molecule_data["bond_block"] = bond_block
+                    molecule_data["atom_block"] = atom_block
+                    molecule_data["bond_block"] = bond_block
 
-                molecules.append(molecule_data)
-            else:
-                callback(f"Error: Molecule in file {sdf_file} could not be parsed and will be skipped.")
+                    molecules.append(molecule_data)
+                else:
+                    callback(f"Error: Molecule in file {sdf_file} could not be parsed and will be skipped.")
+        except Exception as e:
+            callback(f"Error processing file {sdf_file}: {str(e)}")
 
     callback(f"Total molecules extracted: {len(molecules)}")
     return molecules
