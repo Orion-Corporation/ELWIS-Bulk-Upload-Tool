@@ -229,7 +229,7 @@ class MyApp(App):
         def update_progress_bar(dt):
             pass
 
-        self.print_terminal("Uploading files to API...")
+        # self.print_terminal("Uploading files to API...")
         
         # Schedule the upload process to allow frequent checking of the stop condition
         self.schedule_upload(0, update_progress_bar)
@@ -256,9 +256,9 @@ class MyApp(App):
             molecule_data = molecules[molecule_index]
             success = post_to_api(molecule_data, file, self.print_terminal, api_key, OUTPUT_PATHS)
             if success:
-                self.print_terminal(f'Successfully uploaded file: {file}')
+                self.print_terminal(f'Successfully uploaded compound from file: {file}')
             else:
-                self.print_terminal(f'Failed to upload file: {file}')
+                self.print_terminal(f'Failed to upload compound from file: {file}')
             
             Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
 
@@ -334,9 +334,13 @@ def upload_fragments(molecule_data, callback, headers):
                     }
                 }
             }
-            salt_id = upload_fragment(salt_data, "salt", callback, headers)
+            salt_id = upload_fragment(salt_data, "salts", callback, headers)
+            if salt_id:
+                callback(f"Successfully uploaded salt: {molecule_data.get('Salt_name', '')}")
+            else:
+                callback(f"Failed to upload salt: {molecule_data.get('Salt_name', '')}")
     except Exception as e:
-        callback(f"Error uploading salt: {str(e)}")
+        callback(f"No Salt_name found: {str(e)}")
     try:
         if 'Solvate_name' in molecule_data:
             solvate_data = {
@@ -349,14 +353,18 @@ def upload_fragments(molecule_data, callback, headers):
                     }
                 }
             }
-            solvate_id = upload_fragment(solvate_data, "solvate", callback, headers)
+            solvate_id = upload_fragment(solvate_data, "solvates", callback, headers)
+            if solvate_id:
+                callback(f"Successfully uploaded solvate: {molecule_data.get('Solvate_name', '')}")
+            else:
+                callback(f"Failed to upload solvate: {molecule_data.get('Solvate_name', '')}")
     except Exception as e:
-        callback(f"Error uploading solvate: {str(e)}")
+        callback(f"No Solvate_name found: {str(e)}")
 
     return salt_id, solvate_id
 
 def upload_fragment(fragment_data, fragment_type, callback, headers):
-    fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}s"
+    fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
     response = requests.post(fragment_endpoint, data=json.dumps(fragment_data), headers=headers)
     if response.status_code == 200:
         fragment_id = response.json()['data']['id']
@@ -369,6 +377,8 @@ def construct_payload(molecule_data, salt_id, solvate_id):
     data = {
         "data": {
             "type": "asset",
+            "id": "00001", # Placeholder ID for 'Compound'
+            # "entity name": molecule_data.get('Chemical name', ''),
             "attributes": {
                 "synonyms": [
                     molecule_data.get('Chemical name', ''),
@@ -376,7 +386,7 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                 ],
                 "fields": [
                     {
-                        "id": "66014d874354cb7b82b6ff44", # Placeholder ID for 'Chemical name'
+                        "id": "5eaa8792b5ed583958f447cb", # Placeholder ID for 'Chemical name'
                         "value": molecule_data.get('Chemical name', '')
                     },
                     {
@@ -414,7 +424,7 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                 "batch": {
                     "data": {
                         "type": "batch",
-                        "id": "00011",
+                        "id": "00011", # Can this be automatically assigned by the API?
                         "attributes": {
                             "fields": [
                                 {
@@ -470,7 +480,7 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                     "rawValue": molecule_data.get('MW_salt', ''),
                     "displayValue": f"{molecule_data.get('MW_salt', '')} g/mol"
                 },
-                "coefficient": 1
+                "coefficient": 1 # Where does this value come from?
             }]
         if solvate_id:
             fragments["solvates"] = [{
@@ -482,7 +492,7 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                     "rawValue": molecule_data.get('MW', ''),
                     "displayValue": f"{molecule_data.get('MW', '')} g/mol"
                 },
-                "coefficient": 1
+                "coefficient": 1 # Where does this value come from?
             }]
         data["data"]["relationships"]["batch"]["data"]["attributes"]["fragments"] = fragments
 
@@ -490,15 +500,15 @@ def construct_payload(molecule_data, salt_id, solvate_id):
 
 def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
     # Write data to json file
-    with open('data.json', 'w') as f:
-        f.write(json.dumps(data, indent=4))
+    # with open('data.json', 'w') as f:
+    #     f.write(json.dumps(data, indent=4))
     data_json = json.dumps(data)
-    callback(f"Sending POST request for molecule: {data['data']['attributes']['synonyms'][0]} to endpoint: {endpoint}")
-    callback(f"POST payload: {data_json}")
+    # callback(f"Sending POST request for molecule: {data['data']['attributes']['synonyms'][0]} to endpoint: {endpoint}")
+    # callback(f"POST payload: {data_json}")
 
     try:
         response = requests.post(endpoint, data=data_json, headers=headers)
-        callback(f"Response status code: {response.status_code}, response text: {response.text}")
+        # callback(f"Response status code: {response.status_code}, response text: {response.text}")
 
         if response.status_code == 200:
             handle_success(file, data, OUTPUT_PATHS, callback)
@@ -518,7 +528,7 @@ def handle_success(file, data, OUTPUT_PATHS, callback):
     with open(OUTPUT_PATHS['success_log'], 'a') as success_log:
         success_log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: 200\n")
     
-    callback(f"Successfully uploaded {file}. Copying file to '{OUTPUT_PATHS['successful_files']}' folder.")
+    callback(f"Successfully uploaded compound from {file}. Copying file to '{OUTPUT_PATHS['successful_files']}' folder.")
 
 def handle_failure(file, data, response, OUTPUT_PATHS, callback):
     if "duplicate" in response.text.lower():
@@ -540,7 +550,7 @@ def handle_failure(file, data, response, OUTPUT_PATHS, callback):
 def process_sdf(files, callback):
     molecules = []
     for sdf_file in files:
-        callback(f"Processing file: {sdf_file}")
+        # callback(f"Processing file: {sdf_file}")
         try:
             supplier = Chem.SDMolSupplier(sdf_file)
             for mol in supplier:
@@ -579,7 +589,7 @@ def process_sdf(files, callback):
         except Exception as e:
             callback(f"Error processing file {sdf_file}: {str(e)}")
 
-    callback(f"Total molecules extracted: {len(molecules)}")
+    # callback(f"Total molecules extracted: {len(molecules)}") 
     return molecules
 
 if __name__ == '__main__':
