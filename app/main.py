@@ -39,6 +39,9 @@ def load_config(file_path, default):
             return json.load(file)
     except FileNotFoundError:
         return default
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON from {file_path}: {e}")
+        return default
 
 OUTPUT_PATHS = load_config('config/output_paths.json', {
     "successful_files": "Successfully uploaded files",
@@ -278,11 +281,7 @@ class MyApp(App):
             f.flush()
         self.terminal_output.text += log_message + '\n'
 
-
-import os
 import requests
-import shutil
-import json
 
 def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
     if not api_key:
@@ -335,10 +334,9 @@ def upload_fragments(molecule_data, callback, headers):
                     }
                 }
             }
-            salt_id = upload_fragment(salt_data, "salts", callback, headers)
+            salt_id = upload_fragment(salt_data, "salt", callback, headers)
     except Exception as e:
         callback(f"Error uploading salt: {str(e)}")
-
     try:
         if 'Solvate_name' in molecule_data:
             solvate_data = {
@@ -351,14 +349,14 @@ def upload_fragments(molecule_data, callback, headers):
                     }
                 }
             }
-            solvate_id = upload_fragment(solvate_data, "solvates", callback, headers)
+            solvate_id = upload_fragment(solvate_data, "solvate", callback, headers)
     except Exception as e:
         callback(f"Error uploading solvate: {str(e)}")
 
     return salt_id, solvate_id
 
 def upload_fragment(fragment_data, fragment_type, callback, headers):
-    fragment_endpoint = f"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/{fragment_type}s"
+    fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}s"
     response = requests.post(fragment_endpoint, data=json.dumps(fragment_data), headers=headers)
     if response.status_code == 200:
         fragment_id = response.json()['data']['id']
@@ -378,7 +376,7 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                 ],
                 "fields": [
                     {
-                        "id": "5eaa8792b5ed583958f447cb",
+                        "id": "66014d874354cb7b82b6ff44", # Placeholder ID for 'Chemical name'
                         "value": molecule_data.get('Chemical name', '')
                     },
                     {
@@ -498,14 +496,18 @@ def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
     callback(f"Sending POST request for molecule: {data['data']['attributes']['synonyms'][0]} to endpoint: {endpoint}")
     callback(f"POST payload: {data_json}")
 
-    response = requests.post(endpoint, data=data_json, headers=headers)
-    callback(f"Response status code: {response.status_code}, response text: {response.text}")
+    try:
+        response = requests.post(endpoint, data=data_json, headers=headers)
+        callback(f"Response status code: {response.status_code}, response text: {response.text}")
 
-    if response.status_code == 200:
-        handle_success(file, data, OUTPUT_PATHS, callback)
-        return True
-    else:
-        handle_failure(file, data, response, OUTPUT_PATHS, callback)
+        if response.status_code == 200:
+            handle_success(file, data, OUTPUT_PATHS, callback)
+            return True
+        else:
+            handle_failure(file, data, response, OUTPUT_PATHS, callback)
+            return False
+    except requests.exceptions.RequestException as e:
+        callback(f"Network error during request: {str(e)}")
         return False
 
 def handle_success(file, data, OUTPUT_PATHS, callback):
@@ -534,7 +536,6 @@ def handle_failure(file, data, response, OUTPUT_PATHS, callback):
         log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: {response.status_code}, response text: {response.text}\n")
     
     callback(f"API request failed for {file} with status code {response.status_code}, response: {response.text}. Copying file to '{log_folder}' folder.")
-
 
 def process_sdf(files, callback):
     molecules = []
@@ -580,7 +581,6 @@ def process_sdf(files, callback):
 
     callback(f"Total molecules extracted: {len(molecules)}")
     return molecules
-
 
 if __name__ == '__main__':
     MyApp().run()
