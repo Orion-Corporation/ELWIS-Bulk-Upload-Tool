@@ -263,8 +263,6 @@ class MyApp(App):
         params = PARAMETER_SETS[selected_param_set]
         self.print_terminal("Upload button pressed")
 
-        total_files = len(self.selected_files)
-
         def update_progress_bar(dt):
             pass
 
@@ -295,11 +293,11 @@ class MyApp(App):
                 return
 
             molecule_data = molecules[molecule_index]
-            # success = post_to_api(molecule_data, file, self.print_terminal, endpoint, self.param_spinner.text, api_key, OUTPUT_PATHS)
-            # if success:
-            #     self.print_terminal(f'Successfully uploaded file: {file}')
-            # else:
-            #     self.print_terminal(f'Failed to upload file: {file}')
+            success = post_to_api(molecule_data, file, self.print_terminal, endpoint, self.param_spinner.text, api_key, OUTPUT_PATHS)
+            if success:
+                self.print_terminal(f'Successfully uploaded file: {file}')
+            else:
+                self.print_terminal(f'Failed to upload file: {file}')
             
             Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
 
