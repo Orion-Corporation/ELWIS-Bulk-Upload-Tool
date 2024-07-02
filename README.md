@@ -10,8 +10,10 @@ The ELWIS Registration Tool (ERAT) is designed to help users process SDF files a
 Todo:
 - [X] Add upload functions for salts
 - [X] Add upload functions for solvates
+- [ ] How does an ID get generated automatically
 - [ ] Add upload functions for molecules
     - What properties does ELWIS want?
+    - 5eaa8792b5ed583958f447cb, not correct?
 - [X] Separate salts from moleculs
 - [X] Let user choose output path of successfull/failed files 
 
@@ -23,8 +25,5 @@ Salla Alander
 ORM-0369111-001
 ORM-0369104-002
 
-
-Questions to Revvity:
-5eaa8792b5ed583958f447cb, not correct?
-
+Recording:
 https://orionfi-my.sharepoint.com/:v:/g/personal/robert_kottelin_orionpharma_com/Ebwv2ymIcIBHuU2QB9dYxu0BrY3CQ4GDEDwpF2b4dQSKVA?referrer=Teams.TEAMS-ELECTRON&referrerScenario=MeetingChicletGetLink.view.view
