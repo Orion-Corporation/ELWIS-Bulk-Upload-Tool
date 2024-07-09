@@ -212,7 +212,6 @@ class MyApp(App):
         self.button_upload.disabled = False
         self.print_terminal(f'Selected files: {files}')
         
-        # Reset the file chooser selection state
         if hasattr(self, 'filechooser_popup'):
             self.filechooser_popup.filechooser.selection = []
 
@@ -231,7 +230,7 @@ class MyApp(App):
 
         # self.print_terminal("Uploading files to API...")
         
-        # Schedule the upload process to allow frequent checking of the stop condition
+        # Schedule the upload process to allow frequent checking of the stop button condition
         self.schedule_upload(0, update_progress_bar)
         
     def schedule_upload(self, file_index, update_progress_bar):

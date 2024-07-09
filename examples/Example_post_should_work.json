@@ -1,0 +1,87 @@
+{
+    "data": {
+      "type": "asset",
+      "id": "00002",
+      "attributes": {
+        "synonyms": [
+          "synonyms1",
+          "synonyms2"
+        ],
+        "fields": [
+          {
+            "id": "5d6e0287ee35880008c18d6d",
+            "value": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<!DOCTYPE CDXML SYSTEM \"https://static.chemistry.revvitycloud.com/cdxml/CDXML.dtd\" >\n<CDXML\n CreationProgram=\"ChemDraw JS 23.2.0.0\"\n BoundingBox=\"213.06 68.93 368.28 126.88\"\n WindowPosition=\"0 0\"\n WindowSize=\"0 0\"\n FractionalWidths=\"yes\"\n InterpretChemically=\"yes\"\n ShowAtomQuery=\"yes\"\n ShowAtomStereo=\"no\"\n ShowAtomEnhancedStereo=\"yes\"\n ShowAtomNumber=\"no\"\n ShowResidueID=\"no\"\n ShowBondQuery=\"yes\"\n ShowBondRxn=\"yes\"\n ShowBondStereo=\"no\"\n ShowTerminalCarbonLabels=\"no\"\n ShowNonTerminalCarbonLabels=\"no\"\n HideImplicitHydrogens=\"no\"\n Magnification=\"666\"\n LabelFont=\"24\"\n LabelSize=\"10\"\n LabelFace=\"96\"\n CaptionFont=\"24\"\n CaptionSize=\"10\"\n HashSpacing=\"2.50\"\n MarginWidth=\"1.60\"\n LineWidth=\"0.60\"\n BoldWidth=\"2\"\n BondLength=\"14.40\"\n BondSpacing=\"18\"\n ChainAngle=\"120\"\n LabelJustification=\"Auto\"\n CaptionJustification=\"Left\"\n AminoAcidTermini=\"HOH\"\n ShowSequenceTermini=\"yes\"\n ShowSequenceBonds=\"yes\"\n ShowSequenceUnlinkedBranches=\"no\"\n ResidueWrapCount=\"40\"\n ResidueBlockCount=\"10\"\n PrintMargins=\"36 36 36 36\"\n MacPrintInfo=\"0003000000480048000000000318026400000000031802640367052803FC00020000004800480000000003180264000100000064000000010001010100000001270F000100010000000000000000000000000002001901900000000000400000000000000000000100000000000000000000000000000000\"\n ChemPropName=\"\"\n ChemPropFormula=\"Chemical Formula: \"\n ChemPropExactMass=\"Exact Mass: \"\n ChemPropMolWt=\"Molecular Weight: \"\n ChemPropMOverZ=\"m/z: \"\n ChemPropAnalysis=\"Elemental Analysis: \"\n ChemPropBoilingPt=\"Boiling Point: \"\n ChemPropMeltingPt=\"Melting Point: \"\n ChemPropCritTemp=\"Critical Temp: \"\n ChemPropCritPres=\"Critical Pres: \"\n ChemPropCritVol=\"Critical Vol: \"\n ChemPropGibbs=\"Gibbs Energy: \"\n ChemPropLogP=\"Log P: \"\n ChemPropMR=\"MR: \"\n ChemPropHenry=\"Henry&apos;s Law: \"\n ChemPropEForm=\"Heat of Form: \"\n ChemProptPSA=\"tPSA: \"\n ChemPropID=\"\"\n ChemPropFragmentLabel=\"\"\n color=\"0\"\n bgcolor=\"1\"\n RxnAutonumberStart=\"1\"\n RxnAutonumberConditions=\"no\"\n RxnAutonumberStyle=\"Roman\"\n RxnAutonumberFormat=\"(#)\"\n MonomerRenderingStyle=\"graphic\"\n><colortable>\n<color r=\"1\" g=\"1\" b=\"1\"/>\n<color r=\"0\" g=\"0\" b=\"0\"/>\n<color r=\"1\" g=\"0\" b=\"0\"/>\n<color r=\"1\" g=\"1\" b=\"0\"/>\n<color r=\"0\" g=\"1\" b=\"0\"/>\n<color r=\"0\" g=\"1\" b=\"1\"/>\n<color r=\"0\" g=\"0\" b=\"1\"/>\n<color r=\"1\" g=\"0\" b=\"1\"/>\n</colortable><fonttable>\n<font id=\"24\" charset=\"utf-8\" name=\"Arial\"/>\n</fonttable><page\n id=\"51\"\n BoundingBox=\"0 0 581.33 196\"\n Width=\"581.33\"\n Height=\"196\"\n HeaderPosition=\"36\"\n FooterPosition=\"36\"\n PageOverlap=\"0\"\n PrintTrimMarks=\"yes\"\n HeightPages=\"1\"\n WidthPages=\"2\"\n DrawingSpace=\"poster\"\n><fragment\n id=\"1\"\n BoundingBox=\"213.06 69.12 368.28 126.88\"\n Z=\"1\"\n><n\n id=\"2\"\n p=\"282.54 69.58\"\n Z=\"2\"\n AS=\"N\"\n AtomID=\"1\"\n/><n\n id=\"3\"\n p=\"282.54 83.98\"\n Z=\"3\"\n Element=\"7\"\n NumHydrogens=\"0\"\n NeedsClean=\"yes\"\n AS=\"N\"\n AtomID=\"2\"\n><t\n p=\"278.93 87.59\"\n BoundingBox=\"278.93 78.96 286.15 87.79\"\n LabelJustification=\"Left\"\n><s font=\"24\" size=\"10\" color=\"0\" face=\"96\">N</s></t></n><n\n id=\"4\"\n p=\"294.19 92.45\"\n Z=\"4\"\n AS=\"N\"\n AtomID=\"3\"\n/><n\n id=\"5\"\n p=\"307.89 88\"\n Z=\"5\"\n Element=\"16\"\n NumHydrogens=\"0\"\n NeedsClean=\"yes\"\n AS=\"N\"\n AtomID=\"4\"\n><t\n p=\"304.55 91.61\"\n BoundingBox=\"304.55 82.97 311.22 91.81\"\n LabelJustification=\"Left\"\n><s font=\"24\" size=\"10\" color=\"0\" face=\"96\">S</s></t></n><n\n id=\"6\"\n p=\"318.59 97.63\"\n Z=\"6\"\n AS=\"N\"\n AtomID=\"5\"\n/><n\n id=\"7\"\n p=\"332.28 93.18\"\n Z=\"7\"\n AS=\"N\"\n AtomID=\"6\"\n/><n\n id=\"8\"\n p=\"335.28 79.10\"\n Element=\"8\"\n NumHydrogens=\"0\"\n NeedsClean=\"yes\"\n AS=\"N\"\n AtomID=\"7\"\n><t\n p=\"331.39 82.71\"\n BoundingBox=\"331.39 74.07 339.17 82.91\"\n LabelJustification=\"Left\"\n><s font=\"24\" size=\"10\" color=\"0\" face=\"96\">O</s></t></n><n\n id=\"9\"\n p=\"342.99 102.82\"\n Element=\"7\"\n NumHydrogens=\"0\"\n NeedsClean=\"yes\"\n AS=\"N\"\n AtomID=\"8\"\n><t\n p=\"339.37 106.43\"\n BoundingBox=\"339.37 97.80 346.60 106.63\"\n LabelJustification=\"Left\"\n><s font=\"24\" size=\"10\" color=\"0\" face=\"96\">N</s></t></n><n\n id=\"10\"\n p=\"356.68 98.37\"\n Z=\"10\"\n AS=\"N\"\n AtomID=\"9\"\n/><n\n id=\"11\"\n p=\"367.38 108\"\n Z=\"11\"\n AS=\"N\"\n AtomID=\"10\"\n/><n\n id=\"12\"\n p=\"364.39 122.09\"\n Element=\"8\"\n NumHydrogens=\"0\"\n NeedsClean=\"yes\"\n AS=\"N\"\n AtomID=\"11\"\n><t\n p=\"360.50 125.70\"\n BoundingBox=\"360.50 117.07 368.28 125.90\"\n LabelJustification=\"Left\"\n><s font=\"24\" size=\"10\" color=\"0\" face=\"96\">O</s></t></n><n\n id=\"13\"\n p=\"350.69 126.54\"\n Z=\"13\"\n AS=\"N\"\n AtomID=\"12\"\n/><n\n id=\"14\"\n p=\"339.99 116.90\"\n Z=\"14\"\n AS=\"N\"\n AtomID=\"13\"\n/><n\n id=\"15\"\n p=\"289.74 106.14\"\n Element=\"7\"\n NumHydrogens=\"0\"\n NeedsClean=\"yes\"\n AS=\"N\"\n AtomID=\"14\"\n><t\n p=\"286.13 109.75\"\n BoundingBox=\"286.13 101.12 293.35 109.95\"\n LabelJustification=\"Left\"\n><s font=\"24\" size=\"10\" color=\"0\" face=\"96\">N</s></t></n><n\n id=\"16\"\n p=\"275.34 106.14\"\n Element=\"7\"\n NumHydrogens=\"0\"\n NeedsClean=\"yes\"\n AS=\"N\"\n AtomID=\"15\"\n><t\n p=\"271.73 109.75\"\n BoundingBox=\"271.73 101.12 278.95 109.95\"\n LabelJustification=\"Left\"\n><s font=\"24\" size=\"10\" color=\"0\" face=\"96\">N</s></t></n><n\n id=\"17\"\n p=\"270.89 92.45\"\n Z=\"17\"\n AS=\"N\"\n AtomID=\"16\"\n/><n\n id=\"18\"\n p=\"257.20 88\"\n Z=\"18\"\n AS=\"N\"\n AtomID=\"17\"\n/><n\n id=\"19\"\n p=\"246.49 97.63\"\n Z=\"19\"\n AS=\"N\"\n AtomID=\"18\"\n/><n\n id=\"20\"\n p=\"232.80 93.18\"\n Z=\"20\"\n AS=\"N\"\n AtomID=\"19\"\n/><n\n id=\"21\"\n p=\"229.81 79.10\"\n Z=\"21\"\n AS=\"N\"\n AtomID=\"20\"\n/><n\n id=\"22\"\n p=\"216.11 74.65\"\n Element=\"9\"\n NumHydrogens=\"0\"\n NeedsClean=\"yes\"\n AS=\"N\"\n AtomID=\"21\"\n><t\n p=\"213.06 78.26\"\n BoundingBox=\"213.06 69.62 219.16 78.46\"\n LabelJustification=\"Left\"\n><s font=\"24\" size=\"10\" color=\"0\" face=\"96\">F</s></t></n><n\n id=\"23\"\n p=\"240.51 69.46\"\n Z=\"23\"\n AS=\"N\"\n AtomID=\"22\"\n/><n\n id=\"24\"\n p=\"254.20 73.91\"\n Z=\"24\"\n AS=\"N\"\n AtomID=\"23\"\n/><b\n id=\"25\"\n Z=\"25\"\n B=\"2\"\n E=\"3\"\n BS=\"N\"\n/><b\n id=\"26\"\n Z=\"26\"\n B=\"3\"\n E=\"4\"\n BS=\"N\"\n/><b\n id=\"27\"\n Z=\"27\"\n B=\"4\"\n E=\"5\"\n BS=\"N\"\n/><b\n id=\"28\"\n Z=\"28\"\n B=\"5\"\n E=\"6\"\n BS=\"N\"\n/><b\n id=\"29\"\n Z=\"29\"\n B=\"6\"\n E=\"7\"\n BS=\"N\"\n/><b\n id=\"30\"\n Z=\"30\"\n B=\"7\"\n E=\"8\"\n Order=\"2\"\n BS=\"N\"\n/><b\n id=\"31\"\n Z=\"31\"\n B=\"7\"\n E=\"9\"\n BS=\"N\"\n/><b\n id=\"32\"\n Z=\"32\"\n B=\"9\"\n E=\"10\"\n BS=\"N\"\n/><b\n id=\"33\"\n Z=\"33\"\n B=\"10\"\n E=\"11\"\n BS=\"N\"\n/><b\n id=\"34\"\n Z=\"34\"\n B=\"11\"\n E=\"12\"\n BS=\"N\"\n/><b\n id=\"35\"\n Z=\"35\"\n B=\"12\"\n E=\"13\"\n BS=\"N\"\n/><b\n id=\"36\"\n Z=\"36\"\n B=\"13\"\n E=\"14\"\n BS=\"N\"\n/><b\n id=\"37\"\n Z=\"37\"\n B=\"9\"\n E=\"14\"\n BS=\"N\"\n/><b\n id=\"38\"\n Z=\"38\"\n B=\"4\"\n E=\"15\"\n Order=\"2\"\n BS=\"N\"\n BondCircularOrdering=\"27 26 39 0\"\n/><b\n id=\"39\"\n Z=\"39\"\n B=\"15\"\n E=\"16\"\n BS=\"N\"\n/><b\n id=\"40\"\n Z=\"40\"\n B=\"16\"\n E=\"17\"\n Order=\"2\"\n BS=\"N\"\n BondCircularOrdering=\"0 39 41 42\"\n/><b\n id=\"41\"\n Z=\"41\"\n B=\"3\"\n E=\"17\"\n BS=\"N\"\n/><b\n id=\"42\"\n Z=\"42\"\n B=\"17\"\n E=\"18\"\n BS=\"N\"\n/><b\n id=\"43\"\n Z=\"43\"\n B=\"18\"\n E=\"19\"\n BS=\"N\"\n/><b\n id=\"44\"\n Z=\"44\"\n B=\"19\"\n E=\"20\"\n Order=\"2\"\n BS=\"N\"\n BondCircularOrdering=\"0 43 45 0\"\n/><b\n id=\"45\"\n Z=\"45\"\n B=\"20\"\n E=\"21\"\n BS=\"N\"\n/><b\n id=\"46\"\n Z=\"46\"\n B=\"21\"\n E=\"22\"\n BS=\"N\"\n/><b\n id=\"47\"\n Z=\"47\"\n B=\"21\"\n E=\"23\"\n Order=\"2\"\n BS=\"N\"\n BondCircularOrdering=\"46 45 48 0\"\n/><b\n id=\"48\"\n Z=\"48\"\n B=\"23\"\n E=\"24\"\n BS=\"N\"\n/><b\n id=\"49\"\n Z=\"49\"\n B=\"18\"\n E=\"24\"\n Order=\"2\"\n BS=\"N\"\n BondCircularOrdering=\"43 42 0 48\"\n/></fragment></page></CDXML>"
+          },
+          {
+            "id": "62f9fe5b74770f14d1de43a8",
+            "value": "No stereochemistry"
+          }
+        ]
+      },
+      "relationships": {
+        "batch": {
+          "data": {
+            "type": "batch",
+            "id": "00011",
+            "attributes": {
+              "fields": [
+                {
+                  "id": "62fcceeb19660304d1e5beee",
+                  "value": "Internal"
+                },
+                {
+                  "id": "63469c69ed8a726a31923537",
+                  "value": "Unspecified"
+                },
+                {
+                  "id": "62fcceeb19660304d1e5bef1",
+                  "value": "2011-10-10T14:48:00Z"
+                },
+                {
+                  "id": "6384a1270d28381d21deaca7",
+                  "value": "TestUser MCChemist"
+                },
+                {
+                  "id": "62fa096d19660304d1e5b2db",
+                  "value": "Dummy compound"
+                },
+                {
+                  "id": "62fa096d19660304d1e5b2da",
+                  "value": "Discovery"
+                }
+              ],
+              "fragments": {
+                "salts": [
+                  {
+                    "type": "SALT",
+                    "name": "Formic Acid",
+                    "mf": "CH2O2",
+                    "mw": {
+                      "rawValue": "46.0250",
+                      "displayValue": "46.0250 g/mol"
+                    },
+                    "id": "SALT:17",
+                    "coefficient": 1
+                  }
+                ],
+                "solvates": [
+                  {
+                    "type": "SOLVATE",
+                    "name": "2-methylpropan-2-ol",
+                    "mf": "C4H10O",
+                    "mw": {
+                      "rawValue": "74.1230",
+                      "displayValue": "74.1230 g/mol"
+                    },
+                    "id": "SOLVATE:17",
+                    "coefficient": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
