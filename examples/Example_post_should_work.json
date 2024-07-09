@@ -1,7 +1,6 @@
 {
     "data": {
       "type": "asset",
-      "id": "00002",
       "attributes": {
         "synonyms": [
           "synonyms1",
@@ -22,7 +21,6 @@
         "batch": {
           "data": {
             "type": "batch",
-            "id": "00011",
             "attributes": {
               "fields": [
                 {
