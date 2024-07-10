@@ -371,13 +371,59 @@ def upload_fragment(fragment_data, fragment_type, callback, headers):
     else:
         callback(f"Failed to upload {fragment_type}. Status code: {response.status_code}, response: {response.text}")
         return None
+    
+import cdxml_converter
+
+def process_sdf(files, callback):
+    molecules = []
+    for sdf_file in files:
+        callback(f"Processing file: {sdf_file}")
+        try:
+            supplier = Chem.SDMolSupplier(sdf_file)
+            for mol in supplier:
+                if mol is not None:
+                    molecule_data = {}
+                    for prop_name in mol.GetPropNames():
+                        molecule_data[prop_name] = mol.GetProp(prop_name)
+
+                    # Extract atomic coordinates and bonds
+                    atom_block = []
+                    for atom in mol.GetAtoms():
+                        pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
+                        atom_info = {
+                            "symbol": atom.GetSymbol(),
+                            "x": pos.x,
+                            "y": pos.y,
+                            "z": pos.z
+                        }
+                        atom_block.append(atom_info)
+
+                    bond_block = []
+                    for bond in mol.GetBonds():
+                        bond_info = {
+                            "begin_atom_idx": bond.GetBeginAtomIdx(),
+                            "end_atom_idx": bond.GetEndAtomIdx(),
+                            "bond_type": bond.GetBondTypeAsDouble()
+                        }
+                        bond_block.append(bond_info)
+
+                    molecule_data["atom_block"] = atom_block
+                    molecule_data["bond_block"] = bond_block
+                    molecule_data["cdxml"] = cdxml_converter.convert_mol_to_cdxml(molecule_data)
+
+                    molecules.append(molecule_data)
+                else:
+                    callback(f"Error: Molecule in file {sdf_file} could not be parsed and will be skipped.")
+        except Exception as e:
+            callback(f"Error processing file {sdf_file}: {str(e)}")
+
+    callback(f"Total molecules extracted: {len(molecules)}")
+    return molecules
 
 def construct_payload(molecule_data, salt_id, solvate_id):
     data = {
         "data": {
             "type": "asset",
-            "id": "00001", # Placeholder ID for 'Compound'
-            # "entity name": molecule_data.get('Chemical name', ''),
             "attributes": {
                 "synonyms": [
                     molecule_data.get('Chemical name', ''),
@@ -385,37 +431,12 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                 ],
                 "fields": [
                     {
-                        "id": "5eaa8792b5ed583958f447cb", # Placeholder ID for 'Chemical name'
-                        "value": molecule_data.get('Chemical name', '')
+                        "id": "5d6e0287ee35880008c18d6d",
+                        "value": molecule_data.get("cdxml", "")
                     },
                     {
-                        "id": "5eaa8792b5ed583958f447cc",
-                        "value": {
-                            "rawValue": molecule_data.get('MW', ''),
-                            "displayValue": f"{molecule_data.get('MW', '')} g/mol"
-                        }
-                    },
-                    {
-                        "id": "5eaa8792b5ed583958f447cd",
-                        "value": molecule_data.get('MW_salt', '0')
-                    },
-                    {
-                        "id": "5eaa8792b5ed583958f447ce",
-                        "value": {
-                            "rawValue": molecule_data.get('Formula', ''),
-                            "displayValue": molecule_data.get('Formula', '')
-                        }
-                    },
-                    {
-                        "id": "5eaa8792b5ed583958f44778",
-                        "value": molecule_data.get('CDXML', '')
-                    },
-                    {
-                        "id": "5eaa8792b5ed583958f447de",
-                        "value": {
-                            "filename": f"{molecule_data.get('Chemical name', '')}.png",
-                            "base64": molecule_data.get('Base64', '')
-                        }
+                        "id": "62f9fe5b74770f14d1de43a8",
+                        "value": "No stereochemistry"
                     }
                 ]
             },
@@ -423,40 +444,31 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                 "batch": {
                     "data": {
                         "type": "batch",
-                        "id": "00011", # Can this be automatically assigned by the API?
                         "attributes": {
                             "fields": [
                                 {
-                                    "id": "5eaa8792b5ed583958f447d0",
-                                    "value": {
-                                        "rawValue": molecule_data.get('Amount_mg', ''),
-                                        "displayValue": f"{molecule_data.get('Amount_mg', '')} mg"
-                                    }
+                                "id": "62fcceeb19660304d1e5beee",
+                                "value": "Internal"
                                 },
                                 {
-                                    "id": "5eaa8792b5ed583958f447d2",
-                                    "value": {
-                                        "rawValue": molecule_data.get('Purity', ''),
-                                        "displayValue": f"{molecule_data.get('Purity', '')} %"
-                                    }
+                                "id": "63469c69ed8a726a31923537",
+                                "value": "Unspecified"
                                 },
                                 {
-                                    "id": "5eaa8792b5ed583958f447d3",
-                                    "value": molecule_data.get('Chemical name', '')
+                                "id": "62fcceeb19660304d1e5bef1",
+                                "value": "2011-10-10T14:48:00Z"
                                 },
                                 {
-                                    "id": "5eaa8792b5ed583958f447d4",
-                                    "value": {
-                                        "rawValue": molecule_data.get('Formula', ''),
-                                        "displayValue": molecule_data.get('Formula', '')
-                                    }
+                                "id": "6384a1270d28381d21deaca7",
+                                "value": "TestUser MCChemist"
                                 },
                                 {
-                                    "id": "5f02947e9a3a272654dfeb28",
-                                    "value": {
-                                        "rawValue": molecule_data.get('MW', ''),
-                                        "displayValue": f"{molecule_data.get('MW', '')} g/mol"
-                                    }
+                                "id": "62fa096d19660304d1e5b2db",
+                                "value": "Dummy compound"
+                                },
+                                {
+                                "id": "62fa096d19660304d1e5b2da",
+                                "value": "Discovery"
                                 }
                             ]
                         }
@@ -545,51 +557,6 @@ def handle_failure(file, data, response, OUTPUT_PATHS, callback):
         log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: {response.status_code}, response text: {response.text}\n")
     
     callback(f"API request failed for {file} with status code {response.status_code}, response: {response.text}. Copying file to '{log_folder}' folder.")
-
-def process_sdf(files, callback):
-    molecules = []
-    for sdf_file in files:
-        # callback(f"Processing file: {sdf_file}")
-        try:
-            supplier = Chem.SDMolSupplier(sdf_file)
-            for mol in supplier:
-                if mol is not None:
-                    molecule_data = {}
-                    for prop_name in mol.GetPropNames():
-                        molecule_data[prop_name] = mol.GetProp(prop_name)
-
-                    # Extract atomic coordinates and bonds
-                    atom_block = []
-                    for atom in mol.GetAtoms():
-                        pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
-                        atom_info = {
-                            "symbol": atom.GetSymbol(),
-                            "x": pos.x,
-                            "y": pos.y,
-                            "z": pos.z
-                        }
-                        atom_block.append(atom_info)
-
-                    bond_block = []
-                    for bond in mol.GetBonds():
-                        bond_info = {
-                            "begin_atom_idx": bond.GetBeginAtomIdx(),
-                            "end_atom_idx": bond.GetEndAtomIdx(),
-                            "bond_type": bond.GetBondTypeAsDouble()
-                        }
-                        bond_block.append(bond_info)
-
-                    molecule_data["atom_block"] = atom_block
-                    molecule_data["bond_block"] = bond_block
-
-                    molecules.append(molecule_data)
-                else:
-                    callback(f"Error: Molecule in file {sdf_file} could not be parsed and will be skipped.")
-        except Exception as e:
-            callback(f"Error processing file {sdf_file}: {str(e)}")
-
-    # callback(f"Total molecules extracted: {len(molecules)}") 
-    return molecules
 
 if __name__ == '__main__':
     MyApp().run()

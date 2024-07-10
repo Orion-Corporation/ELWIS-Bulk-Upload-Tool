@@ -1,9 +1,11 @@
 from rdkit import Chem
 
+import cdxml_converter
+
 def process_sdf(files, callback):
     molecules = []
     for sdf_file in files:
-        # callback(f"Processing file: {sdf_file}")
+        callback(f"Processing file: {sdf_file}")
         try:
             supplier = Chem.SDMolSupplier(sdf_file)
             for mol in supplier:
@@ -35,6 +37,7 @@ def process_sdf(files, callback):
 
                     molecule_data["atom_block"] = atom_block
                     molecule_data["bond_block"] = bond_block
+                    molecule_data["cdxml"] = cdxml_converter.convert_mol_to_cdxml(molecule_data)
 
                     molecules.append(molecule_data)
                 else:
@@ -42,5 +45,5 @@ def process_sdf(files, callback):
         except Exception as e:
             callback(f"Error processing file {sdf_file}: {str(e)}")
 
-    # callback(f"Total molecules extracted: {len(molecules)}") 
+    callback(f"Total molecules extracted: {len(molecules)}")
     return molecules
