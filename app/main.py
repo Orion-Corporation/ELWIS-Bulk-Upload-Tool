@@ -223,7 +223,7 @@ class MyApp(App):
         self.upload_in_progress = True
         self.button_stop_upload.disabled = False
 
-        self.print_terminal("Upload button pressed")
+        # self.print_terminal("Upload button pressed")
 
         def update_progress_bar(dt):
             pass
@@ -511,11 +511,11 @@ def construct_payload(molecule_data, salt_id, solvate_id):
 
 def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
     # Write data to json file
-    # with open('data.json', 'w') as f:
-    #     f.write(json.dumps(data, indent=4))
+    with open('data.json', 'w') as f:
+        f.write(json.dumps(data, indent=4))
     data_json = json.dumps(data)
-    # callback(f"Sending POST request for molecule: {data['data']['attributes']['synonyms'][0]} to endpoint: {endpoint}")
-    # callback(f"POST payload: {data_json}")
+    callback(f"Sending POST request for molecule: {data['data']['attributes']['synonyms'][0]} to endpoint: {endpoint}")
+    callback(f"POST payload: {data_json}")
 
     try:
         response = requests.post(endpoint, data=data_json, headers=headers)
@@ -557,6 +557,17 @@ def handle_failure(file, data, response, OUTPUT_PATHS, callback):
         log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: {response.status_code}, response text: {response.text}\n")
     
     callback(f"API request failed for {file} with status code {response.status_code}, response: {response.text}. Copying file to '{log_folder}' folder.")
+    # Write the response to a file named "response.json" as formatted JSON
+    try:
+        response_json = response.json()
+        with open(f"{log_folder}/response.json", 'w') as f:
+            json.dump(response_json, f, indent=4)
+    except ValueError:
+        # In case the response is not valid JSON, write the raw text
+        with open(f"{log_folder}/response.json", 'w') as f:
+            f.write(response.text)
+
+
 
 if __name__ == '__main__':
     MyApp().run()
