@@ -427,15 +427,16 @@ def construct_payload(molecule_data, salt_id, solvate_id):
             "attributes": {
                 "synonyms": [
                     molecule_data.get('Chemical name', ''),
-                    molecule_data.get('Smile', '')
+                    molecule_data.get('Smile', ''),
+                    molecule_data.get('Formula', '')
                 ],
                 "fields": [
                     {
-                        "id": "5d6e0287ee35880008c18d6d",
+                        "id": "5d6e0287ee35880008c18d6d", # Chemical Structure, CDXML
                         "value": molecule_data.get("cdxml", "")
                     },
                     {
-                        "id": "62f9fe5b74770f14d1de43a8",
+                        "id": "62f9fe5b74770f14d1de43a8", # Stereochemistry
                         "value": "No stereochemistry"
                     }
                 ]
