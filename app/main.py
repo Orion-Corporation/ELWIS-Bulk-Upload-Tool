@@ -21,6 +21,7 @@ from kivy.clock import Clock
 import json
 import shutil
 from rdkit import Chem
+# from cdxml_converter import convert_mol_to_cdxml
 
 Window.size = (1200, 600)
 
@@ -372,8 +373,6 @@ def upload_fragment(fragment_data, fragment_type, callback, headers):
         callback(f"Failed to upload {fragment_type}. Status code: {response.status_code}, response: {response.text}")
         return None
     
-import cdxml_converter
-
 def process_sdf(files, callback):
     molecules = []
     for sdf_file in files:
@@ -409,8 +408,9 @@ def process_sdf(files, callback):
 
                     molecule_data["atom_block"] = atom_block
                     molecule_data["bond_block"] = bond_block
-                    molecule_data["cdxml"] = cdxml_converter.convert_mol_to_cdxml(molecule_data)
+                    molecule_data["cdxml"] = convert_mol_to_cdxml(molecule_data)
 
+                    callback(f"Molecule Data: {molecule_data}")  # Log molecule data for debugging
                     molecules.append(molecule_data)
                 else:
                     callback(f"Error: Molecule in file {sdf_file} could not be parsed and will be skipped.")
@@ -436,8 +436,30 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                         "value": molecule_data.get("cdxml", "")
                     },
                     {
-                        "id": "62f9fe5b74770f14d1de43a8", # Stereochemistry
+                        "id": "62f9fe5b74770f14d1de43a8", # Stereochemistry, not specified in ENAMINE sdf files
                         "value": "No stereochemistry"
+                    },
+                    {
+                        "id": "5d6e0287ee35880008c18db6", # Chemical Name
+                        "value": molecule_data.get("Chemical name", "")
+                    },
+                    {
+                        "id": "5d6e0287ee35880008c18db7", # Molecular Weight
+                        "value": {
+                            "rawValue": molecule_data.get("MW", ""),
+                            "displayValue": f"{molecule_data.get('MW', '')} g/mol"
+                        }
+                    },
+                    {
+                        "id": "5d6e0287ee35880008c18db8", # Exact Mass
+                        "value": float(molecule_data.get("Amount_mg", 0))
+                    },
+                    {
+                        "id": "5d6e0287ee35880008c18db9", # Molecular Formula
+                        "value": {
+                            "rawValue": molecule_data.get("Formula", ""),
+                            "displayValue": molecule_data.get("Formula", "")
+                        }
                     }
                 ]
             },
@@ -448,23 +470,23 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                         "attributes": {
                             "fields": [
                                 {
-                                "id": "62fcceeb19660304d1e5beee",
-                                "value": "Internal"
+                                "id": "62fcceeb19660304d1e5beee", # Source: Internal, Collaboration, Acquired
+                                "value": "Acquired"
                                 },
                                 {
-                                "id": "63469c69ed8a726a31923537",
+                                "id": "63469c69ed8a726a31923537", # Project
                                 "value": "Unspecified"
                                 },
                                 {
-                                "id": "62fcceeb19660304d1e5bef1",
+                                "id": "62fcceeb19660304d1e5bef1", # Synthesis Date, ISO 8601 format: 2011-10-10T14:48:00Z
                                 "value": "2011-10-10T14:48:00Z"
                                 },
                                 {
-                                "id": "6384a1270d28381d21deaca7",
+                                "id": "6384a1270d28381d21deaca7", # Chemist
                                 "value": "TestUser MCChemist"
                                 },
                                 {
-                                "id": "62fa096d19660304d1e5b2db",
+                                "id": "62fa096d19660304d1e5b2db", # Batch Purpose, 
                                 "value": "Dummy compound"
                                 },
                                 {
@@ -508,15 +530,17 @@ def construct_payload(molecule_data, salt_id, solvate_id):
             }]
         data["data"]["relationships"]["batch"]["data"]["attributes"]["fragments"] = fragments
 
+    print(data)  # Log the constructed payload for debugging
     return data
+
 
 def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
     # Write data to json file
     with open('data.json', 'w') as f:
         f.write(json.dumps(data, indent=4))
     data_json = json.dumps(data)
-    callback(f"Sending POST request for molecule: {data['data']['attributes']['synonyms'][0]} to endpoint: {endpoint}")
-    callback(f"POST payload: {data_json}")
+    # callback(f"Sending POST request for molecule: {data['data']['attributes']['synonyms'][0]} to endpoint: {endpoint}")
+    # callback(f"POST payload: {data_json}")
 
     try:
         response = requests.post(endpoint, data=data_json, headers=headers)
@@ -568,7 +592,213 @@ def handle_failure(file, data, response, OUTPUT_PATHS, callback):
         with open(f"{log_folder}/response.json", 'w') as f:
             f.write(response.text)
 
+def convert_mol_to_cdxml(molecule_data):
+    # Template for the CDXML format
+    cdxml_template = """<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE CDXML SYSTEM "https://static.chemistry.revvitycloud.com/cdxml/CDXML.dtd" >
+<CDXML
+ CreationProgram="ChemDraw JS 23.2.0.0"
+ BoundingBox="347.74 95.77 502.96 153.53"
+ WindowPosition="0 0"
+ WindowSize="0 0"
+ FractionalWidths="yes"
+ InterpretChemically="yes"
+ ShowAtomQuery="yes"
+ ShowAtomStereo="no"
+ ShowAtomEnhancedStereo="yes"
+ ShowAtomNumber="no"
+ ShowResidueID="no"
+ ShowBondQuery="yes"
+ ShowBondRxn="yes"
+ ShowBondStereo="no"
+ ShowTerminalCarbonLabels="no"
+ ShowNonTerminalCarbonLabels="no"
+ HideImplicitHydrogens="no"
+ Magnification="666"
+ LabelFont="24"
+ LabelSize="10"
+ LabelFace="96"
+ CaptionFont="24"
+ CaptionSize="10"
+ HashSpacing="2.50"
+ MarginWidth="1.60"
+ LineWidth="0.60"
+ BoldWidth="2"
+ BondLength="14.40"
+ BondSpacing="18"
+ ChainAngle="120"
+ LabelJustification="Auto"
+ CaptionJustification="Left"
+ AminoAcidTermini="HOH"
+ ShowSequenceTermini="yes"
+ ShowSequenceBonds="yes"
+ ShowSequenceUnlinkedBranches="no"
+ ResidueWrapCount="40"
+ ResidueBlockCount="10"
+ PrintMargins="36 36 36 36"
+ MacPrintInfo="0003000000480048000000000318026400000000031802640367052803FC00020000004800480000000003180264000100000064000000010001010100000001270F000100010000000000000000000000000002001901900000000000400000000000000000000100000000000000000000000000000000"
+ ChemPropName=""
+ ChemPropFormula="Chemical Formula: "
+ ChemPropExactMass="Exact Mass: "
+ ChemPropMolWt="Molecular Weight: "
+ ChemPropMOverZ="m/z: "
+ ChemPropAnalysis="Elemental Analysis: "
+ ChemPropBoilingPt="Boiling Point: "
+ ChemPropMeltingPt="Melting Point: "
+ ChemPropCritTemp="Critical Temp: "
+ ChemPropCritPres="Critical Pres: "
+ ChemPropCritVol="Critical Vol: "
+ ChemPropGibbs="Gibbs Energy: "
+ ChemPropLogP="Log P: "
+ ChemPropMR="MR: "
+ ChemPropHenry="Henry&apos;s Law: "
+ ChemPropEForm="Heat of Form: "
+ ChemProptPSA="tPSA: "
+ ChemPropID=""
+ ChemPropFragmentLabel=""
+ color="0"
+ bgcolor="1"
+ RxnAutonumberStart="1"
+ RxnAutonumberConditions="no"
+ RxnAutonumberStyle="Roman"
+ RxnAutonumberFormat="(#)"
+ MonomerRenderingStyle="graphic"
+><colortable>
+<color r="1" g="1" b="1"/>
+<color r="0" g="0" b="0"/>
+<color r="1" g="0" b="0"/>
+<color r="1" g="1" b="0"/>
+<color r="0" g="1" b="0"/>
+<color r="0" g="1" b="1"/>
+<color r="0" g="0" b="1"/>
+<color r="1" g="0" b="1"/>
+</colortable><fonttable>
+<font id="24" charset="utf-8" name="Arial"/>
+</fonttable><page
+ id="477"
+ BoundingBox="0 0 629.33 196"
+ Width="629.33"
+ Height="196"
+ HeaderPosition="36"
+ FooterPosition="36"
+ PageOverlap="0"
+ PrintTrimMarks="yes"
+ HeightPages="1"
+ WidthPages="2"
+ DrawingSpace="poster"
+><fragment
+ id="1"
+ BoundingBox="347.74 95.77 502.96 153.53"
+ Z="1"
+>{atoms}
+{bonds}
+</fragment></page></CDXML>
+"""
 
+    atoms = []
+    bonds = []
+
+    # Add atoms
+    atom_template = '<n\n id="{id}"\n p="{x} {y}"\n Z="{z}"\n AS="{symbol}"\n AtomID="{atom_id}"\n Element="{element}"\n NumHydrogens="{num_hydrogens}"\n NeedsClean="{needs_clean}"\n/>'
+    for i, atom in enumerate(molecule_data["atom_block"]):
+        element = atom["symbol"]
+        num_hydrogens = 0  # You can adjust this if you have hydrogen information
+        needs_clean = "yes" if element in ["N", "O", "F", "S"] else "no"
+        atoms.append(atom_template.format(id=i + 1, x=atom["x"], y=atom["y"], z=1, symbol=element, atom_id=i + 1, element=element, num_hydrogens=num_hydrogens, needs_clean=needs_clean))
+
+    # Add bonds
+    bond_template = '<b\n id="{id}"\n Z="{z}"\n B="{begin}"\n E="{end}"\n BS="N"\n Order="{order}"\n/>'
+    for i, bond in enumerate(molecule_data["bond_block"]):
+        bonds.append(bond_template.format(id=i + 1, z=i + 1, begin=bond["begin_atom_idx"] + 1, end=bond["end_atom_idx"] + 1, order=int(bond["bond_type"])))
+
+    # Combine atoms and bonds into the final CDXML content
+    cdxml_content = cdxml_template.format(atoms="\n".join(atoms), bonds="\n".join(bonds))
+
+    
+    import xml.etree.ElementTree as ET
+
+    # Parse the CDXML content
+    root = ET.fromstring(cdxml_content)
+
+    # Count the number of carbon atoms (AS="C")
+    carbon_atoms = root.findall(".//n[@AS='C']")
+    carbon_count = len(carbon_atoms)
+    nitrogen_atoms = root.findall(".//n[@AS='N']")
+    nitrogen_count = len(nitrogen_atoms)
+    oxygen_atoms = root.findall(".//n[@AS='O']")
+    oxygen_count = len(oxygen_atoms)
+    sulfur_atoms = root.findall(".//n[@AS='S']")
+    sulfur_count = len(sulfur_atoms)
+    fluorine_atoms = root.findall(".//n[@AS='F']")
+    fluorine_count = len(fluorine_atoms)
+
+    print(f"Number of carbon atoms: {carbon_count}")
+    print(f"Number of nitrogen atoms: {nitrogen_count}")
+    print(f"Number of oxygen atoms: {oxygen_count}")
+    print(f"Number of sulfur atoms: {sulfur_count}")
+    print(f"Number of fluorine atoms: {fluorine_count}")
+
+    return cdxml_content
 
 if __name__ == '__main__':
-    MyApp().run()
+    molecule_data = {
+        "atom_block": [
+            {"symbol": "C", "x": 0.7145, "y": -0.4125, "z": 0.0000},
+            {"symbol": "N", "x": 0.7145, "y": -1.2375, "z": 0.0000},
+            {"symbol": "C", "x": 1.3819, "y": -1.7224, "z": 0.0000},
+            {"symbol": "S", "x": 2.1665, "y": -1.4675, "z": 0.0000},
+            {"symbol": "C", "x": 2.7796, "y": -2.0195, "z": 0.0000},
+            {"symbol": "C", "x": 3.5642, "y": -1.7646, "z": 0.0000},
+            {"symbol": "O", "x": 3.7358, "y": -0.9576, "z": 0.0000},
+            {"symbol": "N", "x": 4.1773, "y": -2.3166, "z": 0.0000},
+            {"symbol": "C", "x": 4.9620, "y": -2.0617, "z": 0.0000},
+            {"symbol": "C", "x": 5.5751, "y": -2.6137, "z": 0.0000},
+            {"symbol": "O", "x": 5.4035, "y": -3.4207, "z": 0.0000},
+            {"symbol": "C", "x": 4.6189, "y": -3.6756, "z": 0.0000},
+            {"symbol": "C", "x": 4.0058, "y": -3.1236, "z": 0.0000},
+            {"symbol": "N", "x": 1.1270, "y": -2.5070, "z": 0.0000},
+            {"symbol": "N", "x": 0.3020, "y": -2.5070, "z": 0.0000},
+            {"symbol": "C", "x": 0.0470, "y": -1.7224, "z": 0.0000},
+            {"symbol": "C", "x": -0.7376, "y": -1.4675, "z": 0.0000},
+            {"symbol": "C", "x": -1.3507, "y": -2.0195, "z": 0.0000},
+            {"symbol": "C", "x": -2.1353, "y": -1.7646, "z": 0.0000},
+            {"symbol": "C", "x": -2.3068, "y": -0.9576, "z": 0.0000},
+            {"symbol": "F", "x": -3.0915, "y": -0.7027, "z": 0.0000},
+            {"symbol": "C", "x": -1.6937, "y": -0.4056, "z": 0.0000},
+            {"symbol": "C", "x": -0.9091, "y": -0.6605, "z": 0.0000}
+        ],
+        "bond_block": [
+            {"begin_atom_idx": 0, "end_atom_idx": 1, "bond_type": 1},
+            {"begin_atom_idx": 1, "end_atom_idx": 2, "bond_type": 1},
+            {"begin_atom_idx": 2, "end_atom_idx": 3, "bond_type": 1},
+            {"begin_atom_idx": 3, "end_atom_idx": 4, "bond_type": 1},
+            {"begin_atom_idx": 4, "end_atom_idx": 5, "bond_type": 1},
+            {"begin_atom_idx": 5, "end_atom_idx": 6, "bond_type": 2},
+            {"begin_atom_idx": 5, "end_atom_idx": 7, "bond_type": 1},
+            {"begin_atom_idx": 7, "end_atom_idx": 8, "bond_type": 1},
+            {"begin_atom_idx": 8, "end_atom_idx": 9, "bond_type": 1},
+            {"begin_atom_idx": 9, "end_atom_idx": 10, "bond_type": 1},
+            {"begin_atom_idx": 10, "end_atom_idx": 11, "bond_type": 1},
+            {"begin_atom_idx": 11, "end_atom_idx": 12, "bond_type": 1},
+            {"begin_atom_idx": 7, "end_atom_idx": 12, "bond_type": 1},
+            {"begin_atom_idx": 2, "end_atom_idx": 13, "bond_type": 2},
+            {"begin_atom_idx": 13, "end_atom_idx": 14, "bond_type": 1},
+            {"begin_atom_idx": 14, "end_atom_idx": 15, "bond_type": 2},
+            {"begin_atom_idx": 1, "end_atom_idx": 15, "bond_type": 1},
+            {"begin_atom_idx": 15, "end_atom_idx": 16, "bond_type": 1},
+            {"begin_atom_idx": 16, "end_atom_idx": 17, "bond_type": 1},
+            {"begin_atom_idx": 17, "end_atom_idx": 18, "bond_type": 2},
+            {"begin_atom_idx": 18, "end_atom_idx": 19, "bond_type": 1},
+            {"begin_atom_idx": 19, "end_atom_idx": 20, "bond_type": 1},
+            {"begin_atom_idx": 19, "end_atom_idx": 21, "bond_type": 2},
+            {"begin_atom_idx": 21, "end_atom_idx": 22, "bond_type": 1},
+            {"begin_atom_idx": 16, "end_atom_idx": 22, "bond_type": 2}
+        ]
+    }
+
+    # Generate CDXML
+    cdxml_content = convert_mol_to_cdxml(molecule_data)
+    print(cdxml_content)
+    # MyApp().run()
+
+
