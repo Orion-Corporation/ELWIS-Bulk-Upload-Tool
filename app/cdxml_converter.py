@@ -37,4 +37,4 @@ def convert_sdf_to_cdxml(input_sdf, output_cdxml):
     print(f"Successfully converted '{input_sdf}' to '{output_cdxml}'")
 
 # Replace 'input.sdf' and 'output.cdxml' with your actual file names
-convert_sdf_to_cdxml('/home/robert/ERAT/ENAMINE/45841679_FL10231460_Orion_2.SDF', '/home/robert/ERAT/output.cdxml')
+convert_sdf_to_cdxml('/home/robert/ERAT/ENAMINE/45841679_FL10231460_Orion_2.SDF', 'output.cdxml')
