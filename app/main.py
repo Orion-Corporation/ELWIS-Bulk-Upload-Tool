@@ -316,7 +316,7 @@ def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
     }
 
     try:
-        salt_id, solvate_id = upload_fragments(molecule_data, callback, headers)
+        salt_id, solvate_id = upload_fragments(molecule_data, callback, headers, api_key)
     except Exception as e:
         callback(f"Error uploading fragments: {str(e)}")
         return False
@@ -336,6 +336,7 @@ def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
     except Exception as e:
         callback(f"Error sending request: {str(e)}")
         return False
+
 
 def log_duplicate(file, molecule_data, OUTPUT_PATHS, callback):
     if not os.path.exists(OUTPUT_PATHS['duplicate_files']):
@@ -401,6 +402,63 @@ def upload_fragment(fragment_data, fragment_type, callback, headers):
     else:
         callback(f"Failed to upload {fragment_type}. Status code: {response.status_code}, response: {response.text}")
         return None
+    
+def upload_fragments(molecule_data, callback, headers, api_key):
+    salt_id = None
+    solvate_id = None
+
+    try:
+        if 'Salt_name' in molecule_data:
+            salt_name = molecule_data.get('Salt_name', '')
+            salt_id = get_existing_fragment_id(salt_name, "salt", api_key)
+            if not salt_id:
+                salt_data = {
+                    "data": {
+                        "type": "salt",
+                        "attributes": {
+                            "name": salt_name,
+                            "mf": molecule_data.get('Formula', ''),
+                            "mw": f"{molecule_data.get('MW_salt', '')} g/mol"
+                        }
+                    }
+                }
+                salt_id = upload_fragment(salt_data, "salts", callback, headers)
+                if salt_id:
+                    callback(f"Successfully uploaded salt: {salt_name}")
+                else:
+                    callback(f"Failed to upload salt: {salt_name}")
+            else:
+                callback(f"Salt '{salt_name}' already exists with ID: {salt_id}")
+    except Exception as e:
+        callback(f"No Salt_name found: {str(e)}")
+    
+    try:
+        if 'Solvate_name' in molecule_data:
+            solvate_name = molecule_data.get('Solvate_name', '')
+            solvate_id = get_existing_fragment_id(solvate_name, "solvate", api_key)
+            if not solvate_id:
+                solvate_data = {
+                    "data": {
+                        "type": "solvate",
+                        "attributes": {
+                            "name": solvate_name,
+                            "mf": molecule_data.get('Formula', ''),
+                            "mw": f"{molecule_data.get('MW', '')} g/mol"
+                        }
+                    }
+                }
+                solvate_id = upload_fragment(solvate_data, "solvates", callback, headers)
+                if solvate_id:
+                    callback(f"Successfully uploaded solvate: {solvate_name}")
+                else:
+                    callback(f"Failed to upload solvate: {solvate_name}")
+            else:
+                callback(f"Solvate '{solvate_name}' already exists with ID: {solvate_id}")
+    except Exception as e:
+        callback(f"No Solvate_name found: {str(e)}")
+
+    return salt_id, solvate_id
+
     
 def process_sdf(files, callback):
     molecules = []
@@ -672,6 +730,22 @@ def convert_mol_to_cdxml(molecule_data, ensure_3d=True):
         f.write(cdxml_content)
     
     return cdxml_content
+
+def get_existing_fragment_id(fragment_name, fragment_type, api_key):
+    headers = {
+        'accept': 'application/vnd.api+json',
+        'x-api-key': api_key
+    }
+    params = {
+        'filter[name]': fragment_name
+    }
+    fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}s"
+    response = requests.get(fragment_endpoint, headers=headers, params=params)
+    if response.status_code == 200:
+        results = response.json().get('data', [])
+        if len(results) > 0:
+            return results[0]['id']
+    return None
 
 if __name__ == '__main__':
     MyApp().run()
