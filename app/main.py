@@ -283,9 +283,30 @@ class MyApp(App):
 
 import requests
 
+def molecule_exists(molecule_name, api_key):
+    headers = {
+        'accept': 'application/vnd.api+json',
+        'x-api-key': api_key
+    }
+    params = {
+        'filter[name]': molecule_name
+    }
+    response = requests.get(API_ENDPOINTS['Compound Endpoint'], headers=headers, params=params) # not an available endpoint?
+    if response.status_code == 200:
+        results = response.json().get('data', [])
+        return len(results) > 0
+    else:
+        return False
+
 def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
     if not api_key:
         callback("Error: API key not found. Cannot proceed with the upload.")
+        return False
+
+    chemical_name = molecule_data.get("Chemical name", "")
+    if molecule_exists(chemical_name, api_key):
+        callback(f"Molecule with name '{chemical_name}' already exists. Logging as duplicate.")
+        log_duplicate(file, molecule_data, OUTPUT_PATHS, callback)
         return False
 
     headers = {
@@ -295,7 +316,6 @@ def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
     }
 
     try:
-        # Always attempt to upload salts and solvates
         salt_id, solvate_id = upload_fragments(molecule_data, callback, headers)
     except Exception as e:
         callback(f"Error uploading fragments: {str(e)}")
@@ -317,6 +337,15 @@ def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
         callback(f"Error sending request: {str(e)}")
         return False
 
+def log_duplicate(file, molecule_data, OUTPUT_PATHS, callback):
+    if not os.path.exists(OUTPUT_PATHS['duplicate_files']):
+        os.makedirs(OUTPUT_PATHS['duplicate_files'])
+    shutil.copy(file, OUTPUT_PATHS['duplicate_files'])
+
+    with open(OUTPUT_PATHS['duplicate_log'], 'a') as duplicate_log:
+        duplicate_log.write(f"File: {file}, Molecule: {molecule_data.get('Chemical name', '')}\n")
+
+    callback(f"Logged duplicate molecule from {file}. Copying file to '{OUTPUT_PATHS['duplicate_files']}' folder.")
 
 def upload_fragments(molecule_data, callback, headers):
     salt_id = None
