@@ -7,11 +7,18 @@ def convert_sdf_to_cdxml(input_sdf, output_cdxml):
         return
 
     mol = openbabel.OBMol()
+    builder = openbabel.OBBuilder()
 
     # Read the SDF file
     if not obConversion.ReadFile(mol, input_sdf):
         print(f"Error: Could not read the input file '{input_sdf}'")
         return
+
+    # Check if the molecule has 3D coordinates
+    if not mol.Has3D():
+        print("No 3D coordinates found. Generating 3D coordinates...")
+        builder.Build(mol)
+        mol.AddHydrogens()
 
     # Write the output CDXML file
     if not obConversion.WriteFile(mol, output_cdxml):
