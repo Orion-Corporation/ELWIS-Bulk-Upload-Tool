@@ -10,3 +10,6 @@ logs.txt
 /app/__pycache__
 /Successfull
 /Failed files
+app/myenv
+.venv
+app/Miniconda3-latest-Linux-x86_64.sh
