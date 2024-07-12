@@ -1,181 +1,126 @@
 import xml.etree.ElementTree as ET
-import xml.dom.minidom
-from rdkit import Chem
-from rdkit.Chem import AllChem
+import re
 
-def mol_to_cdxml(mol):
-    # Create the root CDXML element with all attributes
-    cdxml = ET.Element("CDXML")
-    cdxml.set("CreationProgram", "ChemDraw JS 23.2.0.0")
-    cdxml.set("BoundingBox", "237.08 69.10 392.30 126.86")
-    cdxml.set("WindowPosition", "0 0")
-    cdxml.set("WindowSize", "0 0")
-    cdxml.set("FractionalWidths", "yes")
-    cdxml.set("InterpretChemically", "yes")
-    cdxml.set("ShowAtomQuery", "yes")
-    cdxml.set("ShowAtomStereo", "no")
-    cdxml.set("ShowAtomEnhancedStereo", "yes")
-    cdxml.set("ShowAtomNumber", "no")
-    cdxml.set("ShowResidueID", "no")
-    cdxml.set("ShowBondQuery", "yes")
-    cdxml.set("ShowBondRxn", "yes")
-    cdxml.set("ShowBondStereo", "no")
-    cdxml.set("ShowTerminalCarbonLabels", "no")
-    cdxml.set("ShowNonTerminalCarbonLabels", "no")
-    cdxml.set("HideImplicitHydrogens", "no")
-    cdxml.set("Magnification", "666")
-    cdxml.set("LabelFont", "24")
-    cdxml.set("LabelSize", "10")
-    cdxml.set("LabelFace", "96")
-    cdxml.set("CaptionFont", "24")
-    cdxml.set("CaptionSize", "10")
-    cdxml.set("HashSpacing", "2.50")
-    cdxml.set("MarginWidth", "1.60")
-    cdxml.set("LineWidth", "0.60")
-    cdxml.set("BoldWidth", "2")
-    cdxml.set("BondLength", "14.40")
-    cdxml.set("BondSpacing", "18")
-    cdxml.set("ChainAngle", "120")
-    cdxml.set("LabelJustification", "Auto")
-    cdxml.set("CaptionJustification", "Left")
-    cdxml.set("AminoAcidTermini", "HOH")
-    cdxml.set("ShowSequenceTermini", "yes")
-    cdxml.set("ShowSequenceBonds", "yes")
-    cdxml.set("ShowSequenceUnlinkedBranches", "no")
-    cdxml.set("ResidueWrapCount", "40")
-    cdxml.set("ResidueBlockCount", "10")
-    cdxml.set("PrintMargins", "36 36 36 36")
-    cdxml.set("MacPrintInfo", "0003000000480048000000000318026400000000031802640367052803FC00020000004800480000000003180264000100000064000000010001010100000001270F000100010000000000000000000000000002001901900000000000400000000000000000000100000000000000000000000000000000")
-    cdxml.set("ChemPropName", "")
-    cdxml.set("ChemPropFormula", "Chemical Formula: ")
-    cdxml.set("ChemPropExactMass", "Exact Mass: ")
-    cdxml.set("ChemPropMolWt", "Molecular Weight: ")
-    cdxml.set("ChemPropMOverZ", "m/z: ")
-    cdxml.set("ChemPropAnalysis", "Elemental Analysis: ")
-    cdxml.set("ChemPropBoilingPt", "Boiling Point: ")
-    cdxml.set("ChemPropMeltingPt", "Melting Point: ")
-    cdxml.set("ChemPropCritTemp", "Critical Temp: ")
-    cdxml.set("ChemPropCritPres", "Critical Pres: ")
-    cdxml.set("ChemPropCritVol", "Critical Vol: ")
-    cdxml.set("ChemPropGibbs", "Gibbs Energy: ")
-    cdxml.set("ChemPropLogP", "Log P: ")
-    cdxml.set("ChemPropMR", "MR: ")
-    cdxml.set("ChemPropHenry", "Henry's Law: ")
-    cdxml.set("ChemPropEForm", "Heat of Form: ")
-    cdxml.set("ChemProptPSA", "tPSA: ")
-    cdxml.set("ChemPropID", "")
-    cdxml.set("ChemPropFragmentLabel", "")
-    cdxml.set("color", "0")
-    cdxml.set("bgcolor", "1")
-    cdxml.set("RxnAutonumberStart", "1")
-    cdxml.set("RxnAutonumberConditions", "no")
-    cdxml.set("RxnAutonumberStyle", "Roman")
-    cdxml.set("RxnAutonumberFormat", "(#)")
-    cdxml.set("MonomerRenderingStyle", "graphic")
+def molfile_to_cdxml(molfile_content):
+    # Parse the molfile content
+    lines = molfile_content.split('\n')
+    atom_count = int(lines[3].split()[0])
+    bond_count = int(lines[3].split()[1])
 
-    # Add colortable
-    colortable = ET.SubElement(cdxml, "colortable")
-    colors = [
-        (1, 1, 1), (0, 0, 0), (1, 0, 0), (1, 1, 0),
-        (0, 1, 0), (0, 1, 1), (0, 0, 1), (1, 0, 1)
-    ]
-    for r, g, b in colors:
-        color = ET.SubElement(colortable, "color")
-        color.set("r", str(r))
-        color.set("g", str(g))
-        color.set("b", str(b))
+    # Create the root CDXML element
+    root = ET.Element('CDXML')
+    root.set('CreationProgram', 'ChemDraw JS 23.2.0.0')
+    # Add other attributes as needed
 
-    # Add fonttable
-    fonttable = ET.SubElement(cdxml, "fonttable")
-    font = ET.SubElement(fonttable, "font")
-    font.set("id", "24")
-    font.set("charset", "utf-8")
-    font.set("name", "Arial")
+    # Create the page element
+    page = ET.SubElement(root, 'page')
+    page.set('id', '481')
 
-    # Add page
-    page = ET.SubElement(cdxml, "page")
-    page.set("id", "481")
-    page.set("BoundingBox", "0 0 629.33 196")
-    page.set("Width", "629.33")
-    page.set("Height", "196")
-    # ... (add other page attributes)
+    # Create the fragment element
+    fragment = ET.SubElement(page, 'fragment')
+    fragment.set('id', '1')
 
-    # Add fragment
-    fragment = ET.SubElement(page, "fragment")
-    fragment.set("id", "1")
-    fragment.set("BoundingBox", "237.08 69.10 392.30 126.86")
-    fragment.set("Z", "1")
-
-    # Generate 2D coordinates if not present
-    try:
-        conf = mol.GetConformer()
-    except ValueError:
-        # No conformer exists, so we need to generate 2D coordinates
-        mol = Chem.AddHs(mol)
-        AllChem.Compute2DCoords(mol)
-        mol = Chem.RemoveHs(mol)
-    else:
-        if conf.Is3D():
-            # If it's a 3D conformer, we still want 2D coordinates
-            mol = Chem.RemoveHs(mol)
-            AllChem.Compute2DCoords(mol)
-
-    # Add atoms
-    for i, atom in enumerate(mol.GetAtoms()):
-        n = ET.SubElement(fragment, "n")
-        n.set("id", str(i+2))  # Start from 2 to match example
-        pos = mol.GetConformer().GetAtomPosition(i)
-        n.set("p", f"{pos.x:.2f} {pos.y:.2f}")
-        n.set("Z", str(i+2))
-        n.set("AS", "N")
-        n.set("AtomID", str(i+1))
-
-        if atom.GetSymbol() != "C":
-            n.set("Element", atom.GetSymbol())
-            n.set("NumHydrogens", "0")
-            n.set("NeedsClean", "yes")
+    # Process atoms
+    for i in range(atom_count):
+        line = lines[4 + i]
+        x, y, z, symbol = line.split()[:4]
+        
+        n = ET.SubElement(fragment, 'n')
+        n.set('id', str(i + 2))
+        n.set('p', f"{float(x) * 40:.2f} {-float(y) * 40:.2f}")
+        n.set('Z', str(i + 2))
+        n.set('AS', 'N')
+        n.set('AtomID', str(i + 1))
+        
+        if symbol != 'C':
+            n.set('Element', symbol)
+            n.set('NumHydrogens', '0')
+            n.set('NeedsClean', 'yes')
             
-            t = ET.SubElement(n, "t")
-            t.set("p", f"{pos.x-3.61:.2f} {pos.y+3.62:.2f}")
-            t.set("BoundingBox", f"{pos.x-3.61:.2f} {pos.y-5.62:.2f} {pos.x+3.61:.2f} {pos.y+3.62:.2f}")
-            t.set("LabelJustification", "Left")
-            
-            s = ET.SubElement(t, "s")
-            s.set("font", "24")
-            s.set("size", "10")
-            s.set("color", "0")
-            s.set("face", "96")
-            s.text = atom.GetSymbol()
+            t = ET.SubElement(n, 't')
+            t.set('p', f"{float(x) * 40 - 3.61:.2f} {-float(y) * 40 + 3.62:.2f}")
+            s = ET.SubElement(t, 's')
+            s.set('font', '24')
+            s.set('size', '10')
+            s.set('color', '0')
+            s.set('face', '96')
+            s.text = symbol
 
-    # Add bonds
-    for i, bond in enumerate(mol.GetBonds()):
-        b = ET.SubElement(fragment, "b")
-        b.set("id", str(i+25))  # Start from 25 to match example
-        b.set("Z", str(i+25))
-        b.set("B", str(bond.GetBeginAtomIdx()+2))
-        b.set("E", str(bond.GetEndAtomIdx()+2))
-        b.set("BS", "N")
-        if bond.GetBondType() == Chem.rdchem.BondType.DOUBLE:
-            b.set("Order", "2")
-        elif bond.GetBondType() == Chem.rdchem.BondType.TRIPLE:
-            b.set("Order", "3")
+    # Process bonds
+    for i in range(bond_count):
+        line = lines[4 + atom_count + i]
+        atom1, atom2, bond_type = map(int, line.split()[:3])
+        
+        b = ET.SubElement(fragment, 'b')
+        b.set('id', str(atom_count + i + 2))
+        b.set('Z', str(atom_count + i + 2))
+        b.set('B', str(atom1))
+        b.set('E', str(atom2))
+        b.set('BS', 'N')
+        
+        if bond_type == 2:
+            b.set('Order', '2')
 
-    # Convert to string and prettify
-    xml_str = ET.tostring(cdxml, encoding='unicode')
-    dom = xml.dom.minidom.parseString(xml_str)
-    pretty_xml_str = dom.toprettyxml(indent="  ")
+    # Convert to string and return
+    return ET.tostring(root, encoding='unicode')
 
-    # Add DOCTYPE and XML declaration
-    doctype = '<!DOCTYPE CDXML SYSTEM "https://static.chemistry.revvitycloud.com/cdxml/CDXML.dtd" >'
-    xml_declaration = '<?xml version="1.0" encoding="UTF-8" ?>'
-    final_xml = f"{xml_declaration}\n{doctype}\n{pretty_xml_str}"
+# Example usage
+molfile_content = """
+  Mrv1925 04252409172D          
 
-    return final_xml
+ 23 25  0  0  0  0            999 V2000
+    0.7145   -0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.7145   -1.2375    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    1.3819   -1.7224    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.1665   -1.4675    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0
+    2.7796   -2.0195    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.5642   -1.7646    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.7358   -0.9576    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    4.1773   -2.3166    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    4.9620   -2.0617    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.5751   -2.6137    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.4035   -3.4207    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    4.6189   -3.6756    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.0058   -3.1236    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.1270   -2.5070    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3020   -2.5070    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0470   -1.7224    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.7376   -1.4675    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.3507   -2.0195    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.1353   -1.7646    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.3068   -0.9576    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.0915   -0.7027    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.6937   -0.4056    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.9091   -0.6605    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  1  0  0  0  0
+  3  4  1  0  0  0  0
+  4  5  1  0  0  0  0
+  5  6  1  0  0  0  0
+  6  7  2  0  0  0  0
+  6  8  1  0  0  0  0
+  8  9  1  0  0  0  0
+  9 10  1  0  0  0  0
+ 10 11  1  0  0  0  0
+ 11 12  1  0  0  0  0
+ 12 13  1  0  0  0  0
+  8 13  1  0  0  0  0
+  3 14  2  0  0  0  0
+ 14 15  1  0  0  0  0
+ 15 16  2  0  0  0  0
+  2 16  1  0  0  0  0
+ 16 17  1  0  0  0  0
+ 17 18  1  0  0  0  0
+ 18 19  2  0  0  0  0
+ 19 20  1  0  0  0  0
+ 20 21  1  0  0  0  0
+ 20 22  2  0  0  0  0
+ 22 23  1  0  0  0  0
+ 17 23  2  0  0  0  0
+M  END
+"""
 
-# Example usage (you would replace this with your actual mol object)
-mol = Chem.MolFromSmiles("CN1C(SCC(=O)N2CCOCC2)=NN=C1C=3C=CC(F)=CC3")
-cdxml_string = mol_to_cdxml(mol)
-print(cdxml_string)
-# save file
+cdxml_content = molfile_to_cdxml(molfile_content)
+print(cdxml_content)
 with open('output.cdxml', 'w') as f:
-    f.write(cdxml_string)
+    f.write(cdxml_content)

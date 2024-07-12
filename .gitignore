@@ -1,7 +1,6 @@
 
 app/api_key.py
 sorted_files/salts_solvate.sdf
-/erat
 .env
 Failed files/Duplicates/duplicates.txt
 Failed files/Duplicates/salts_solvate.sdf
@@ -9,7 +8,5 @@ Failed files/salts_solvate.sdf
 logs.txt
 *.pyc
 /app/__pycache__
-logs.txt
 /Successfull
 /Failed files
-logs.txt
