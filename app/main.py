@@ -427,7 +427,6 @@ def construct_payload(molecule_data, salt_id, solvate_id):
             "type": "asset",
             "attributes": {
                 "synonyms": [
-                    molecule_data.get('Chemical name', ''),
                     molecule_data.get('Smile', ''),
                     molecule_data.get('Formula', '')
                 ],
@@ -607,11 +606,11 @@ def convert_mol_to_cdxml(molecule_data, ensure_3d=True):
     # Construct the molecule from the molecule_data dictionary
     for atom_info in molecule_data["atom_block"]:
         atom = mol.NewAtom()
-        atom.SetAtomicNum(Chem.GetPeriodicTable().GetAtomicNumber(atom_info["symbol"]))
+        atom.SetAtomicNum(openbabel.GetAtomicNum(atom_info["symbol"]))
         atom.SetVector(atom_info["x"], atom_info["y"], atom_info["z"])
 
     for bond_info in molecule_data["bond_block"]:
-        mol.AddBond(bond_info["begin_atom_idx"], bond_info["end_atom_idx"], int(bond_info["bond_type"]))
+        mol.AddBond(bond_info["begin_atom_idx"] + 1, bond_info["end_atom_idx"] + 1, int(bond_info["bond_type"]))
 
     if ensure_3d:
         # Check if the molecule has 3D coordinates
@@ -639,9 +638,10 @@ def convert_mol_to_cdxml(molecule_data, ensure_3d=True):
         return None
 
     print("Successfully converted molecule to CDXML format")
-    # save file as output.cdxml
+    # Save file as output.cdxml
     with open('output.cdxml', 'w') as f:
         f.write(cdxml_content)
+    
     return cdxml_content
 
 if __name__ == '__main__':
