@@ -19,6 +19,15 @@ def convert_sdf_to_cdxml(input_sdf, output_cdxml):
         print("No 3D coordinates found. Generating 3D coordinates...")
         builder.Build(mol)
         mol.AddHydrogens()
+    
+    # Optimize the geometry using a force field
+    ff = openbabel.OBForceField.FindForceField("mmff94")
+    if not ff:
+        print("Error: MMFF94 force field not found")
+        return
+    ff.Setup(mol)
+    ff.ConjugateGradients(500)  # Perform 500 iterations of geometry optimization
+    ff.GetCoordinates(mol)
 
     # Write the output CDXML file
     if not obConversion.WriteFile(mol, output_cdxml):
@@ -28,4 +37,4 @@ def convert_sdf_to_cdxml(input_sdf, output_cdxml):
     print(f"Successfully converted '{input_sdf}' to '{output_cdxml}'")
 
 # Replace 'input.sdf' and 'output.cdxml' with your actual file names
-convert_sdf_to_cdxml('/home/robert/ERAT/ENAMINE/45841679_FL10231460_Orion_2.SDF', 'output.cdxml')
+convert_sdf_to_cdxml('/home/robert/ERAT/ENAMINE/45841679_FL10231460_Orion_2.SDF', '/home/robert/ERAT/output.cdxml')
