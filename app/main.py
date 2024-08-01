@@ -86,7 +86,6 @@ def log_duplicate(file, molecule_data, callback):
     callback(f"Logged duplicate molecule from {file}. Copying file to '{OUTPUT_PATHS['duplicate_files']}' folder.")
 
 # API functions
-# API functions
 def upload_fragment(fragment_data, fragment_type, callback, headers):
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
     response = requests.post(fragment_endpoint, data=json.dumps(fragment_data), headers=headers)
@@ -374,9 +373,110 @@ def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
         callback(f"Network error during request: {str(e)}")
         return False
 
+def check_uniqueness(molecule_data, api_key):
+    headers = {
+        'Content-Type': 'application/vnd.api+json',
+        'accept': 'application/vnd.api+json',
+        'x-api-key': api_key
+    }
+    
+    data = {
+        "data": {
+            "type": "asset",
+            "attributes": {
+                "synonyms": [
+                    molecule_data.get('Smile', ''),
+                    molecule_data.get('MolecularFormula', '')
+                ],
+                "fields": [
+                    {
+                        "id": "5d6e0287ee35880008c18d6d",
+                        "value": molecule_data.get("cdxml", "")
+                    },
+                    {
+                        "id": "62f9fe5b74770f14d1de43a8",
+                        "value": "No stereochemistry"
+                    },
+                    {
+                        "id": "5d6e0287ee35880008c18db6",
+                        "value": molecule_data.get("Chemical name", "")
+                    },
+                    {
+                        "id": "5d6e0287ee35880008c18db7",
+                        "value": {
+                            "rawValue": molecule_data.get("MW", ""),
+                            "displayValue": f"{molecule_data.get('MW', '')} g/mol"
+                        }
+                    },
+                    {
+                        "id": "5d6e0287ee35880008c18db8",
+                        "value": float(molecule_data.get("Amount_mg", 0))
+                    },
+                    {
+                        "id": "5d6e0287ee35880008c18db9",
+                        "value": {
+                            "rawValue": molecule_data.get("MolecularFormula", ""),
+                            "displayValue": molecule_data.get("MolecularFormula", "")
+                        }
+                    }
+                ]
+            },
+            "relationships": {
+                "batch": {
+                    "data": {
+                        "type": "batch",
+                        "attributes": {
+                            "fields": [
+                                {
+                                    "id": "62fcceeb19660304d1e5beee",
+                                    "value": "Acquired"
+                                },
+                                {
+                                    "id": "63469c69ed8a726a31923537",
+                                    "value": "Unspecified"
+                                },
+                                {
+                                    "id": "62fcceeb19660304d1e5bef1",
+                                    "value": "2011-10-10T14:48:00Z"
+                                },
+                                {
+                                    "id": "6384a1270d28381d21deaca7",
+                                    "value": "TestUser MCChemist"
+                                },
+                                {
+                                    "id": "62fa096d19660304d1e5b2db",
+                                    "value": "Dummy compound"
+                                },
+                                {
+                                    "id": "62fa096d19660304d1e5b2da",
+                                    "value": "Discovery"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    uniqueness_endpoint = f"{API_ENDPOINTS['Compound Endpoint']}/uniquenessCheck"
+    response = requests.post(uniqueness_endpoint, headers=headers, data=json.dumps(data))
+    print(f"Uniqueness response: {response.text}")
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Error checking uniqueness: {response.status_code} - {response.text}")
+        return None
+
 def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
-    # Check if molecule already exists
-    if molecule_exists(molecule_data.get('Chemical name', ''), api_key):
+    # Check uniqueness of the compound
+    uniqueness_result = check_uniqueness(molecule_data, api_key)
+    
+    if uniqueness_result is None:
+        callback(f"Could not verify uniqueness for {file}. Aborting upload.")
+        return False
+    
+    if uniqueness_result:  # If the result is not empty, it's a duplicate
         log_duplicate(file, molecule_data, callback)
         return False
     
