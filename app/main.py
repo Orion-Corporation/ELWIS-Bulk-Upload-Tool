@@ -20,7 +20,6 @@ from kivy.lang import Builder
 from kivy.clock import Clock
 import json
 import shutil
-from rdkit import Chem
 from openbabel import openbabel
 import requests
 
@@ -86,6 +85,7 @@ def log_duplicate(file, molecule_data, callback):
 
     callback(f"Logged duplicate molecule from {file}. Copying file to '{OUTPUT_PATHS['duplicate_files']}' folder.")
 
+# API functions
 # API functions
 def upload_fragment(fragment_data, fragment_type, callback, headers):
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
@@ -160,62 +160,67 @@ def upload_fragments(molecule_data, callback, headers, api_key):
             callback(f"Solvate '{solvate_name}' already exists with ID: {solvate_id}")
 
     return salt_id, solvate_id
-from rdkit.Chem import rdMolDescriptors
-# SDF processing functions
+
+# SDF processing functions using OpenBabel
 def process_sdf(files, callback):
     molecules = []
+    obConversion = openbabel.OBConversion()
+    obConversion.SetInAndOutFormats("sdf", "mol")
+
+    obConversion_smiles = openbabel.OBConversion()
+    obConversion_smiles.SetOutFormat("smiles")
+
     for sdf_file in files:
         callback(f"Processing file: {sdf_file}")
-        try:
-            supplier = Chem.SDMolSupplier(sdf_file)            
-
-            # Inside the process_sdf function
-            for mol in supplier:
-                if mol is not None:
-                    # Convert implicit hydrogens to explicit hydrogens
-                    mol = Chem.AddHs(mol, addCoords=True)
-
-                    # Get molecular formula with correct hydrogen count
-                    molecular_formula = rdMolDescriptors.CalcMolFormula(mol)
-
-                    # Continue processing the molecule
-                    molecule_data = {prop_name: mol.GetProp(prop_name) for prop_name in mol.GetPropNames()}
-                    molecule_data.update({"MolecularFormula": molecular_formula})
-
-                    # Count hydrogens
-                    hydrogen_count = sum(1 for atom in mol.GetAtoms() if atom.GetSymbol() == 'H')
-                    implicit_hydrogen_count = sum(atom.GetNumImplicitHs() for atom in mol.GetAtoms())
-                    total_hydrogens = hydrogen_count + implicit_hydrogen_count
-
-                    # Log or print the hydrogen count
-                    callback(f"Hydrogen count for {molecule_data.get('Chemical name', '')}: "
-                             f"Explicit: {hydrogen_count}, Implicit: {implicit_hydrogen_count}, Total: {total_hydrogens}")
-
-                    atom_block = [{
-                        "symbol": atom.GetSymbol(),
-                        "x": pos.x,
-                        "y": pos.y,
-                        "z": pos.z
-                    } for atom in mol.GetAtoms() for pos in [mol.GetConformer().GetAtomPosition(atom.GetIdx())]]
-
-                    bond_block = [{
-                        "begin_atom_idx": bond.GetBeginAtomIdx(),
-                        "end_atom_idx": bond.GetEndAtomIdx(),
-                        "bond_type": bond.GetBondTypeAsDouble()
-                    } for bond in mol.GetBonds()]
-
-                    molecule_data.update({"atom_block": atom_block, "bond_block": bond_block})
-                    molecule_data["cdxml"] = convert_mol_to_cdxml(molecule_data)
-
-                    callback(f"Molecule Data: {molecule_data}")
-                    molecules.append(molecule_data)
-                else:
-                    callback(f"Error: Molecule in file {sdf_file} could not be parsed and will be skipped.")
-        except Exception as e:
-            callback(f"Error processing file {sdf_file}: {str(e)}")
-
+        obMol = openbabel.OBMol()
+        
+        not_at_end = obConversion.ReadFile(obMol, sdf_file)
+        while not_at_end:
+            try:
+                # Extract molecular data
+                smiles = obConversion_smiles.WriteString(obMol).strip()
+                molecule_data = {
+                    "Chemical name": obMol.GetTitle(),
+                    "MolecularFormula": obMol.GetFormula(),
+                    "MW": obMol.GetMolWt(),
+                    "Smile": smiles,
+                    "Amount_mg": obMol.GetData("Amount_mg").GetValue() if obMol.HasData("Amount_mg") else 0,
+                }
+                
+                # Extract atom and bond blocks
+                atom_block = []
+                for atom in openbabel.OBMolAtomIter(obMol):
+                    atomic_num = atom.GetAtomicNum()
+                    if atomic_num == 0:
+                        print(f"Invalid element symbol: {atom.GetType()}")
+                        continue
+                    element_symbol = openbabel.GetSymbol(atomic_num)
+                    atom_block.append({
+                        "symbol": element_symbol,
+                        "x": atom.GetX(),
+                        "y": atom.GetY(),
+                        "z": atom.GetZ()
+                    })
+                
+                bond_block = [{
+                    "begin_atom_idx": bond.GetBeginAtomIdx() - 1,
+                    "end_atom_idx": bond.GetEndAtomIdx() - 1,
+                    "bond_type": bond.GetBondOrder()
+                } for bond in openbabel.OBMolBondIter(obMol)]
+                
+                molecule_data.update({"atom_block": atom_block, "bond_block": bond_block})
+                molecule_data["cdxml"] = convert_mol_to_cdxml(molecule_data)
+                
+                callback(f"Molecule Data: {molecule_data}")
+                molecules.append(molecule_data)
+            except Exception as e:
+                callback(f"Error processing molecule in file {sdf_file}: {str(e)}")
+            
+            not_at_end = obConversion.Read(obMol)
+    
     callback(f"Total molecules extracted: {len(molecules)}")
     return molecules
+
 
 def convert_mol_to_cdxml(molecule_data):
     obConversion = openbabel.OBConversion()
@@ -229,24 +234,22 @@ def convert_mol_to_cdxml(molecule_data):
     for atom_info in molecule_data["atom_block"]:
         atom = mol.NewAtom()
         atomic_num = openbabel.GetAtomicNum(atom_info["symbol"])
+        if atomic_num == 0:
+            print(f"Invalid element symbol: {atom_info['symbol']}")
+            continue
         atom.SetAtomicNum(atomic_num)
         atom.SetVector(atom_info["x"], atom_info["y"], atom_info["z"])
 
     for bond_info in molecule_data["bond_block"]:
         mol.AddBond(bond_info["begin_atom_idx"] + 1, bond_info["end_atom_idx"] + 1, int(bond_info["bond_type"]))
 
-    # Write CDXML without altering the hydrogen count
     output_cdxml = obConversion.WriteString(mol)
     if not output_cdxml:
         print("Error: Could not write the CDXML content")
         return None
 
     print("Successfully converted molecule to CDXML format")
-    with open('output.cdxml', 'w') as f:
-        f.write(output_cdxml)
-    
     return output_cdxml
-
 
 def construct_payload(molecule_data, salt_id, solvate_id):
     data = {
