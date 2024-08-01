@@ -5,4 +5,3 @@ rdkit
 requests
 python-dotenv
 DateTime
-openbabel

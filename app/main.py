@@ -160,17 +160,36 @@ def upload_fragments(molecule_data, callback, headers, api_key):
             callback(f"Solvate '{solvate_name}' already exists with ID: {solvate_id}")
 
     return salt_id, solvate_id
-
+from rdkit.Chem import rdMolDescriptors
 # SDF processing functions
 def process_sdf(files, callback):
     molecules = []
     for sdf_file in files:
         callback(f"Processing file: {sdf_file}")
         try:
-            supplier = Chem.SDMolSupplier(sdf_file)
+            supplier = Chem.SDMolSupplier(sdf_file)            
+
+            # Inside the process_sdf function
             for mol in supplier:
                 if mol is not None:
+                    # Convert implicit hydrogens to explicit hydrogens
+                    mol = Chem.AddHs(mol, addCoords=True)
+
+                    # Get molecular formula with correct hydrogen count
+                    molecular_formula = rdMolDescriptors.CalcMolFormula(mol)
+
+                    # Continue processing the molecule
                     molecule_data = {prop_name: mol.GetProp(prop_name) for prop_name in mol.GetPropNames()}
+                    molecule_data.update({"MolecularFormula": molecular_formula})
+
+                    # Count hydrogens
+                    hydrogen_count = sum(1 for atom in mol.GetAtoms() if atom.GetSymbol() == 'H')
+                    implicit_hydrogen_count = sum(atom.GetNumImplicitHs() for atom in mol.GetAtoms())
+                    total_hydrogens = hydrogen_count + implicit_hydrogen_count
+
+                    # Log or print the hydrogen count
+                    callback(f"Hydrogen count for {molecule_data.get('Chemical name', '')}: "
+                             f"Explicit: {hydrogen_count}, Implicit: {implicit_hydrogen_count}, Total: {total_hydrogens}")
 
                     atom_block = [{
                         "symbol": atom.GetSymbol(),
@@ -186,7 +205,7 @@ def process_sdf(files, callback):
                     } for bond in mol.GetBonds()]
 
                     molecule_data.update({"atom_block": atom_block, "bond_block": bond_block})
-                    molecule_data["cdxml"] = convert_mol_to_cdxml(molecule_data, ensure_3d=False)
+                    molecule_data["cdxml"] = convert_mol_to_cdxml(molecule_data)
 
                     callback(f"Molecule Data: {molecule_data}")
                     molecules.append(molecule_data)
@@ -198,35 +217,25 @@ def process_sdf(files, callback):
     callback(f"Total molecules extracted: {len(molecules)}")
     return molecules
 
-def convert_mol_to_cdxml(molecule_data, ensure_3d=True):
+def convert_mol_to_cdxml(molecule_data):
     obConversion = openbabel.OBConversion()
-    if not obConversion.SetInAndOutFormats("sdf", "cdxml"):
-        print("Error: Could not set input/output formats to sdf/cdxml")
+    if not obConversion.SetInAndOutFormats("mol", "cdxml"):
+        print("Error: Could not set input/output formats to mol/cdxml")
         return None
 
     mol = openbabel.OBMol()
-    builder = openbabel.OBBuilder()
-
+    
+    # Add atoms and bonds without altering hydrogen count
     for atom_info in molecule_data["atom_block"]:
         atom = mol.NewAtom()
-        atom.SetAtomicNum(openbabel.GetAtomicNum(atom_info["symbol"]))
+        atomic_num = openbabel.GetAtomicNum(atom_info["symbol"])
+        atom.SetAtomicNum(atomic_num)
         atom.SetVector(atom_info["x"], atom_info["y"], atom_info["z"])
 
     for bond_info in molecule_data["bond_block"]:
         mol.AddBond(bond_info["begin_atom_idx"] + 1, bond_info["end_atom_idx"] + 1, int(bond_info["bond_type"]))
 
-    if ensure_3d and not mol.Has3D():
-        builder.Build(mol)
-        mol.AddHydrogens()
-        ff = openbabel.OBForceField.FindForceField("mmff94")
-        if ff:
-            ff.Setup(mol)
-            ff.ConjugateGradients(500)
-            ff.GetCoordinates(mol)
-        else:
-            print("Error: MMFF94 force field not found")
-            return None
-
+    # Write CDXML without altering the hydrogen count
     output_cdxml = obConversion.WriteString(mol)
     if not output_cdxml:
         print("Error: Could not write the CDXML content")
@@ -237,6 +246,7 @@ def convert_mol_to_cdxml(molecule_data, ensure_3d=True):
         f.write(output_cdxml)
     
     return output_cdxml
+
 
 def construct_payload(molecule_data, salt_id, solvate_id):
     data = {
@@ -360,6 +370,29 @@ def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
     except requests.exceptions.RequestException as e:
         callback(f"Network error during request: {str(e)}")
         return False
+
+def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
+    # Check if molecule already exists
+    if molecule_exists(molecule_data.get('Chemical name', ''), api_key):
+        log_duplicate(file, molecule_data, callback)
+        return False
+    
+    # Prepare headers
+    headers = {
+        'Content-Type': 'application/vnd.api+json',
+        'accept': 'application/vnd.api+json',
+        'x-api-key': api_key
+    }
+    
+    # Upload fragments (salts/solvates)
+    salt_id, solvate_id = upload_fragments(molecule_data, callback, headers, api_key)
+    
+    # Construct the payload
+    payload = construct_payload(molecule_data, salt_id, solvate_id)
+    
+    # Send the request
+    success = send_request(payload, file, callback, API_ENDPOINTS['Compound Endpoint'], headers, OUTPUT_PATHS)
+    return success
 
 def handle_success(file, data, OUTPUT_PATHS, callback):
     if not os.path.exists(OUTPUT_PATHS['successful_files']):
