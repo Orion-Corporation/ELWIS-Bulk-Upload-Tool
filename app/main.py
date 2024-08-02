@@ -61,35 +61,21 @@ API_ENDPOINTS = load_config('config/api_endpoints.json', {
 })
 
 # Helper functions
-def molecule_exists(molecule_name, api_key):
-    headers = {
-        'accept': 'application/vnd.api+json',
-        'x-api-key': api_key
-    }
-    params = {
-        'filter[name]': molecule_name
-    }
-    response = requests.get(API_ENDPOINTS['Compound Endpoint'], headers=headers, params=params)
-    if response.status_code == 200:
-        results = response.json().get('data', [])
-        return len(results) > 0
-    return False
-
-def log_duplicate(file, molecule_data, callback):
+def log_duplicate(file, molecule_data, callback, orm_code):
     if not os.path.exists(OUTPUT_PATHS['duplicate_files']):
         os.makedirs(OUTPUT_PATHS['duplicate_files'])
     shutil.copy(file, OUTPUT_PATHS['duplicate_files'])
 
     with open(OUTPUT_PATHS['duplicate_log'], 'a') as duplicate_log:
-        duplicate_log.write(f"File: {file}, Molecule: {molecule_data.get('Chemical name', '')}\n")
+        duplicate_log.write(f"File: {file}, Molecule: {molecule_data.get('MolecularFormula', '')}, ORM Code: {orm_code}\n")
 
-    callback(f"Logged duplicate molecule from {file}. Copying file to '{OUTPUT_PATHS['duplicate_files']}' folder.")
+    callback(f"Duplicate: {molecule_data.get('MolecularFormula', '')}, ORM Code: {orm_code}. Copying file to '{OUTPUT_PATHS['duplicate_files']}' folder.")
 
 # API functions
 def upload_fragment(fragment_data, fragment_type, callback, headers):
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
     response = requests.post(fragment_endpoint, data=json.dumps(fragment_data), headers=headers)
-    if response.status_code == 200:
+    if response.status_code in [200, 201]:
         fragment_id = response.json()['data']['id']
         return fragment_id
     callback(f"Failed to upload {fragment_type}. Status code: {response.status_code}, response: {response.text}")
@@ -103,9 +89,9 @@ def get_existing_fragment_id(fragment_name, fragment_type, api_key):
     params = {
         'filter[name]': fragment_name
     }
-    fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}s"
+    fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
     response = requests.get(fragment_endpoint, headers=headers, params=params)
-    if response.status_code == 200:
+    if response.status_code in [200, 201]:
         results = response.json().get('data', [])
         if results:
             return results[0]['id']
@@ -114,10 +100,16 @@ def get_existing_fragment_id(fragment_name, fragment_type, api_key):
 def upload_fragments(molecule_data, callback, headers, api_key):
     salt_id = solvate_id = None
 
-    if 'Salt_name' in molecule_data:
-        salt_name = molecule_data.get('Salt_name', '')
-        salt_id = get_existing_fragment_id(salt_name, "salt", api_key)
-        if not salt_id:
+    # Check for salt presence
+    if 'Salt_name' in molecule_data or 'Salt_Name' in molecule_data:
+        salt_name = molecule_data.get('Salt_name', molecule_data.get('Salt_Name', ''))
+        compound_name = molecule_data.get('MolecularFormula', '')
+        callback(f"Salt for compound {compound_name} detected: {salt_name}")
+
+        salt_id = get_existing_fragment_id(salt_name, "salts", api_key)
+        if salt_id:
+            callback(f"Salt '{salt_name}' already exists with ID: {salt_id}")
+        else:
             salt_data = {
                 "data": {
                     "type": "salt",
@@ -133,13 +125,17 @@ def upload_fragments(molecule_data, callback, headers, api_key):
                 callback(f"Successfully uploaded salt: {salt_name}")
             else:
                 callback(f"Failed to upload salt: {salt_name}")
-        else:
-            callback(f"Salt '{salt_name}' already exists with ID: {salt_id}")
 
-    if 'Solvate_name' in molecule_data:
-        solvate_name = molecule_data.get('Solvate_name', '')
-        solvate_id = get_existing_fragment_id(solvate_name, "solvate", api_key)
-        if not solvate_id:
+    # Check for solvate presence
+    if 'Solvate_name' in molecule_data or 'Solvate_Name' in molecule_data:
+        solvate_name = molecule_data.get('Solvate_name', molecule_data.get('Solvate_Name', ''))
+        compound_name = molecule_data.get('MolecularFormula', '')
+        callback(f"Solvate for compound {compound_name} detected: {solvate_name}")
+        
+        solvate_id = get_existing_fragment_id(solvate_name, "solvates", api_key)
+        if solvate_id:
+            callback(f"Solvate '{solvate_name}' already exists with ID: {solvate_id}")
+        else:
             solvate_data = {
                 "data": {
                     "type": "solvate",
@@ -155,8 +151,6 @@ def upload_fragments(molecule_data, callback, headers, api_key):
                 callback(f"Successfully uploaded solvate: {solvate_name}")
             else:
                 callback(f"Failed to upload solvate: {solvate_name}")
-        else:
-            callback(f"Solvate '{solvate_name}' already exists with ID: {solvate_id}")
 
     return salt_id, solvate_id
 
@@ -177,13 +171,22 @@ def process_sdf(files, callback):
         while not_at_end:
             try:
                 # Extract molecular data
-                smiles = obConversion_smiles.WriteString(obMol).strip()
+                smiles = obConversion_smiles.WriteString(obMol).strip().upper()
                 molecule_data = {
-                    "Chemical name": obMol.GetTitle(),
-                    "MolecularFormula": obMol.GetFormula(),
+                    "Chemical name": obMol.GetData("Chemical name").GetValue() if obMol.HasData("Chemical name") else '',
+                    "MolecularFormula": obMol.GetFormula().upper(),
                     "MW": obMol.GetMolWt(),
                     "Smile": smiles,
                     "Amount_mg": obMol.GetData("Amount_mg").GetValue() if obMol.HasData("Amount_mg") else 0,
+                    "ID": obMol.GetData("ID").GetValue() if obMol.HasData("ID") else '',
+                    "Formula": obMol.GetData("Formula").GetValue() if obMol.HasData("Formula") else '',
+                    "Purity": obMol.GetData("Purity").GetValue() if obMol.HasData("Purity") else '',
+                    "PO": obMol.GetData("PO").GetValue() if obMol.HasData("PO") else '',
+                    "Salt_name": obMol.GetData("Salt_name").GetValue() if obMol.HasData("Salt_name") else obMol.GetData("Salt_Name").GetValue() if obMol.HasData("Salt_Name") else '',                    "Salt_ratio": obMol.GetData("Salt_ratio").GetValue() if obMol.HasData("Salt_ratio") else '',
+                    "MW_salt": obMol.GetData("MW_salt").GetValue() if obMol.HasData("MW_salt") else '',
+                    "Plate_ID": obMol.GetData("Plate_ID").GetValue() if obMol.HasData("Plate_ID") else '',
+                    "Well": obMol.GetData("Well").GetValue() if obMol.HasData("Well") else '',
+                    "Barcode": obMol.GetData("Barcode").GetValue() if obMol.HasData("Barcode") else ''
                 }
                 
                 # Extract atom and bond blocks
@@ -210,7 +213,6 @@ def process_sdf(files, callback):
                 molecule_data.update({"atom_block": atom_block, "bond_block": bond_block})
                 molecule_data["cdxml"] = convert_mol_to_cdxml(molecule_data)
                 
-                callback(f"Molecule Data: {molecule_data}")
                 molecules.append(molecule_data)
             except Exception as e:
                 callback(f"Error processing molecule in file {sdf_file}: {str(e)}")
@@ -219,7 +221,6 @@ def process_sdf(files, callback):
     
     callback(f"Total molecules extracted: {len(molecules)}")
     return molecules
-
 
 def convert_mol_to_cdxml(molecule_data):
     obConversion = openbabel.OBConversion()
@@ -257,7 +258,7 @@ def construct_payload(molecule_data, salt_id, solvate_id):
             "attributes": {
                 "synonyms": [
                     molecule_data.get('Smile', ''),
-                    molecule_data.get('Formula', '')
+                    molecule_data.get('MolecularFormula', '')
                 ],
                 "fields": [
                     {
@@ -286,8 +287,8 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                     {
                         "id": "5d6e0287ee35880008c18db9",
                         "value": {
-                            "rawValue": molecule_data.get("Formula", ""),
-                            "displayValue": molecule_data.get("Formula", "")
+                            "rawValue": molecule_data.get("MolecularFormula", ""),
+                            "displayValue": molecule_data.get("MolecularFormula", "")
                         }
                     }
                 ]
@@ -364,7 +365,7 @@ def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
     data_json = json.dumps(data)
     try:
         response = requests.post(endpoint, data=data_json, headers=headers)
-        if response.status_code == 200:
+        if response.status_code in [200, 201]:
             handle_success(file, data, OUTPUT_PATHS, callback)
             return True
         handle_failure(file, data, response, OUTPUT_PATHS, callback)
@@ -462,7 +463,7 @@ def check_uniqueness(molecule_data, api_key):
     uniqueness_endpoint = f"{API_ENDPOINTS['Compound Endpoint']}/uniquenessCheck"
     response = requests.post(uniqueness_endpoint, headers=headers, data=json.dumps(data))
     print(f"Uniqueness response: {response.text}")
-    if response.status_code == 200:
+    if response.status_code in [200, 201]:
         return response.json()
     else:
         print(f"Error checking uniqueness: {response.status_code} - {response.text}")
@@ -476,8 +477,9 @@ def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
         callback(f"Could not verify uniqueness for {file}. Aborting upload.")
         return False
     
-    if uniqueness_result:  # If the result is not empty, it's a duplicate
-        log_duplicate(file, molecule_data, callback)
+    if uniqueness_result.get("data"):  # If the result is not empty, it's a duplicate
+        orm_code = uniqueness_result["data"][0]["attributes"].get("name", "Unknown")
+        log_duplicate(file, molecule_data, callback, orm_code)
         return False
     
     # Prepare headers
@@ -505,8 +507,6 @@ def handle_success(file, data, OUTPUT_PATHS, callback):
     with open(OUTPUT_PATHS['success_log'], 'a') as success_log:
         success_log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: 200\n")
     
-    callback(f"Successfully uploaded compound from {file}. Copying file to '{OUTPUT_PATHS['successful_files']}' folder.")
-
 def handle_failure(file, data, response, OUTPUT_PATHS, callback):
     if "duplicate" in response.text.lower():
         log_folder = OUTPUT_PATHS['duplicate_files']
@@ -522,7 +522,7 @@ def handle_failure(file, data, response, OUTPUT_PATHS, callback):
     with open(log_file, 'a') as log:
         log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: {response.status_code}, response text: {response.text}\n")
     
-    callback(f"API request failed for {file} with status code {response.status_code}, response: {response.text}. Copying file to '{log_folder}' folder.")
+    callback(f"Failed: {data['data']['attributes']['synonyms'][0]} with status code {response.status_code}. Copying file to '{log_folder}' folder.")
     try:
         response_json = response.json()
         with open(f"{log_folder}/response.json", 'w') as f:
@@ -698,7 +698,7 @@ class MyApp(App):
             pass
         
         self.schedule_upload(0, update_progress_bar)
-        
+
     def schedule_upload(self, file_index, update_progress_bar):
         if not self.upload_in_progress or file_index >= len(self.selected_files):
             self.upload_in_progress = False
@@ -721,16 +721,21 @@ class MyApp(App):
             molecule_data = molecules[molecule_index]
             success = post_to_api(molecule_data, file, self.print_terminal, api_key, OUTPUT_PATHS)
             if success:
-                self.print_terminal(f'Successfully uploaded compound from file: {file}')
+                self.print_terminal(f'Success: {molecule_data.get("MolecularFormula", "")}')
             else:
-                self.print_terminal(f'Failed to upload compound from file: {file}')
+                self.print_terminal(f'Failed: {molecule_data.get("MolecularFormula", "")}')
             
             Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
 
         process_molecule(0)
 
     def schedule_next_file(self, file_index, update_progress_bar):
-        Clock.schedule_once(lambda dt: self.schedule_upload(file_index + 1, update_progress_bar))
+        if file_index + 1 >= len(self.selected_files):
+            self.upload_in_progress = False
+            self.button_stop_upload.disabled = True
+            self.print_terminal("End of Upload")
+        else:
+            Clock.schedule_once(lambda dt: self.schedule_upload(file_index + 1, update_progress_bar))
 
     def stop_upload(self, instance=None):
         self.upload_in_progress = False
