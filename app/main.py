@@ -97,26 +97,25 @@ def get_existing_fragment_id(fragment_name, fragment_type, api_key):
             return results[0]['id']
     return None
 
-def upload_fragments(molecule_data, callback, headers, api_key):
+def upload_fragments(fragment_data, callback, headers, api_key):
     salt_id = solvate_id = None
 
     # Check for salt presence
-    if 'Salt_name' in molecule_data or 'Salt_Name' in molecule_data:
-        salt_name = molecule_data.get('Salt_name', molecule_data.get('Salt_Name', ''))
-        compound_name = molecule_data.get('MolecularFormula', '')
-        callback(f"Salt for compound {compound_name} detected: {salt_name}")
+    if fragment_data.get('Salt_name'):
+        salt_name = fragment_data['Salt_name']
+        callback(f"Salt detected: {salt_name}")
 
         salt_id = get_existing_fragment_id(salt_name, "salts", api_key)
         if salt_id:
-            callback(f"Salt '{salt_name}' already exists with ID: {salt_id}")
+            callback(f"Salt '{salt_name}' already exists with ID: {salt_id}, not uploading duplicate")
         else:
             salt_data = {
                 "data": {
                     "type": "salt",
                     "attributes": {
                         "name": salt_name,
-                        "mf": molecule_data.get('Formula', ''),
-                        "mw": f"{molecule_data.get('MW_salt', '')} g/mol"
+                        "mf": fragment_data.get('MolecularFormula', ''),
+                        "mw": f"{fragment_data.get('MW', '')} g/mol"
                     }
                 }
             }
@@ -127,10 +126,9 @@ def upload_fragments(molecule_data, callback, headers, api_key):
                 callback(f"Failed to upload salt: {salt_name}")
 
     # Check for solvate presence
-    if 'Solvate_name' in molecule_data or 'Solvate_Name' in molecule_data:
-        solvate_name = molecule_data.get('Solvate_name', molecule_data.get('Solvate_Name', ''))
-        compound_name = molecule_data.get('MolecularFormula', '')
-        callback(f"Solvate for compound {compound_name} detected: {solvate_name}")
+    if fragment_data.get('Solvate_name'):
+        solvate_name = fragment_data['Solvate_name']
+        callback(f"Solvate detected: {solvate_name}")
         
         solvate_id = get_existing_fragment_id(solvate_name, "solvates", api_key)
         if solvate_id:
@@ -141,8 +139,8 @@ def upload_fragments(molecule_data, callback, headers, api_key):
                     "type": "solvate",
                     "attributes": {
                         "name": solvate_name,
-                        "mf": molecule_data.get('Formula', ''),
-                        "mw": f"{molecule_data.get('MW', '')} g/mol"
+                        "mf": fragment_data.get('MolecularFormula', ''),
+                        "mw": f"{fragment_data.get('MW', '')} g/mol"
                     }
                 }
             }
@@ -157,6 +155,7 @@ def upload_fragments(molecule_data, callback, headers, api_key):
 # SDF processing functions using OpenBabel
 def process_sdf(files, callback):
     molecules = []
+    fragments = []
     obConversion = openbabel.OBConversion()
     obConversion.SetInAndOutFormats("sdf", "mol")
 
@@ -170,28 +169,37 @@ def process_sdf(files, callback):
         not_at_end = obConversion.ReadFile(obMol, sdf_file)
         while not_at_end:
             try:
+                separated_fragments = obMol.Separate()
+                main_molecule = separated_fragments[1]  # Get the main molecule
+                fragment = separated_fragments[0]  # Get the salt/solvate fragment
+
                 # Extract molecular data
-                smiles = obConversion_smiles.WriteString(obMol).strip().upper()
+                smiles = obConversion_smiles.WriteString(main_molecule).strip().upper()
                 molecule_data = {
-                    "Chemical name": obMol.GetData("Chemical name").GetValue() if obMol.HasData("Chemical name") else '',
-                    "MolecularFormula": obMol.GetFormula().upper(),
-                    "MW": obMol.GetMolWt(),
+                    "Chemical name": main_molecule.GetData("Chemical name").GetValue() if main_molecule.HasData("Chemical name") else '',
+                    "MolecularFormula": main_molecule.GetFormula().upper(),
+                    "MW": main_molecule.GetMolWt(),
                     "Smile": smiles,
-                    "Amount_mg": obMol.GetData("Amount_mg").GetValue() if obMol.HasData("Amount_mg") else 0,
-                    "ID": obMol.GetData("ID").GetValue() if obMol.HasData("ID") else '',
-                    "Formula": obMol.GetData("Formula").GetValue() if obMol.HasData("Formula") else '',
-                    "Purity": obMol.GetData("Purity").GetValue() if obMol.HasData("Purity") else '',
-                    "PO": obMol.GetData("PO").GetValue() if obMol.HasData("PO") else '',
-                    "Salt_name": obMol.GetData("Salt_name").GetValue() if obMol.HasData("Salt_name") else obMol.GetData("Salt_Name").GetValue() if obMol.HasData("Salt_Name") else '',                    "Salt_ratio": obMol.GetData("Salt_ratio").GetValue() if obMol.HasData("Salt_ratio") else '',
-                    "MW_salt": obMol.GetData("MW_salt").GetValue() if obMol.HasData("MW_salt") else '',
-                    "Plate_ID": obMol.GetData("Plate_ID").GetValue() if obMol.HasData("Plate_ID") else '',
-                    "Well": obMol.GetData("Well").GetValue() if obMol.HasData("Well") else '',
-                    "Barcode": obMol.GetData("Barcode").GetValue() if obMol.HasData("Barcode") else ''
+                    "Amount_mg": main_molecule.GetData("Amount_mg").GetValue() if main_molecule.HasData("Amount_mg") else 0,
+                    "ID": main_molecule.GetData("ID").GetValue() if main_molecule.HasData("ID") else '',
+                    "Formula": main_molecule.GetData("Formula").GetValue() if main_molecule.HasData("Formula") else '',
+                    "Purity": main_molecule.GetData("Purity").GetValue() if main_molecule.HasData("Purity") else '',
+                    "PO": main_molecule.GetData("PO").GetValue() if main_molecule.HasData("PO") else '',
+                    "Plate_ID": main_molecule.GetData("Plate_ID").GetValue() if main_molecule.HasData("Plate_ID") else '',
+                    "Well": main_molecule.GetData("Well").GetValue() if main_molecule.HasData("Well") else '',
+                    "Barcode": main_molecule.GetData("Barcode").GetValue() if main_molecule.HasData("Barcode") else ''
                 }
-                
+
+                fragment_data = {
+                    "Salt_name": fragment.GetData("Salt_name").GetValue() if fragment.HasData("Salt_name") else fragment.GetData("Salt_Name").GetValue() if fragment.HasData("Salt_Name") else '',
+                    "Solvate_name": fragment.GetData("Solvate_name").GetValue() if fragment.HasData("Solvate_name") else fragment.GetData("Solvate_Name").GetValue() if fragment.HasData("Solvate_Name") else '',
+                    "MolecularFormula": fragment.GetFormula().upper(),
+                    "MW": fragment.GetMolWt()
+                }                    
+                                
                 # Extract atom and bond blocks
                 atom_block = []
-                for atom in openbabel.OBMolAtomIter(obMol):
+                for atom in openbabel.OBMolAtomIter(main_molecule):
                     atomic_num = atom.GetAtomicNum()
                     if atomic_num == 0:
                         print(f"Invalid element symbol: {atom.GetType()}")
@@ -203,24 +211,25 @@ def process_sdf(files, callback):
                         "y": atom.GetY(),
                         "z": atom.GetZ()
                     })
-                
+
                 bond_block = [{
                     "begin_atom_idx": bond.GetBeginAtomIdx() - 1,
                     "end_atom_idx": bond.GetEndAtomIdx() - 1,
                     "bond_type": bond.GetBondOrder()
-                } for bond in openbabel.OBMolBondIter(obMol)]
-                
+                } for bond in openbabel.OBMolBondIter(main_molecule)]
+
                 molecule_data.update({"atom_block": atom_block, "bond_block": bond_block})
                 molecule_data["cdxml"] = convert_mol_to_cdxml(molecule_data)
-                
+
                 molecules.append(molecule_data)
+                fragments.append(fragment_data)
             except Exception as e:
                 callback(f"Error processing molecule in file {sdf_file}: {str(e)}")
             
             not_at_end = obConversion.Read(obMol)
     
     callback(f"Total molecules extracted: {len(molecules)}")
-    return molecules
+    return molecules, fragments
 
 def convert_mol_to_cdxml(molecule_data):
     obConversion = openbabel.OBConversion()
@@ -469,7 +478,7 @@ def check_uniqueness(molecule_data, api_key):
         print(f"Error checking uniqueness: {response.status_code} - {response.text}")
         return None
 
-def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
+def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PATHS):
     # Check uniqueness of the compound
     uniqueness_result = check_uniqueness(molecule_data, api_key)
     
@@ -490,7 +499,7 @@ def post_to_api(molecule_data, file, callback, api_key, OUTPUT_PATHS):
     }
     
     # Upload fragments (salts/solvates)
-    salt_id, solvate_id = upload_fragments(molecule_data, callback, headers, api_key)
+    salt_id, solvate_id = upload_fragments(fragment_data, callback, headers, api_key)
     
     # Construct the payload
     payload = construct_payload(molecule_data, salt_id, solvate_id)
@@ -706,7 +715,7 @@ class MyApp(App):
             return
         
         file = self.selected_files[file_index]
-        molecules = process_sdf([file], self.print_terminal)
+        molecules, fragments = process_sdf([file], self.print_terminal)
         if not molecules:
             self.print_terminal(f"No valid molecules found in file: {file}")
             self.schedule_next_file(file_index, update_progress_bar)
@@ -719,11 +728,12 @@ class MyApp(App):
                 return
 
             molecule_data = molecules[molecule_index]
-            success = post_to_api(molecule_data, file, self.print_terminal, api_key, OUTPUT_PATHS)
+            fragment_data = fragments[molecule_index] if molecule_index < len(fragments) else {}
+            success = post_to_api(molecule_data, fragment_data, file, self.print_terminal, api_key, OUTPUT_PATHS)
             if success:
-                self.print_terminal(f'Success: {molecule_data.get("MolecularFormula", "")}')
+                self.print_terminal(f'Compound successfully uploaded: {molecule_data.get("MolecularFormula", "")}')
             else:
-                self.print_terminal(f'Failed: {molecule_data.get("MolecularFormula", "")}')
+                self.print_terminal(f'Failed to upload compound: {molecule_data.get("MolecularFormula", "")}')
             
             Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
 
