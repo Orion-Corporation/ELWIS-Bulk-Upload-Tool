@@ -100,10 +100,11 @@ def get_existing_fragment_id(fragment_name, fragment_type, api_key):
 def upload_fragments(fragment_data, callback, headers, api_key):
     salt_id = solvate_id = None
 
-    # Check for salt presence
-    if fragment_data.get('Salt_name'):
-        salt_name = fragment_data['Salt_name']
+    # Ensure the correct salt_name field is checked and used
+    salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
+    if salt_name:
         callback(f"Salt detected: {salt_name}")
+        print(f"Salt detected in fragment data: {salt_name}")  # Debug print for salt name
 
         salt_id = get_existing_fragment_id(salt_name, "salts", api_key)
         if salt_id:
@@ -125,11 +126,11 @@ def upload_fragments(fragment_data, callback, headers, api_key):
             else:
                 callback(f"Failed to upload salt: {salt_name}")
 
-    # Check for solvate presence
-    if fragment_data.get('Solvate_name'):
-        solvate_name = fragment_data['Solvate_name']
+    solvate_name = fragment_data.get('Solvate_name', '') or fragment_data.get('Solvate_Name', '')
+    if solvate_name:
         callback(f"Solvate detected: {solvate_name}")
-        
+        print(f"Solvate detected in fragment data: {solvate_name}")  # Debug print for solvate name
+
         solvate_id = get_existing_fragment_id(solvate_name, "solvates", api_key)
         if solvate_id:
             callback(f"Solvate '{solvate_name}' already exists with ID: {solvate_id}")
@@ -190,13 +191,16 @@ def process_sdf(files, callback):
                     "Barcode": main_molecule.GetData("Barcode").GetValue() if main_molecule.HasData("Barcode") else ''
                 }
 
+                print(f"Extracted molecule data: {molecule_data}")  # Debug print for molecule data
+
                 fragment_data = {
                     "Salt_name": fragment.GetData("Salt_name").GetValue() if fragment.HasData("Salt_name") else fragment.GetData("Salt_Name").GetValue() if fragment.HasData("Salt_Name") else '',
                     "Solvate_name": fragment.GetData("Solvate_name").GetValue() if fragment.HasData("Solvate_name") else fragment.GetData("Solvate_Name").GetValue() if fragment.HasData("Solvate_Name") else '',
                     "MolecularFormula": fragment.GetFormula().upper(),
                     "MW": fragment.GetMolWt()
                 }                    
-                                
+                print(f"Extracted fragment data: {fragment_data}")  # Debug print for fragment data
+
                 # Extract atom and bond blocks
                 atom_block = []
                 for atom in openbabel.OBMolAtomIter(main_molecule):
@@ -230,6 +234,7 @@ def process_sdf(files, callback):
     
     callback(f"Total molecules extracted: {len(molecules)}")
     return molecules, fragments
+
 
 def convert_mol_to_cdxml(molecule_data):
     obConversion = openbabel.OBConversion()
@@ -367,6 +372,8 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                 "coefficient": 1
             }]
         data["data"]["relationships"]["batch"]["data"]["attributes"]["fragments"] = fragments
+
+    print(f"Constructed payload: {data}")  # Debug print for payload
 
     return data
 
@@ -506,6 +513,7 @@ def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PA
     
     # Send the request
     success = send_request(payload, file, callback, API_ENDPOINTS['Compound Endpoint'], headers, OUTPUT_PATHS)
+    print(f"Payload sent for file {file}: {payload}")  # Debug print for payload sent
     return success
 
 def handle_success(file, data, OUTPUT_PATHS, callback):
