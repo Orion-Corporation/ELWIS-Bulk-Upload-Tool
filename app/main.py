@@ -102,6 +102,13 @@ def upload_fragments(fragment_data, callback, headers, api_key):
 
     # Ensure the correct salt_name field is checked and used
     salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
+
+    # Ensure salt_name is a string
+    if isinstance(salt_name, (list, tuple)):
+        salt_name = salt_name[0] if salt_name else ''
+    else:
+        salt_name = str(salt_name)
+
     if salt_name:
         callback(f"Salt detected: {salt_name}")
         print(f"Salt detected in fragment data: {salt_name}")  # Debug print for salt name
@@ -127,6 +134,13 @@ def upload_fragments(fragment_data, callback, headers, api_key):
                 callback(f"Failed to upload salt: {salt_name}")
 
     solvate_name = fragment_data.get('Solvate_name', '') or fragment_data.get('Solvate_Name', '')
+
+    # Ensure solvate_name is a string
+    if isinstance(solvate_name, (list, tuple)):
+        solvate_name = solvate_name[0] if solvate_name else ''
+    else:
+        solvate_name = str(solvate_name)
+
     if solvate_name:
         callback(f"Solvate detected: {solvate_name}")
         print(f"Solvate detected in fragment data: {solvate_name}")  # Debug print for solvate name
@@ -154,54 +168,97 @@ def upload_fragments(fragment_data, callback, headers, api_key):
     return salt_id, solvate_id
 
 # SDF processing functions using OpenBabel
+from rdkit import Chem
+from rdkit.Chem import rdmolfiles
+from rdkit.Chem import AllChem
+
 def process_sdf(files, callback):
+    print("Starting process_sdf")
     molecules = []
     fragments = []
+
     obConversion = openbabel.OBConversion()
     obConversion.SetInAndOutFormats("sdf", "mol")
+    print("OpenBabel conversion set for sdf to mol")
 
     obConversion_smiles = openbabel.OBConversion()
     obConversion_smiles.SetOutFormat("smiles")
+    print("OpenBabel conversion set for mol to smiles")
 
     for sdf_file in files:
+        print(f"Processing file: {sdf_file}")
         callback(f"Processing file: {sdf_file}")
-        obMol = openbabel.OBMol()
-        
-        not_at_end = obConversion.ReadFile(obMol, sdf_file)
-        while not_at_end:
+
+        # Load the SDF file using RDKit to extract all properties
+        supplier = Chem.SDMolSupplier(sdf_file)
+        if not supplier:
+            print(f"RDKit could not read file: {sdf_file}")
+            continue
+
+        for rdkit_mol in supplier:
+            if rdkit_mol is None:
+                print(f"Failed to parse molecule in file: {sdf_file}")
+                continue
+
             try:
+                # Convert RDKit molecule to OpenBabel molecule
+                mol_block = Chem.MolToMolBlock(rdkit_mol)
+                obMol = openbabel.OBMol()
+                obConversion.ReadString(obMol, mol_block)
+
+                # Separate fragments using OpenBabel
                 separated_fragments = obMol.Separate()
                 main_molecule = separated_fragments[1]  # Get the main molecule
                 fragment = separated_fragments[0]  # Get the salt/solvate fragment
 
-                # Extract molecular data
+                # Extract molecular data using RDKit
                 smiles = obConversion_smiles.WriteString(main_molecule).strip().upper()
+                print(f"SMILES: {smiles}")
+
+                # Extract properties using RDKit
+                chemical_name = rdkit_mol.GetProp("Chemical name") if rdkit_mol.HasProp("Chemical name") else ''
+                amount_mg = rdkit_mol.GetProp("Amount_mg") if rdkit_mol.HasProp("Amount_mg") else 0
+                compound_id = rdkit_mol.GetProp("ID") if rdkit_mol.HasProp("ID") else ''
+                formula = rdkit_mol.GetProp("Formula") if rdkit_mol.HasProp("Formula") else ''
+                purity = rdkit_mol.GetProp("Purity") if rdkit_mol.HasProp("Purity") else ''
+                po = rdkit_mol.GetProp("PO") if rdkit_mol.HasProp("PO") else ''
+                plate_id = rdkit_mol.GetProp("Plate_ID") if rdkit_mol.HasProp("Plate_ID") else ''
+                well = rdkit_mol.GetProp("Well") if rdkit_mol.HasProp("Well") else ''
+                barcode = rdkit_mol.GetProp("Barcode") if rdkit_mol.HasProp("Barcode") else ''
+
                 molecule_data = {
-                    "Chemical name": main_molecule.GetData("Chemical name").GetValue() if main_molecule.HasData("Chemical name") else '',
+                    "Chemical name": chemical_name,
                     "MolecularFormula": main_molecule.GetFormula().upper(),
                     "MW": main_molecule.GetMolWt(),
                     "Smile": smiles,
-                    "Amount_mg": main_molecule.GetData("Amount_mg").GetValue() if main_molecule.HasData("Amount_mg") else 0,
-                    "ID": main_molecule.GetData("ID").GetValue() if main_molecule.HasData("ID") else '',
-                    "Formula": main_molecule.GetData("Formula").GetValue() if main_molecule.HasData("Formula") else '',
-                    "Purity": main_molecule.GetData("Purity").GetValue() if main_molecule.HasData("Purity") else '',
-                    "PO": main_molecule.GetData("PO").GetValue() if main_molecule.HasData("PO") else '',
-                    "Plate_ID": main_molecule.GetData("Plate_ID").GetValue() if main_molecule.HasData("Plate_ID") else '',
-                    "Well": main_molecule.GetData("Well").GetValue() if main_molecule.HasData("Well") else '',
-                    "Barcode": main_molecule.GetData("Barcode").GetValue() if main_molecule.HasData("Barcode") else ''
+                    "Amount_mg": amount_mg,
+                    "ID": compound_id,
+                    "Formula": formula,
+                    "Purity": purity,
+                    "PO": po,
+                    "Plate_ID": plate_id,
+                    "Well": well,
+                    "Barcode": barcode
                 }
 
-                print(f"Extracted molecule data: {molecule_data}")  # Debug print for molecule data
+                print(f"Extracted molecule data: {molecule_data}")
 
+                # Extract fragment properties using RDKit
+                if rdkit_mol.HasProp("Salt_Name"):
+                    fragment_salt_name = rdkit_mol.GetProp("Salt_Name"),
+                elif rdkit_mol.HasProp("Salt_name"):
+                    fragment_salt_name = rdkit_mol.GetProp("Salt_name")
+                else:
+                    fragment_salt_name = ''
+                
                 fragment_data = {
-                    "Salt_name": fragment.GetData("Salt_name").GetValue() if fragment.HasData("Salt_name") else fragment.GetData("Salt_Name").GetValue() if fragment.HasData("Salt_Name") else '',
-                    "Solvate_name": fragment.GetData("Solvate_name").GetValue() if fragment.HasData("Solvate_name") else fragment.GetData("Solvate_Name").GetValue() if fragment.HasData("Solvate_Name") else '',
-                    "MolecularFormula": fragment.GetFormula().upper(),
-                    "MW": fragment.GetMolWt()
-                }                    
-                print(f"Extracted fragment data: {fragment_data}")  # Debug print for fragment data
+                    "Salt_name": fragment_salt_name,
+                    "MolecularFormula": formula,
+                    "MW_salt": fragment.GetMolWt()
+                }
+                print(f"Extracted fragment data: {fragment_data}")
 
-                # Extract atom and bond blocks
+                # Extract atom and bond blocks using OpenBabel
                 atom_block = []
                 for atom in openbabel.OBMolAtomIter(main_molecule):
                     atomic_num = atom.GetAtomicNum()
@@ -215,26 +272,29 @@ def process_sdf(files, callback):
                         "y": atom.GetY(),
                         "z": atom.GetZ()
                     })
+                print(f"Extracted atom block: {atom_block}")
 
                 bond_block = [{
                     "begin_atom_idx": bond.GetBeginAtomIdx() - 1,
                     "end_atom_idx": bond.GetEndAtomIdx() - 1,
                     "bond_type": bond.GetBondOrder()
                 } for bond in openbabel.OBMolBondIter(main_molecule)]
+                print(f"Extracted bond block: {bond_block}")
 
                 molecule_data.update({"atom_block": atom_block, "bond_block": bond_block})
                 molecule_data["cdxml"] = convert_mol_to_cdxml(molecule_data)
+                print(f"Converted to CDXML format")
 
                 molecules.append(molecule_data)
                 fragments.append(fragment_data)
+
             except Exception as e:
+                print(f"Error processing molecule in file {sdf_file}: {str(e)}")
                 callback(f"Error processing molecule in file {sdf_file}: {str(e)}")
-            
-            not_at_end = obConversion.Read(obMol)
-    
+
+    print(f"Total molecules extracted: {len(molecules)}")
     callback(f"Total molecules extracted: {len(molecules)}")
     return molecules, fragments
-
 
 def convert_mol_to_cdxml(molecule_data):
     obConversion = openbabel.OBConversion()
@@ -265,7 +325,20 @@ def convert_mol_to_cdxml(molecule_data):
     print("Successfully converted molecule to CDXML format")
     return output_cdxml
 
-def construct_payload(molecule_data, salt_id, solvate_id):
+def construct_payload(molecule_data, salt_id, solvate_id, fragment_data):
+    # Ensure name is a string
+    salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
+    if isinstance(salt_name, (list, tuple)):
+        salt_name = salt_name[0] if salt_name else ''
+    else:
+        salt_name = str(salt_name)
+
+    solvate_name = fragment_data.get('Solvate_name', '') or fragment_data.get('Solvate_Name', '')
+    if isinstance(solvate_name, (list, tuple)):
+        solvate_name = solvate_name[0] if solvate_name else ''
+    else:
+        solvate_name = str(solvate_name)
+
     data = {
         "data": {
             "type": "asset",
@@ -290,7 +363,7 @@ def construct_payload(molecule_data, salt_id, solvate_id):
                     {
                         "id": "5d6e0287ee35880008c18db7",
                         "value": {
-                            "rawValue": molecule_data.get("MW", ""),
+                            "rawValue": str(molecule_data.get("MW", "")),  # Ensure rawValue is a string
                             "displayValue": f"{molecule_data.get('MW', '')} g/mol"
                         }
                     },
@@ -350,30 +423,16 @@ def construct_payload(molecule_data, salt_id, solvate_id):
         if salt_id:
             fragments["salts"] = [{
                 "type": "SALT",
-                "id": salt_id,
-                "name": molecule_data.get('Salt_name', ''),
-                "mf": molecule_data.get('Formula', ''),
+                "name": salt_name,
+                "mf": fragment_data.get('MolecularFormula', ''),
                 "mw": {
-                    "rawValue": molecule_data.get('MW_salt', ''),
-                    "displayValue": f"{molecule_data.get('MW_salt', '')} g/mol"
+                    "rawValue": str(fragment_data.get('MW_salt', '')),  # Ensure rawValue is a string
+                    "displayValue": f"{fragment_data.get('MW_salt', '')} g/mol"
                 },
-                "coefficient": 1
-            }]
-        if solvate_id:
-            fragments["solvates"] = [{
-                "type": "SOLVATE",
-                "id": solvate_id,
-                "name": molecule_data.get('Solvate_name', ''),
-                "mf": molecule_data.get('Formula', ''),
-                "mw": {
-                    "rawValue": molecule_data.get('MW', ''),
-                    "displayValue": f"{molecule_data.get('MW', '')} g/mol"
-                },
+                "id": f"SALT:{salt_id}",
                 "coefficient": 1
             }]
         data["data"]["relationships"]["batch"]["data"]["attributes"]["fragments"] = fragments
-
-    print(f"Constructed payload: {data}")  # Debug print for payload
 
     return data
 
@@ -381,6 +440,9 @@ def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
     data_json = json.dumps(data)
     try:
         response = requests.post(endpoint, data=data_json, headers=headers)
+        # write response to json file
+        with open('response.json', 'w') as f:
+            json.dump(response.json(), f, indent=4)
         if response.status_code in [200, 201]:
             handle_success(file, data, OUTPUT_PATHS, callback)
             return True
@@ -509,11 +571,15 @@ def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PA
     salt_id, solvate_id = upload_fragments(fragment_data, callback, headers, api_key)
     
     # Construct the payload
-    payload = construct_payload(molecule_data, salt_id, solvate_id)
+    payload = construct_payload(molecule_data, salt_id, solvate_id, fragment_data)
     
     # Send the request
     success = send_request(payload, file, callback, API_ENDPOINTS['Compound Endpoint'], headers, OUTPUT_PATHS)
     print(f"Payload sent for file {file}: {payload}")  # Debug print for payload sent
+    # write payload to json
+    with open('payload.json', 'w') as f:
+        json.dump(payload, f, indent=4)
+        # also write the response in full
     return success
 
 def handle_success(file, data, OUTPUT_PATHS, callback):
