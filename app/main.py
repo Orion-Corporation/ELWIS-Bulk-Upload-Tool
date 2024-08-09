@@ -217,6 +217,10 @@ def process_sdf(files, callback):
 
                 # Extract properties using RDKit
                 chemical_name = rdkit_mol.GetProp("Chemical name") if rdkit_mol.HasProp("Chemical name") else ''
+                # Remove everything after the first whitespace in the chemical name
+                if chemical_name:
+                    chemical_name = chemical_name.split(' ')[0]
+                    
                 amount_mg = rdkit_mol.GetProp("Amount_mg") if rdkit_mol.HasProp("Amount_mg") else 0
                 compound_id = rdkit_mol.GetProp("ID") if rdkit_mol.HasProp("ID") else ''
                 formula = rdkit_mol.GetProp("Formula") if rdkit_mol.HasProp("Formula") else ''
