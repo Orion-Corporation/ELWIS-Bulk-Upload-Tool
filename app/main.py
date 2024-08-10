@@ -98,7 +98,7 @@ def get_existing_fragment_id(fragment_name, fragment_type, api_key):
     return None
 
 def upload_fragments(fragment_data, callback, headers, api_key):
-    salt_id = solvate_id = None
+    salt_id = None
 
     # Ensure the correct salt_name field is checked and used
     salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
@@ -133,39 +133,7 @@ def upload_fragments(fragment_data, callback, headers, api_key):
             else:
                 callback(f"Failed to upload salt: {salt_name}")
 
-    solvate_name = fragment_data.get('Solvate_name', '') or fragment_data.get('Solvate_Name', '')
-
-    # Ensure solvate_name is a string
-    if isinstance(solvate_name, (list, tuple)):
-        solvate_name = solvate_name[0] if solvate_name else ''
-    else:
-        solvate_name = str(solvate_name)
-
-    if solvate_name:
-        callback(f"Solvate detected: {solvate_name}")
-        print(f"Solvate detected in fragment data: {solvate_name}")  # Debug print for solvate name
-
-        solvate_id = get_existing_fragment_id(solvate_name, "solvates", api_key)
-        if solvate_id:
-            callback(f"Solvate '{solvate_name}' already exists with ID: {solvate_id}")
-        else:
-            solvate_data = {
-                "data": {
-                    "type": "solvate",
-                    "attributes": {
-                        "name": solvate_name,
-                        "mf": fragment_data.get('MolecularFormula', ''),
-                        "mw": f"{fragment_data.get('MW', '')} g/mol"
-                    }
-                }
-            }
-            solvate_id = upload_fragment(solvate_data, "solvates", callback, headers)
-            if solvate_id:
-                callback(f"Successfully uploaded solvate: {solvate_name}")
-            else:
-                callback(f"Failed to upload solvate: {solvate_name}")
-
-    return salt_id, solvate_id
+    return salt_id
 
 # SDF processing functions using OpenBabel
 from rdkit import Chem
@@ -257,7 +225,7 @@ def process_sdf(files, callback):
                 
                 fragment_data = {
                     "Salt_name": fragment_salt_name,
-                    "MolecularFormula": formula,
+                    "MolecularFormula": fragment.GetFormula().upper(),
                     "MW_salt": fragment.GetMolWt()
                 }
                 print(f"Extracted fragment data: {fragment_data}")
@@ -329,7 +297,7 @@ def convert_mol_to_cdxml(molecule_data):
     print("Successfully converted molecule to CDXML format")
     return output_cdxml
 
-def construct_payload(molecule_data, salt_id, solvate_id, fragment_data):
+def construct_payload(molecule_data, salt_id, fragment_data):
     # Ensure name is a string
     salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
     if isinstance(salt_name, (list, tuple)):
@@ -422,7 +390,7 @@ def construct_payload(molecule_data, salt_id, solvate_id, fragment_data):
         }
     }
 
-    if salt_id or solvate_id:
+    if salt_id:
         fragments = {}
         if salt_id:
             fragments["salts"] = [{
@@ -430,7 +398,7 @@ def construct_payload(molecule_data, salt_id, solvate_id, fragment_data):
                 "name": salt_name,
                 "mf": fragment_data.get('MolecularFormula', ''),
                 "mw": {
-                    "rawValue": str(fragment_data.get('MW_salt', '')),  # Ensure rawValue is a string
+                    "rawValue": str(fragment_data.get('MW_salt', '')),
                     "displayValue": f"{fragment_data.get('MW_salt', '')} g/mol"
                 },
                 "id": f"SALT:{salt_id}",
@@ -572,10 +540,10 @@ def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PA
     }
     
     # Upload fragments (salts/solvates)
-    salt_id, solvate_id = upload_fragments(fragment_data, callback, headers, api_key)
+    salt_id = upload_fragments(fragment_data, callback, headers, api_key)
     
     # Construct the payload
-    payload = construct_payload(molecule_data, salt_id, solvate_id, fragment_data)
+    payload = construct_payload(molecule_data, salt_id, fragment_data)
     
     # Send the request
     success = send_request(payload, file, callback, API_ENDPOINTS['Compound Endpoint'], headers, OUTPUT_PATHS)

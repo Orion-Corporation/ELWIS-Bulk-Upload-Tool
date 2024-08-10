@@ -75,7 +75,7 @@
                                 {
                                     "type": "SALT",
                                     "name": "hydrogen chloride",
-                                    "mf": "C17H29ClN4O2",
+                                    "mf": "CLH",
                                     "mw": {
                                         "rawValue": "36.46094",
                                         "displayValue": "36.46094 g/mol"

@@ -1,7 +1,32 @@
 {
-    "source": ["Internal", "Collaboration", "Acquired"],
-    "project": ["TRPA1", "YAP-TEAD", "TYRP-1 ADC", "Cbl-b", "WRNi", "GPR183", "PVRIG", "ROR1", "Project12345678901234567890", "Unspecified"],
-    "chemist": ["Ahlmark Marko", "Ahlskog Johanna", "Aho Eija", "Aho Riikka", "Ahos Leena", "Alander Salla", "Alanne Aino-Liisa", "Alhonen-Raatesalmi Anneli", "Anttila Kirsi", "Äänismaa Riikka", "Äärelä Antti", "Örn Fanny", "TestUser MCChemist"],
-    "batch_purpose": ["Test compound", "Analytical standard", "Control compound", "Internal standard", "Linker-Payload", "Metabolite", "Payload", "Reference compound", "Test prodrug", "Dummy compound", "Library compound"],
-    "batch_type": ["Discovery", "GLP", "GMP"]
+    "source": {
+        "id": "62fcceeb19660304d1e5beee", 
+        "descriprion": "Source",
+        "value": "Acquired"
+    },
+    "project": {
+        "id": "63469c69ed8a726a31923537",
+        "descriprion": "Project",
+        "value": "Unspecified"
+    },
+    "synthesis_datetime": {
+        "id": "62fcceeb19660304d1e5bef1",
+        "descriprion": "Synthesis Date",
+        "value": "2011-10-10T14:48:00Z"
+    },
+    "chemist": {
+        "id": "6384a1270d28381d21deaca7",
+        "descriprion": "Chemist",
+        "value": "TestUser MCChemist"
+    },
+    "batch_purpose": {
+        "id": "62fa096d19660304d1e5b2db",
+        "descriprion": "Batch Purpose",
+        "value": "Dummy compound"
+    },
+    "batch_type": {
+        "id": "62fa096d19660304d1e5b2da",
+        "descriprion": "Batch Type",
+        "value": "Discovery"
+    }
 }
