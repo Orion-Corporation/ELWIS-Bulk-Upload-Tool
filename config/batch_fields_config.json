@@ -1,0 +1,7 @@
+{
+    "source": ["Internal", "Collaboration", "Acquired"],
+    "project": ["TRPA1", "YAP-TEAD", "TYRP-1 ADC", "Cbl-b", "WRNi", "GPR183", "PVRIG", "ROR1", "Project12345678901234567890", "Unspecified"],
+    "chemist": ["Ahlmark Marko", "Ahlskog Johanna", "Aho Eija", "Aho Riikka", "Ahos Leena", "Alander Salla", "Alanne Aino-Liisa", "Alhonen-Raatesalmi Anneli", "Anttila Kirsi", "Äänismaa Riikka", "Äärelä Antti", "Örn Fanny", "TestUser MCChemist"],
+    "batch_purpose": ["Test compound", "Analytical standard", "Control compound", "Internal standard", "Linker-Payload", "Metabolite", "Payload", "Reference compound", "Test prodrug", "Dummy compound", "Library compound"],
+    "batch_type": ["Discovery", "GLP", "GMP"]
+}

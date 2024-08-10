@@ -511,27 +511,27 @@ def check_uniqueness(molecule_data, api_key):
                         "attributes": {
                             "fields": [
                                 {
-                                    "id": "62fcceeb19660304d1e5beee",
+                                    "id": "62fcceeb19660304d1e5beee", # Source
                                     "value": "Acquired"
                                 },
                                 {
-                                    "id": "63469c69ed8a726a31923537",
+                                    "id": "63469c69ed8a726a31923537", # Project
                                     "value": "Unspecified"
                                 },
                                 {
-                                    "id": "62fcceeb19660304d1e5bef1",
+                                    "id": "62fcceeb19660304d1e5bef1", # Synthesis datetime
                                     "value": "2011-10-10T14:48:00Z"
                                 },
                                 {
-                                    "id": "6384a1270d28381d21deaca7",
+                                    "id": "6384a1270d28381d21deaca7", # Chemist
                                     "value": "TestUser MCChemist"
                                 },
                                 {
-                                    "id": "62fa096d19660304d1e5b2db",
+                                    "id": "62fa096d19660304d1e5b2db", # Batch Purpose
                                     "value": "Dummy compound"
                                 },
                                 {
-                                    "id": "62fa096d19660304d1e5b2da",
+                                    "id": "62fa096d19660304d1e5b2da", # Batch Type
                                     "value": "Discovery"
                                 }
                             ]
