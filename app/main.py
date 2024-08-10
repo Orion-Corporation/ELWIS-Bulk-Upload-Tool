@@ -60,6 +60,8 @@ API_ENDPOINTS = load_config('config/api_endpoints.json', {
     "Compound Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/Compounds/assets"
 })
 
+BATCH_FIELDS_CONFIG = load_config('config/batch_fields_config.json', {})
+
 # Helper functions
 def log_duplicate(file, molecule_data, callback, orm_code):
     if not os.path.exists(OUTPUT_PATHS['duplicate_files']):
@@ -310,7 +312,15 @@ def construct_payload(molecule_data, salt_id, fragment_data):
         solvate_name = solvate_name[0] if solvate_name else ''
     else:
         solvate_name = str(solvate_name)
-
+        
+    source_value = BATCH_FIELDS_CONFIG.get("source", {}).get("value", "Acquired")
+    project_value = BATCH_FIELDS_CONFIG.get("project", {}).get("value", "Unspecified")
+    synthesis_datetime_value = BATCH_FIELDS_CONFIG.get("synthesis_datetime", {}).get("value", "2011-10-10T14:48:00Z")
+    chemist_value = BATCH_FIELDS_CONFIG.get("chemist", {}).get("value", "TestUser MCChemist")
+    batch_purpose_value = BATCH_FIELDS_CONFIG.get("batch_purpose", {}).get("value", "Dummy compound")
+    batch_type_value = BATCH_FIELDS_CONFIG.get("batch_type", {}).get("value", "Discovery")
+    
+    print("Retrieved source value:", source_value)
     data = {
         "data": {
             "type": "asset",
@@ -360,27 +370,27 @@ def construct_payload(molecule_data, salt_id, fragment_data):
                             "fields": [
                                 {
                                 "id": "62fcceeb19660304d1e5beee",
-                                "value": "Acquired"
+                                "value": source_value     
                                 },
                                 {
                                 "id": "63469c69ed8a726a31923537",
-                                "value": "Unspecified"
+                                "value": project_value
                                 },
                                 {
                                 "id": "62fcceeb19660304d1e5bef1",
-                                "value": "2011-10-10T14:48:00Z"
+                                "value": synthesis_datetime_value
                                 },
                                 {
                                 "id": "6384a1270d28381d21deaca7",
-                                "value": "TestUser MCChemist"
+                                "value": chemist_value
                                 },
                                 {
                                 "id": "62fa096d19660304d1e5b2db",
-                                "value": "Dummy compound"
+                                "value": batch_purpose_value
                                 },
                                 {
                                 "id": "62fa096d19660304d1e5b2da",
-                                "value": "Discovery"
+                                "value": batch_type_value
                                 }
                             ]
                         }
