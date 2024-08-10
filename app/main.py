@@ -184,8 +184,22 @@ def process_sdf(files, callback):
 
                 # Separate fragments using OpenBabel
                 separated_fragments = obMol.Separate()
-                main_molecule = separated_fragments[1]  # Get the main molecule
-                fragment = separated_fragments[0]  # Get the salt/solvate fragment
+                
+                if len(separated_fragments) == 0:
+                    # No fragments to separate
+                    main_molecule = obMol
+                    fragment = None
+                elif len(separated_fragments) == 1:
+                    # Only one molecule, assume it's the main molecule
+                    main_molecule = separated_fragments[0]
+                    fragment = None
+                elif len(separated_fragments) >= 2:
+                    # Multiple fragments, assume the first is the salt/solvent and the second is the main molecule
+                    main_molecule = separated_fragments[1]
+                    fragment = separated_fragments[0]
+                else:
+                    print("Error: Unexpected number of fragments.")
+                    continue
 
                 # Extract molecular data using RDKit
                 smiles = obConversion_smiles.WriteString(main_molecule).strip().upper()
@@ -227,22 +241,24 @@ def process_sdf(files, callback):
                 print(f"Extracted molecule data: {molecule_data}")
 
                 # Extract fragment properties using RDKit
-                if rdkit_mol.HasProp("Salt_Name"):
-                    fragment_salt_name = rdkit_mol.GetProp("Salt_Name")
-                elif rdkit_mol.HasProp("Salt_name"):
-                    fragment_salt_name = rdkit_mol.GetProp("Salt_name")
-                else:
-                    fragment_salt_name = ''
-                
-                mw_salt = rdkit_mol.GetProp("MW_salt") if rdkit_mol.HasProp("MW_salt") else fragment.GetMolWt()
-                mf_salt = (rdkit_mol.GetProp("Salt smiles").strip('[]') if rdkit_mol.HasProp("Salt smiles") else fragment.GetFormula().upper())
-                
-                fragment_data = {
-                    "Salt_name": fragment_salt_name,
-                    "MolecularFormula": mf_salt,
-                    "MW_salt": mw_salt
-                }
-                print(f"Extracted fragment data: {fragment_data}")
+                fragment_data = {}
+                if fragment is not None:
+                    if rdkit_mol.HasProp("Salt_Name"):
+                        fragment_salt_name = rdkit_mol.GetProp("Salt_Name")
+                    elif rdkit_mol.HasProp("Salt_name"):
+                        fragment_salt_name = rdkit_mol.GetProp("Salt_name")
+                    else:
+                        fragment_salt_name = ''
+                    
+                    mw_salt = rdkit_mol.GetProp("MW_salt") if rdkit_mol.HasProp("MW_salt") else fragment.GetMolWt()
+                    mf_salt = (rdkit_mol.GetProp("Salt smiles").strip('[]') if rdkit_mol.HasProp("Salt smiles") else fragment.GetFormula().upper())
+                    
+                    fragment_data = {
+                        "Salt_name": fragment_salt_name,
+                        "MolecularFormula": mf_salt,
+                        "MW_salt": mw_salt
+                    }
+                    print(f"Extracted fragment data: {fragment_data}")
 
                 # Extract atom and bond blocks using OpenBabel
                 atom_block = []
