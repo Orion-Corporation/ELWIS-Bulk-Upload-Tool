@@ -14,7 +14,7 @@ app/myenv
 .venv
 app/Miniconda3-latest-Linux-x86_64.sh
 miniconda.sh
-MCULE
-MOLPORT
-SALTS_SOLVATES
-ENAMINE
+MCULE/*
+MOLPORT/*
+SALTS_SOLVATES/*
+ENAMINE/*
