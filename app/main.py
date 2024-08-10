@@ -47,12 +47,11 @@ def load_config(file_path, default):
         return default
 
 OUTPUT_PATHS = load_config('config/output_paths.json', {
-    "successful_files": "Successfully uploaded files",
-    "failed_files": "Failed files",
-    "duplicate_files": "Failed files/Duplicate compounds",
-    "success_log": "Successfully uploaded files/success.txt",
-    "duplicate_log": "Failed files/Duplicate compounds/duplicates.txt",
-    "general_log": "logs.txt"
+    "success_log": "Successfull/success.txt",
+    "duplicate_log": "Failed/duplicates.txt",
+    "failed_log": "Failed/failed.txt",
+    "general_log": "logs.txt",
+    "download_folder": "downloads"
 })
 
 API_ENDPOINTS = load_config('config/api_endpoints.json', {
@@ -61,17 +60,6 @@ API_ENDPOINTS = load_config('config/api_endpoints.json', {
 })
 
 BATCH_FIELDS_CONFIG = load_config('config/batch_fields_config.json', {})
-
-# Helper functions
-def log_duplicate(file, molecule_data, callback, orm_code):
-    if not os.path.exists(OUTPUT_PATHS['duplicate_files']):
-        os.makedirs(OUTPUT_PATHS['duplicate_files'])
-    shutil.copy(file, OUTPUT_PATHS['duplicate_files'])
-
-    with open(OUTPUT_PATHS['duplicate_log'], 'a') as duplicate_log:
-        duplicate_log.write(f"File: {file}, Molecule: {molecule_data.get('MolecularFormula', '')}, ORM Code: {orm_code}\n")
-
-    callback(f"Duplicate: {molecule_data.get('MolecularFormula', '')}, ORM Code: {orm_code}. Copying file to '{OUTPUT_PATHS['duplicate_files']}' folder.")
 
 # API functions
 def upload_fragment(fragment_data, fragment_type, callback, headers):
@@ -217,6 +205,8 @@ def process_sdf(files, callback):
                 plate_id = rdkit_mol.GetProp("Plate_ID") if rdkit_mol.HasProp("Plate_ID") else ''
                 well = rdkit_mol.GetProp("Well") if rdkit_mol.HasProp("Well") else ''
                 barcode = rdkit_mol.GetProp("Barcode") if rdkit_mol.HasProp("Barcode") else ''
+                # stereochemistry
+                stereochemistry = rdkit_mol.GetProp("Stereochem.data") if rdkit_mol.HasProp("Stereochem.data") else 'No stereochemistry'
 
                 molecule_data = {
                     "Chemical name": chemical_name,
@@ -230,7 +220,8 @@ def process_sdf(files, callback):
                     "PO": po,
                     "Plate_ID": plate_id,
                     "Well": well,
-                    "Barcode": barcode
+                    "Barcode": barcode,
+                    "Stereochemistry": stereochemistry
                 }
 
                 print(f"Extracted molecule data: {molecule_data}")
@@ -244,10 +235,11 @@ def process_sdf(files, callback):
                     fragment_salt_name = ''
                 
                 mw_salt = rdkit_mol.GetProp("MW_salt") if rdkit_mol.HasProp("MW_salt") else fragment.GetMolWt()
+                mf_salt = (rdkit_mol.GetProp("Salt smiles").strip('[]') if rdkit_mol.HasProp("Salt smiles") else fragment.GetFormula().upper())
                 
                 fragment_data = {
                     "Salt_name": fragment_salt_name,
-                    "MolecularFormula": fragment.GetFormula().upper(),
+                    "MolecularFormula": mf_salt,
                     "MW_salt": mw_salt
                 }
                 print(f"Extracted fragment data: {fragment_data}")
@@ -356,7 +348,7 @@ def construct_payload(molecule_data, salt_id, fragment_data):
                     },
                     {
                         "id": "62f9fe5b74770f14d1de43a8",
-                        "value": "No stereochemistry"
+                        "value": molecule_data.get("Stereochemistry", "No stereochemistry")
                     },
                     {
                         "id": "5d6e0287ee35880008c18db6",
@@ -365,7 +357,7 @@ def construct_payload(molecule_data, salt_id, fragment_data):
                     {
                         "id": "5d6e0287ee35880008c18db7",
                         "value": {
-                            "rawValue": str(molecule_data.get("MW", "")),  # Ensure rawValue is a string
+                            "rawValue": str(molecule_data.get("MW", "")),
                             "displayValue": f"{molecule_data.get('MW', '')} g/mol"
                         }
                     },
@@ -593,36 +585,35 @@ def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PA
     return success
 
 def handle_success(file, data, OUTPUT_PATHS, callback):
-    if not os.path.exists(OUTPUT_PATHS['successful_files']):
-        os.makedirs(OUTPUT_PATHS['successful_files'])
-    shutil.copy(file, OUTPUT_PATHS['successful_files'])
-    
+    # Log the success information using the molecular formula instead of SMILES
+    molecular_formula = data['data']['attributes']['synonyms'][1]  # Assuming the second synonym is the molecular formula
     with open(OUTPUT_PATHS['success_log'], 'a') as success_log:
-        success_log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: 200\n")
-    
-def handle_failure(file, data, response, OUTPUT_PATHS, callback):
-    if "duplicate" in response.text.lower():
-        log_folder = OUTPUT_PATHS['duplicate_files']
-        log_file = OUTPUT_PATHS['duplicate_log']
-    else:
-        log_folder = OUTPUT_PATHS['failed_files']
-        log_file = OUTPUT_PATHS['general_log']
+        success_log.write(f"File: {file}, Molecule: {molecular_formula}, API Response Status Code: 200\n")
+    callback(f"Success: {molecular_formula} logged successfully.")
 
-    if not os.path.exists(log_folder):
-        os.makedirs(log_folder)
-    shutil.copy(file, log_folder)
+
+def handle_failure(file, data, response, OUTPUT_PATHS, callback):
+    log_file = OUTPUT_PATHS['failed_log']
     
     with open(log_file, 'a') as log:
         log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: {response.status_code}, response text: {response.text}\n")
     
-    callback(f"Failed: {data['data']['attributes']['synonyms'][0]} with status code {response.status_code}. Copying file to '{log_folder}' folder.")
+    callback(f"Failed: {data['data']['attributes']['synonyms'][0]} with status code {response.status_code}. Logged failure.")
+
     try:
         response_json = response.json()
-        with open(f"{log_folder}/response.json", 'w') as f:
+        with open(f"{log_file}_response.json", 'w') as f:
             json.dump(response_json, f, indent=4)
     except ValueError:
-        with open(f"{log_folder}/response.json", 'w') as f:
+        with open(f"{log_file}_response.json", 'w') as f:
             f.write(response.text)
+
+def log_duplicate(file, molecule_data, callback, orm_code):
+    # Log the duplicate information
+    with open(OUTPUT_PATHS['duplicate_log'], 'a') as duplicate_log:
+        duplicate_log.write(f"File: {file}, Molecule: {molecule_data.get('MolecularFormula', '')}, ORM Code: {orm_code}\n")
+    
+    callback(f"Duplicate: {molecule_data.get('MolecularFormula', '')}, ORM Code: {orm_code}. Logged duplicate.")
 
 # Kivy app classes
 class CustomFileChooserIconView(FileChooserIconView):
@@ -751,19 +742,22 @@ class MyApp(App):
         self.readme_popup.open()
 
     def clear_output_folders(self, instance=None):
-        folders = [OUTPUT_PATHS['successful_files'], OUTPUT_PATHS['failed_files'], OUTPUT_PATHS['duplicate_files']]
-        for folder in folders:
-            if os.path.exists(folder):
-                for filename in os.listdir(folder):
-                    file_path = os.path.join(folder, filename)
-                    try:
-                        if os.path.isfile(file_path):
-                            os.unlink(file_path)
-                    except Exception as e:
-                        self.print_terminal(f"Error deleting file {file_path}: {str(e)}")
-        with open(OUTPUT_PATHS["general_log"], 'w') as f:
-            f.write('')
-        self.print_terminal("Output folders & logs cleared.")
+        # Use the correct keys from OUTPUT_PATHS
+        log_files = [
+            OUTPUT_PATHS['success_log'],
+            OUTPUT_PATHS['duplicate_log'],
+            OUTPUT_PATHS['failed_log'],
+            OUTPUT_PATHS['general_log']
+        ]
+
+        for log_file in log_files:
+            try:
+                if os.path.exists(log_file):
+                    os.remove(log_file)
+            except Exception as e:
+                self.print_terminal(f"Error deleting log file {log_file}: {str(e)}")
+        
+        self.print_terminal("Output logs cleared.")
 
     def process_files(self, files):
         self.selected_files = files
