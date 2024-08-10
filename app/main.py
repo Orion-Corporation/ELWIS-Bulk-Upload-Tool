@@ -440,7 +440,15 @@ def check_uniqueness(molecule_data, api_key):
         'accept': 'application/vnd.api+json',
         'x-api-key': api_key
     }
-    
+
+    # Dynamically load values from BATCH_FIELDS_CONFIG
+    source_value = BATCH_FIELDS_CONFIG.get("source", {}).get("value", "Acquired")
+    project_value = BATCH_FIELDS_CONFIG.get("project", {}).get("value", "Unspecified")
+    synthesis_datetime_value = BATCH_FIELDS_CONFIG.get("synthesis_datetime", {}).get("value", "2011-10-10T14:48:00Z")
+    chemist_value = BATCH_FIELDS_CONFIG.get("chemist", {}).get("value", "TestUser MCChemist")
+    batch_purpose_value = BATCH_FIELDS_CONFIG.get("batch_purpose", {}).get("value", "Dummy compound")
+    batch_type_value = BATCH_FIELDS_CONFIG.get("batch_type", {}).get("value", "Discovery")
+
     data = {
         "data": {
             "type": "asset",
@@ -465,7 +473,7 @@ def check_uniqueness(molecule_data, api_key):
                     {
                         "id": "5d6e0287ee35880008c18db7",
                         "value": {
-                            "rawValue": molecule_data.get("MW", ""),
+                            "rawValue": str(molecule_data.get("MW", "")),
                             "displayValue": f"{molecule_data.get('MW', '')} g/mol"
                         }
                     },
@@ -489,28 +497,28 @@ def check_uniqueness(molecule_data, api_key):
                         "attributes": {
                             "fields": [
                                 {
-                                    "id": "62fcceeb19660304d1e5beee", # Source
-                                    "value": "Acquired"
+                                    "id": "62fcceeb19660304d1e5beee",  # Source
+                                    "value": source_value
                                 },
                                 {
-                                    "id": "63469c69ed8a726a31923537", # Project
-                                    "value": "Unspecified"
+                                    "id": "63469c69ed8a726a31923537",  # Project
+                                    "value": project_value
                                 },
                                 {
-                                    "id": "62fcceeb19660304d1e5bef1", # Synthesis datetime
-                                    "value": "2011-10-10T14:48:00Z"
+                                    "id": "62fcceeb19660304d1e5bef1",  # Synthesis datetime
+                                    "value": synthesis_datetime_value
                                 },
                                 {
-                                    "id": "6384a1270d28381d21deaca7", # Chemist
-                                    "value": "TestUser MCChemist"
+                                    "id": "6384a1270d28381d21deaca7",  # Chemist
+                                    "value": chemist_value
                                 },
                                 {
-                                    "id": "62fa096d19660304d1e5b2db", # Batch Purpose
-                                    "value": "Dummy compound"
+                                    "id": "62fa096d19660304d1e5b2db",  # Batch Purpose
+                                    "value": batch_purpose_value
                                 },
                                 {
-                                    "id": "62fa096d19660304d1e5b2da", # Batch Type
-                                    "value": "Discovery"
+                                    "id": "62fa096d19660304d1e5b2da",  # Batch Type
+                                    "value": batch_type_value
                                 }
                             ]
                         }
