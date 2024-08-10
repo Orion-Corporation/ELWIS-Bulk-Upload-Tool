@@ -77,10 +77,10 @@
                                     "name": "hydrogen chloride",
                                     "mf": "CLH",
                                     "mw": {
-                                        "rawValue": "36.46094",
-                                        "displayValue": "36.46094 g/mol"
+                                        "rawValue": "36.4609",
+                                        "displayValue": "36.4609 g/mol"
                                     },
-                                    "id": "SALT:156",
+                                    "id": "SALT:{'id': '192', 'name': 'hydrogen chloride', 'mf': 'CLH', 'mw': '36.4609 g/mol'}",
                                     "coefficient": 1
                                 }
                             ]

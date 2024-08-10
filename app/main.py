@@ -83,7 +83,7 @@ def upload_fragment(fragment_data, fragment_type, callback, headers):
     callback(f"Failed to upload {fragment_type}. Status code: {response.status_code}, response: {response.text}")
     return None
 
-def get_existing_fragment_id(fragment_name, fragment_type, api_key):
+def get_existing_fragment_details(fragment_name, fragment_type, api_key):
     headers = {
         'accept': 'application/vnd.api+json',
         'x-api-key': api_key
@@ -93,14 +93,24 @@ def get_existing_fragment_id(fragment_name, fragment_type, api_key):
     }
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
     response = requests.get(fragment_endpoint, headers=headers, params=params)
+
     if response.status_code in [200, 201]:
         results = response.json().get('data', [])
-        if results:
-            return results[0]['id']
+        for fragment_data in results:
+            # Ensure the name matches exactly
+            if fragment_data['attributes'].get('name', '').lower() == fragment_name.lower():
+                print(f"Exact match found: {fragment_data}")
+                return {
+                    'id': fragment_data['id'],
+                    'name': fragment_data['attributes'].get('name', ''),
+                    'mf': fragment_data['attributes'].get('mf', ''),
+                    'mw': fragment_data['attributes'].get('mw', '')
+                }
+        print(f"No exact match found for salt name: {fragment_name}")
     return None
 
 def upload_fragments(fragment_data, callback, headers, api_key):
-    salt_id = None
+    salt_details = None
 
     # Ensure the correct salt_name field is checked and used
     salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
@@ -111,13 +121,18 @@ def upload_fragments(fragment_data, callback, headers, api_key):
     else:
         salt_name = str(salt_name)
 
+    # Debug log for salt name
+    print(f"Debug: Retrieved salt name from fragment_data: '{salt_name}'")
+
     if salt_name:
         callback(f"Salt detected: {salt_name}")
         print(f"Salt detected in fragment data: {salt_name}")  # Debug print for salt name
 
-        salt_id = get_existing_fragment_id(salt_name, "salts", api_key)
-        if salt_id:
-            callback(f"Salt '{salt_name}' already exists with ID: {salt_id}, not uploading duplicate")
+        salt_details = get_existing_fragment_details(salt_name, "salts", api_key)
+        print(f"Debug: Retrieved salt details from API: '{salt_details}' for salt_name: '{salt_name}'")
+
+        if salt_details and salt_details.get('id'):
+            callback(f"Salt '{salt_name}' already exists with ID: {salt_details['id']}, not uploading duplicate")
         else:
             salt_data = {
                 "data": {
@@ -125,17 +140,20 @@ def upload_fragments(fragment_data, callback, headers, api_key):
                     "attributes": {
                         "name": salt_name,
                         "mf": fragment_data.get('MolecularFormula', ''),
-                        "mw": f"{fragment_data.get('MW', '')} g/mol"
+                        "mw": f"{fragment_data.get('MW_salt', '')} g/mol"
                     }
                 }
             }
             salt_id = upload_fragment(salt_data, "salts", callback, headers)
             if salt_id:
                 callback(f"Successfully uploaded salt: {salt_name}")
+                salt_details = {'id': salt_id, 'name': salt_name, 'mf': salt_data['data']['attributes']['mf'], 'mw': salt_data['data']['attributes']['mw']}
             else:
                 callback(f"Failed to upload salt: {salt_name}")
-
-    return salt_id
+    else:
+        print("No valid salt name found, skipping fragment upload.")
+    
+    return salt_details
 
 # SDF processing functions using OpenBabel
 from rdkit import Chem
@@ -219,16 +237,18 @@ def process_sdf(files, callback):
 
                 # Extract fragment properties using RDKit
                 if rdkit_mol.HasProp("Salt_Name"):
-                    fragment_salt_name = rdkit_mol.GetProp("Salt_Name"),
+                    fragment_salt_name = rdkit_mol.GetProp("Salt_Name")
                 elif rdkit_mol.HasProp("Salt_name"):
                     fragment_salt_name = rdkit_mol.GetProp("Salt_name")
                 else:
                     fragment_salt_name = ''
                 
+                mw_salt = rdkit_mol.GetProp("MW_salt") if rdkit_mol.HasProp("MW_salt") else fragment.GetMolWt()
+                
                 fragment_data = {
                     "Salt_name": fragment_salt_name,
                     "MolecularFormula": fragment.GetFormula().upper(),
-                    "MW_salt": fragment.GetMolWt()
+                    "MW_salt": mw_salt
                 }
                 print(f"Extracted fragment data: {fragment_data}")
 
