@@ -573,7 +573,7 @@ def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PA
         callback(f"Could not verify uniqueness for {file}. Aborting upload.")
         return False
     
-    if uniqueness_result.get("data"):  # If the result is not empty, it's a duplicate
+    if uniqueness_result.get("data"):  # If the result is not empty, it's a duplicate. Tested.
         orm_code = uniqueness_result["data"][0]["attributes"].get("name", "Unknown")
         log_duplicate(file, molecule_data, callback, orm_code)
         return False

@@ -1,9 +1,0 @@
-File: /home/robekott/ERAT/examples/compound_test.sdf, Molecule: C17H28N4O2, ORM Code: ORM-0515263
-File: /home/robekott/ERAT/ENAMINE/45841679_FL10231460_Orion.sdf, Molecule: C17H28N4O2, ORM Code: ORM-0515263
-File: /home/robekott/ERAT/examples/compound_test.sdf, Molecule: C17H28N4O2, ORM Code: ORM-0515263
-File: /home/robekott/ERAT/examples/compound_test.sdf, Molecule: C17H28N4O2, ORM Code: ORM-0515263
-File: /home/robekott/ERAT/examples/compound_test.sdf, Molecule: C17H28N4O2, ORM Code: ORM-0515263
-File: /home/robekott/ERAT/examples/compound_test.sdf, Molecule: C17H28N4O2, ORM Code: ORM-0515263
-File: /home/robekott/ERAT/examples/compound_test.sdf, Molecule: C17H28N4O2, ORM Code: ORM-0515263
-File: /home/robekott/ERAT/examples/compound_test.sdf, Molecule: C17H28N4O2, ORM Code: ORM-0515263
-File: /home/robekott/ERAT/examples/compound_test.sdf, Molecule: C18H19CL2N5OS, ORM Code: ORM-0514993
