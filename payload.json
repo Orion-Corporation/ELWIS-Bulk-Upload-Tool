@@ -74,13 +74,13 @@
                             "salts": [
                                 {
                                     "type": "SALT",
-                                    "name": "hydrogen chloride",
-                                    "mf": "CLH",
+                                    "name": "hydrogen bromide",
+                                    "mf": "BRH",
                                     "mw": {
-                                        "rawValue": "36.4609",
-                                        "displayValue": "36.4609 g/mol"
+                                        "rawValue": "39.4609",
+                                        "displayValue": "39.4609 g/mol"
                                     },
-                                    "id": "SALT:{'id': '192', 'name': 'hydrogen chloride', 'mf': 'CLH', 'mw': '36.4609 g/mol'}",
+                                    "id": "SALT:{'id': '193', 'name': 'hydrogen bromide', 'mf': 'BRH', 'mw': '39.4609 g/mol'}",
                                     "coefficient": 1
                                 }
                             ]

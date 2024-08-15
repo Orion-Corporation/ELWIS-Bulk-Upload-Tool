@@ -64,7 +64,9 @@ BATCH_FIELDS_CONFIG = load_config('config/batch_fields_config.json', {})
 # API functions
 def upload_fragment(fragment_data, fragment_type, callback, headers):
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
+    log_to_general_log(f"Attempting to upload fragment to {fragment_endpoint} with data: {fragment_data}")
     response = requests.post(fragment_endpoint, data=json.dumps(fragment_data), headers=headers)
+    log_to_general_log(f"Received response for fragment upload: {response.status_code} - {response.text}")
     if response.status_code in [200, 201]:
         fragment_id = response.json()['data']['id']
         return fragment_id
@@ -150,6 +152,8 @@ from rdkit.Chem import AllChem
 
 def process_sdf(files, callback):
     print("Starting process_sdf")
+    log_to_general_log(f"Found {len(files)} files to process")
+    log_to_general_log(f"Starting to process SDF files: {files}")
     molecules = []
     fragments = []
 
@@ -163,6 +167,7 @@ def process_sdf(files, callback):
 
     for sdf_file in files:
         print(f"Processing file: {sdf_file}")
+        log_to_general_log(f"Starting to process: {sdf_file}")
         callback(f"Processing file: {sdf_file}")
 
         # Load the SDF file using RDKit to extract all properties
@@ -453,14 +458,19 @@ def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
         # write response to json file
         with open('response.json', 'w') as f:
             json.dump(response.json(), f, indent=4)
+        
+        # Extract orm_code from the response
+        orm_code = response.json().get("data", {}).get("attributes", {}).get("name", "Unknown")
+        
         if response.status_code in [200, 201]:
-            handle_success(file, data, OUTPUT_PATHS, callback)
+            handle_success(file, data, orm_code, OUTPUT_PATHS, callback)
             return True
-        handle_failure(file, data, response, OUTPUT_PATHS, callback)
+        handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback)
         return False
     except requests.exceptions.RequestException as e:
         callback(f"Network error during request: {str(e)}")
         return False
+
 
 def check_uniqueness(molecule_data, api_key):
     headers = {
@@ -566,10 +576,12 @@ def check_uniqueness(molecule_data, api_key):
         return None
 
 def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PATHS):
+    log_to_general_log(f"Checking uniqueness of molecule in file: {file}")
     # Check uniqueness of the compound
     uniqueness_result = check_uniqueness(molecule_data, api_key)
     
     if uniqueness_result is None:
+        log_to_general_log(f"Failed to verify uniqueness for {file}, aborting upload.")
         callback(f"Could not verify uniqueness for {file}. Aborting upload.")
         return False
     
@@ -593,28 +605,28 @@ def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PA
     
     # Send the request
     success = send_request(payload, file, callback, API_ENDPOINTS['Compound Endpoint'], headers, OUTPUT_PATHS)
-    print(f"Payload sent for file {file}: {payload}")  # Debug print for payload sent
+    print(f"Payload sent for file {file}: {payload}")
     # write payload to json
     with open('payload.json', 'w') as f:
         json.dump(payload, f, indent=4)
-        # also write the response in full
     return success
 
-def handle_success(file, data, OUTPUT_PATHS, callback):
-    # Log the success information using the molecular formula instead of SMILES
-    molecular_formula = data['data']['attributes']['synonyms'][1]  # Assuming the second synonym is the molecular formula
+def handle_success(file, data, orm_code, OUTPUT_PATHS, callback):
+    molecular_formula = data['data']['attributes']['synonyms'][1] 
+    log_to_general_log(f"Successfully uploaded molecule: {molecular_formula} (ORM Code: {orm_code}) from file: {file}")
     with open(OUTPUT_PATHS['success_log'], 'a') as success_log:
-        success_log.write(f"File: {file}, Molecule: {molecular_formula}, API Response Status Code: 200\n")
-    callback(f"Success: {molecular_formula} logged successfully.")
+        success_log.write(f"File: {file}, Molecule: {molecular_formula}, ORM Code: {orm_code}, API Response Status Code: 200\n")
+    callback(f"Success: {molecular_formula} (ORM Code: {orm_code}) logged successfully.")
 
-
-def handle_failure(file, data, response, OUTPUT_PATHS, callback):
+def handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback):
+    molecular_formula = data['data']['attributes']['synonyms'][1]
+    log_to_general_log(f"Failed to upload molecule: {molecular_formula} (ORM Code: {orm_code}) from file: {file}, Status Code: {response.status_code}, Response: {response.text}")
     log_file = OUTPUT_PATHS['failed_log']
     
     with open(log_file, 'a') as log:
-        log.write(f"File: {file}, Molecule: {data['data']['attributes']['synonyms'][0]}, API Response Status Code: {response.status_code}, response text: {response.text}\n")
+        log.write(f"File: {file}, Molecule: {molecular_formula}, ORM Code: {orm_code}, API Response Status Code: {response.status_code}, response text: {response.text}\n")
     
-    callback(f"Failed: {data['data']['attributes']['synonyms'][0]} with status code {response.status_code}. Logged failure.")
+    callback(f"Failed: {molecular_formula} (ORM Code: {orm_code}) with status code {response.status_code}. Logged failure.")
 
     try:
         response_json = response.json()
@@ -625,11 +637,20 @@ def handle_failure(file, data, response, OUTPUT_PATHS, callback):
             f.write(response.text)
 
 def log_duplicate(file, molecule_data, callback, orm_code):
+    molecular_formula = molecule_data.get('MolecularFormula', '')
+    log_to_general_log(f"Detected duplicate molecule: {molecular_formula} (ORM Code: {orm_code}) from file: {file}")
     # Log the duplicate information
     with open(OUTPUT_PATHS['duplicate_log'], 'a') as duplicate_log:
-        duplicate_log.write(f"File: {file}, Molecule: {molecule_data.get('MolecularFormula', '')}, ORM Code: {orm_code}\n")
+        duplicate_log.write(f"File: {file}, Molecule: {molecular_formula}, ORM Code: {orm_code}\n")
     
-    callback(f"Duplicate: {molecule_data.get('MolecularFormula', '')}, ORM Code: {orm_code}. Logged duplicate.")
+    callback(f"Duplicate: {molecular_formula} (ORM Code: {orm_code}). Logged as duplicate.")
+
+def log_to_general_log(message):
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log_message = f"{timestamp} - {message}"
+    with open(OUTPUT_PATHS['general_log'], 'a') as f:
+        f.write(log_message + '\n')
+        f.flush()
 
 # Kivy app classes
 class CustomFileChooserIconView(FileChooserIconView):
@@ -795,12 +816,14 @@ class MyApp(App):
             return
 
         self.upload_in_progress = True
+        self.processed_molecules = set()
         self.button_stop_upload.disabled = False
 
         def update_progress_bar(dt):
             pass
-        
+
         self.schedule_upload(0, update_progress_bar)
+
 
     def schedule_upload(self, file_index, update_progress_bar):
         if not self.upload_in_progress or file_index >= len(self.selected_files):
@@ -823,14 +846,25 @@ class MyApp(App):
 
             molecule_data = molecules[molecule_index]
             fragment_data = fragments[molecule_index] if molecule_index < len(fragments) else {}
+
+            # Use the SMILES string or a unique identifier as the key
+            molecule_identifier = molecule_data.get("Smile", "")
+
+            if molecule_identifier in self.processed_molecules:
+                orm_code = "Duplicate"  # This would typically be extracted from the uniqueness check if needed
+                log_duplicate(file, molecule_data, self.print_terminal, orm_code)
+                self.print_terminal(f'Duplicate compound detected: {molecule_data.get("MolecularFormula", "")}')
+                Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
+                return
+
             success = post_to_api(molecule_data, fragment_data, file, self.print_terminal, api_key, OUTPUT_PATHS)
             if success:
                 self.print_terminal(f'Compound successfully uploaded: {molecule_data.get("MolecularFormula", "")}')
+                self.processed_molecules.add(molecule_identifier)  # Mark this molecule as processed
             else:
                 self.print_terminal(f'Failed to upload compound: {molecule_data.get("MolecularFormula", "")}')
-            
-            Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
 
+            Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
         process_molecule(0)
 
     def schedule_next_file(self, file_index, update_progress_bar):
@@ -846,12 +880,9 @@ class MyApp(App):
         self.print_terminal("Upload stopped.")
 
     def print_terminal(self, message):
+        log_to_general_log(message)
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         log_message = f"{timestamp} - {message}"
-        
-        with open(OUTPUT_PATHS['general_log'], 'a') as f:
-            f.write(log_message + '\n')
-            f.flush()
         self.terminal_output.text += log_message + '\n'
 
 if __name__ == '__main__':
