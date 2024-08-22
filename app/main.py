@@ -66,6 +66,42 @@ API_ENDPOINTS = load_config('config/api_endpoints.json', {
 BATCH_FIELDS_CONFIG = load_config('config/batch_fields_config.json', {})
 
 # API functions
+def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PATHS):
+    log_to_general_log(f"Checking uniqueness of molecule in file: {file}")
+    # Check uniqueness of the compound
+    uniqueness_result = check_uniqueness(molecule_data, api_key)
+    
+    if uniqueness_result is None:
+        log_to_general_log(f"Failed to verify uniqueness for {file}, aborting upload.")
+        callback(f"Could not verify uniqueness for {file}. Aborting upload.")
+        return False
+    
+    if uniqueness_result.get("data"):  # If the result is not empty, it's a duplicate. Tested.
+        orm_code = uniqueness_result["data"][0]["attributes"].get("name", "Unknown")
+        log_duplicate(file, molecule_data, callback, orm_code)
+        return False
+    
+    # Prepare headers
+    headers = {
+        'Content-Type': 'application/vnd.api+json',
+        'accept': 'application/vnd.api+json',
+        'x-api-key': api_key
+    }
+    
+    # Upload fragments (salts/solvates)
+    salt_id = upload_fragments(fragment_data, callback, headers, api_key)
+    
+    # Construct the payload
+    payload = construct_payload(molecule_data, salt_id, fragment_data)
+    
+    # Send the request
+    success = send_request(payload, file, callback, API_ENDPOINTS['Compound Endpoint'], headers, OUTPUT_PATHS)
+    print(f"Payload sent for file {file}: {payload}")
+    # write payload to json
+    with open('payload.json', 'w') as f:
+        json.dump(payload, f, indent=4)
+    return success
+
 def upload_fragment(fragment_data, fragment_type, callback, headers):
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
     log_to_general_log(f"Attempting to upload fragment to {fragment_endpoint} with data: {fragment_data}")
@@ -105,8 +141,6 @@ def get_existing_fragment_details(fragment_name, fragment_type, api_key):
 
 def upload_fragments(fragment_data, callback, headers, api_key):
     salt_details = None
-
-    # Ensure the correct salt_name field is checked and used
     salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
 
     # Ensure salt_name is a string
@@ -120,7 +154,7 @@ def upload_fragments(fragment_data, callback, headers, api_key):
 
     if salt_name:
         callback(f"Salt detected: {salt_name}")
-        print(f"Salt detected in fragment data: {salt_name}")  # Debug print for salt name
+        print(f"Salt detected in fragment data: {salt_name}")  # Debug
 
         salt_details = get_existing_fragment_details(salt_name, "salts", api_key)
         print(f"Debug: Retrieved salt details from API: '{salt_details}' for salt_name: '{salt_name}'")
@@ -211,21 +245,17 @@ def process_sdf(files, callback):
                 print(f"SMILES: {smiles}")
 
                 # Extract properties using RDKit
-                chemical_name = rdkit_mol.GetProp("Chemical name") if rdkit_mol.HasProp("Chemical name") else ''
-                # Remove everything after the first whitespace in the chemical name
-                if chemical_name:
-                    chemical_name = chemical_name.split(' ')[0]
-                    
-                amount_mg = rdkit_mol.GetProp("Amount_mg") if rdkit_mol.HasProp("Amount_mg") else 0
-                compound_id = rdkit_mol.GetProp("ID") if rdkit_mol.HasProp("ID") else ''
-                formula = rdkit_mol.GetProp("Formula") if rdkit_mol.HasProp("Formula") else ''
-                purity = rdkit_mol.GetProp("Purity") if rdkit_mol.HasProp("Purity") else ''
-                po = rdkit_mol.GetProp("PO") if rdkit_mol.HasProp("PO") else ''
-                plate_id = rdkit_mol.GetProp("Plate_ID") if rdkit_mol.HasProp("Plate_ID") else ''
-                well = rdkit_mol.GetProp("Well") if rdkit_mol.HasProp("Well") else ''
-                barcode = rdkit_mol.GetProp("Barcode") if rdkit_mol.HasProp("Barcode") else ''
+                chemical_name = get_property(rdkit_mol, ["Chemical name", "Systematic name", "IUPAC"], '')
+                amount_mg = get_property(rdkit_mol, ["Amount_mg", "Amount (mg)", "QUANTITY"], 0)
+                compound_id = get_property(rdkit_mol, ["ID", "Delivered Mcule ID", "MOLPORTID"], '')
+                formula = get_property(rdkit_mol, ["Formula", "MOL FORMULA"], '')
+                purity = get_property(rdkit_mol, ["Purity", "Guaranteed purity (%)", "PURITY CLASSIFIED"], '')
+                po = get_property(rdkit_mol, ["PO", "Customer PO", "PO NUMBER FROM CLIENT"], '')
+                plate_id = get_property(rdkit_mol, ["Plate_ID", "Multi container ID", "BOX_NAME"], '')
+                well = get_property(rdkit_mol, ["Well", "Single container position", "BOX_ROW"], '')
+                barcode = get_property(rdkit_mol, ["Barcode", "VIAL_BARCODE"], '')
                 # stereochemistry
-                stereochemistry = rdkit_mol.GetProp("Stereochem.data") if rdkit_mol.HasProp("Stereochem.data") else 'No stereochemistry'
+                stereochemistry = get_property(rdkit_mol, ["Stereochem.data", "STEREOCHEMISTRY"], 'No stereochemistry')
 
                 molecule_data = {
                     "Chemical name": chemical_name,
@@ -248,15 +278,9 @@ def process_sdf(files, callback):
                 # Extract fragment properties using RDKit
                 fragment_data = {}
                 if fragment is not None:
-                    if rdkit_mol.HasProp("Salt_Name"):
-                        fragment_salt_name = rdkit_mol.GetProp("Salt_Name")
-                    elif rdkit_mol.HasProp("Salt_name"):
-                        fragment_salt_name = rdkit_mol.GetProp("Salt_name")
-                    else:
-                        fragment_salt_name = ''
-                    
-                    mw_salt = rdkit_mol.GetProp("MW_salt") if rdkit_mol.HasProp("MW_salt") else fragment.GetMolWt()
-                    mf_salt = (rdkit_mol.GetProp("Salt smiles").strip('[]') if rdkit_mol.HasProp("Salt smiles") else fragment.GetFormula().upper())
+                    fragment_salt_name = get_property(rdkit_mol, ["Salt_Name", "Salt name"], '')
+                    mw_salt = get_property(rdkit_mol, ["MW_salt", "MOL WEIGHT TOTAL"], fragment.GetMolWt())
+                    mf_salt = get_property(rdkit_mol, ["Salt smiles", "MOL FORMULA"], fragment.GetFormula().upper())
                     
                     fragment_data = {
                         "Salt_name": fragment_salt_name,
@@ -302,6 +326,12 @@ def process_sdf(files, callback):
     print(f"Total molecules extracted: {len(molecules)}")
     callback(f"Total molecules extracted: {len(molecules)}")
     return molecules, fragments
+
+def get_property(mol, prop_names, default_value):
+    for prop_name in prop_names:
+        if mol.HasProp(prop_name):
+            return mol.GetProp(prop_name)
+    return default_value
 
 def convert_mol_to_cdxml(molecule_data):
     obConversion = openbabel.OBConversion()
@@ -502,7 +532,7 @@ def check_uniqueness(molecule_data, api_key):
                     },
                     {
                         "id": "62f9fe5b74770f14d1de43a8",
-                        "value": "No stereochemistry"
+                        "value": molecule_data.get("Stereochemistry", "No stereochemistry")
                     },
                     {
                         "id": "5d6e0287ee35880008c18db6",
@@ -575,64 +605,28 @@ def check_uniqueness(molecule_data, api_key):
         print(f"Error checking uniqueness: {response.status_code} - {response.text}")
         return None
 
-def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PATHS):
-    log_to_general_log(f"Checking uniqueness of molecule in file: {file}")
-    # Check uniqueness of the compound
-    uniqueness_result = check_uniqueness(molecule_data, api_key)
-    
-    if uniqueness_result is None:
-        log_to_general_log(f"Failed to verify uniqueness for {file}, aborting upload.")
-        callback(f"Could not verify uniqueness for {file}. Aborting upload.")
-        return False
-    
-    if uniqueness_result.get("data"):  # If the result is not empty, it's a duplicate. Tested.
-        orm_code = uniqueness_result["data"][0]["attributes"].get("name", "Unknown")
-        log_duplicate(file, molecule_data, callback, orm_code)
-        return False
-    
-    # Prepare headers
-    headers = {
-        'Content-Type': 'application/vnd.api+json',
-        'accept': 'application/vnd.api+json',
-        'x-api-key': api_key
-    }
-    
-    # Upload fragments (salts/solvates)
-    salt_id = upload_fragments(fragment_data, callback, headers, api_key)
-    
-    # Construct the payload
-    payload = construct_payload(molecule_data, salt_id, fragment_data)
-    
-    # Send the request
-    success = send_request(payload, file, callback, API_ENDPOINTS['Compound Endpoint'], headers, OUTPUT_PATHS)
-    print(f"Payload sent for file {file}: {payload}")
-    # write payload to json
-    with open('payload.json', 'w') as f:
-        json.dump(payload, f, indent=4)
-    return success
-
 def handle_success(file, data, orm_code, OUTPUT_PATHS, callback):
     molecular_formula = data['data']['attributes']['synonyms'][1]
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the current timestamp
-    log_to_general_log(f"Successfully uploaded molecule: {molecular_formula} (ORM Code: {orm_code}) from file: {file}")
+    log_to_general_log(f"Successfully uploaded molecule: {molecular_formula} - ORM Code: {orm_code} - File: {file}")
     
     # Log the success information with timestamp
     with open(OUTPUT_PATHS['success_log'], 'a') as success_log:
-        success_log.write(f"Timestamp: {timestamp}, File: {file}, Molecule: {molecular_formula}, ORM Code: {orm_code}, API Response Status Code: 200\n")
+        success_log.write(f"Timestamp: {timestamp} - File: {file} - Molecule: {molecular_formula} - ORM Code: {orm_code} - API Response Status Code: 200\n")
     
-    callback(f"Success: {molecular_formula} (ORM Code: {orm_code}) logged successfully.")
+    callback(f"Success: {molecular_formula} - ORM Code: {orm_code} - File: {file} - logged successfully.")
 
 def handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback):
     molecular_formula = data['data']['attributes']['synonyms'][1]
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the current timestamp
-    log_to_general_log(f"Failed to upload molecule: {molecular_formula} (ORM Code: {orm_code}) from file: {file}, Status Code: {response.status_code}, Response: {response.text}")
+    log_to_general_log(f"Failed to upload molecule: {molecular_formula} - ORM Code: {orm_code} - File: {file} - Status Code: {response.status_code} - Response: {response.text}")
     log_file = OUTPUT_PATHS['failed_log']
     
     # Log the failure information with timestamp
     with open(log_file, 'a') as log:
-        log.write(f"Timestamp: {timestamp}, File: {file}, Molecule: {molecular_formula}, ORM Code: {orm_code}, API Response Status Code: {response.status_code}, response text: {response.text}\n")
+        log.write(f"Timestamp: {timestamp} - File: {file} - Molecule: {molecular_formula} - ORM Code: {orm_code} - API Response Status Code: {response.status_code} - response text: {response.text}\n")
     
-    callback(f"Failed: {molecular_formula} (ORM Code: {orm_code}) with status code {response.status_code}. Logged failure.")
+    callback(f"Failed: {molecular_formula} - ORM Code: {orm_code} - with status code {response.status_code} - Logged as failure.")
 
     try:
         response_json = response.json()
@@ -645,13 +639,13 @@ def handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback):
 def log_duplicate(file, molecule_data, callback, orm_code):
     molecular_formula = molecule_data.get('MolecularFormula', '')
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the current timestamp
-    log_to_general_log(f"Detected duplicate molecule: {molecular_formula} (ORM Code: {orm_code}) from file: {file}")
+    log_to_general_log(f"Detected duplicate molecule: {molecular_formula} - ORM Code: {orm_code} - File: {file}")
     
     # Log the duplicate information with timestamp
     with open(OUTPUT_PATHS['duplicate_log'], 'a') as duplicate_log:
-        duplicate_log.write(f"Timestamp: {timestamp}, File: {file}, Molecule: {molecular_formula}, ORM Code: {orm_code}\n")
+        duplicate_log.write(f"Timestamp: {timestamp} - File: {file} - Molecule: {molecular_formula} - ORM Code: {orm_code}\n")
     
-    callback(f"Duplicate: {molecular_formula} (ORM Code: {orm_code}). Logged as duplicate.")
+    callback(f"Duplicate: {molecular_formula} - ORM Code: {orm_code} - Logged as duplicate.")
 
 def log_to_general_log(message):
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -859,9 +853,9 @@ class MyApp(App):
             molecule_identifier = molecule_data.get("Smile", "")
 
             if molecule_identifier in self.processed_molecules:
-                orm_code = "Duplicate"  # This would typically be extracted from the uniqueness check if needed
+                orm_code = "Duplicate"
                 log_duplicate(file, molecule_data, self.print_terminal, orm_code)
-                self.print_terminal(f'Duplicate compound detected: {molecule_data.get("MolecularFormula", "")}')
+                self.print_terminal(f'Duplicate compound detected: {molecule_data.get("MolecularFormula", "")} - ORM Code: {orm_code}')
                 Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
                 return
 

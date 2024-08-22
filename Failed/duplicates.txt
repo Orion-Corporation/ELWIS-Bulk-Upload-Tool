@@ -1,0 +1,5 @@
+Timestamp: 2024-08-22 20:44:48 - File: /home/robekott/ERAT/MCULE/SDF_MCULE.sdf - Molecule: C21H17CLN2O2 - ORM Code: ORM-0515784
+Timestamp: 2024-08-22 20:44:49 - File: /home/robekott/ERAT/MCULE/SDF_MCULE.sdf - Molecule: C16H14CLN5O - ORM Code: ORM-0515785
+Timestamp: 2024-08-22 20:44:50 - File: /home/robekott/ERAT/MCULE/SDF_MCULE.sdf - Molecule: C19H22N4O2S - ORM Code: ORM-0515786
+Timestamp: 2024-08-22 20:45:09 - File: /home/robekott/ERAT/ENAMINE/45841679_FL10231460_Orion.sdf - Molecule: C15H17FN4O2S - ORM Code: ORM-0514992
+Timestamp: 2024-08-22 20:45:11 - File: /home/robekott/ERAT/ENAMINE/45841679_FL10231460_Orion.sdf - Molecule: C18H19CL2N5OS - ORM Code: ORM-0514993

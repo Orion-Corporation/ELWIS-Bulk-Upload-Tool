@@ -18,3 +18,6 @@ MCULE/*
 MOLPORT/*
 SALTS_SOLVATES/*
 ENAMINE/*
+build/*
+dist/*
+app/libs/*

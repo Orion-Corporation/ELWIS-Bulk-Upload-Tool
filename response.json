@@ -1,50 +1,50 @@
 {
     "links": {
-        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66bdc85d2de3d351d4a49eee"
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66c7792eebc08a375f42c605"
     },
     "data": {
         "type": "material",
-        "id": "asset:66bdc85d2de3d351d4a49eee",
+        "id": "asset:66c7792eebc08a375f42c605",
         "links": {
-            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66bdc85d2de3d351d4a49eee"
+            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66c7792eebc08a375f42c605"
         },
         "attributes": {
             "library": "Compounds",
             "assetTypeId": "5d6e0287ee35880008c18db5",
-            "assetId": "66bdc85d2de3d351d4a49eee",
-            "id": "asset:66bdc85d2de3d351d4a49eee",
-            "eid": "asset:66bdc85d2de3d351d4a49eee",
-            "name": "ORM-0515762",
+            "assetId": "66c7792eebc08a375f42c605",
+            "id": "asset:66c7792eebc08a375f42c605",
+            "eid": "asset:66c7792eebc08a375f42c605",
+            "name": "ORM-0515789",
             "synonyms": [
-                "COCCN1CCNC1C1N(CC1(C)C)C(=O)CC1(CN)CC1",
-                "C17H28N4O2"
+                "CN(CC1CCC2OCOC2C1)C1C(C#N)C(=O)N(C)C(=O)N1C",
+                "C16H16N4O4"
             ],
             "description": "",
-            "createdAt": "2024-08-15T09:20:29.272Z",
-            "editedAt": "2024-08-15T09:20:29.272Z",
+            "createdAt": "2024-08-22T17:45:18.202Z",
+            "editedAt": "2024-08-22T17:45:18.202Z",
             "type": "asset",
-            "digest": "17390439",
+            "digest": "96591946",
             "fields": {
                 "Chemical Name": {
-                    "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one"
+                    "value": "6-{[(1,3-dioxaindan-5-yl)methyl](methyl)amino}-1,3-dimethyl-2,4-dioxo-1,2,3,4-tetrahydropyrimidine-5-carbonitrile"
                 },
                 "Description": {
                     "value": ""
                 },
                 "Exact Mass": {
-                    "value": "320.22123"
+                    "value": "328.11716"
                 },
                 "Material Library Type": {
                     "value": "Compounds"
                 },
                 "Molecular Formula": {
-                    "value": "C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>"
+                    "value": "C<sub>16</sub>H<sub>16</sub>N<sub>4</sub>O<sub>4</sub>"
                 },
                 "Molecular Weight": {
-                    "value": "320.44 g/mol"
+                    "value": "328.33 g/mol"
                 },
                 "Name": {
-                    "value": "ORM-0515762"
+                    "value": "ORM-0515789"
                 },
                 "Stereochemistry": {
                     "value": "No stereochemistry"
@@ -59,10 +59,10 @@
                 "data": [
                     {
                         "type": "material",
-                        "id": "batch:66bdc85d2de3d351d4a49eef",
+                        "id": "batch:66c7792eebc08a375f42c606",
                         "meta": {
                             "links": {
-                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66bdc85d2de3d351d4a49eef"
+                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66c7792eebc08a375f42c606"
                             }
                         }
                     }
@@ -83,11 +83,11 @@
             },
             "chemicalDrawing": {
                 "links": {
-                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66bdc85d2de3d351d4a49eee/drawing?format=cdxml"
+                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66c7792eebc08a375f42c605/drawing?format=cdxml"
                 },
                 "data": {
                     "type": "materialDrawing",
-                    "id": "asset:66bdc85d2de3d351d4a49eee"
+                    "id": "asset:66c7792eebc08a375f42c605"
                 }
             },
             "createdBy": {
@@ -122,32 +122,32 @@
     "included": [
         {
             "type": "materialDrawing",
-            "id": "asset:66bdc85d2de3d351d4a49eee",
+            "id": "asset:66c7792eebc08a375f42c605",
             "links": {
-                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66bdc85d2de3d351d4a49eee/drawing?format=cdxml"
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66c7792eebc08a375f42c605/drawing?format=cdxml"
             },
             "attributes": {
-                "id": "asset:66bdc85d2de3d351d4a49eee",
+                "id": "asset:66c7792eebc08a375f42c605",
                 "type": "CHEMICAL_DRAWING"
             }
         },
         {
             "type": "material",
-            "id": "batch:66bdc85d2de3d351d4a49eef",
+            "id": "batch:66c7792eebc08a375f42c606",
             "links": {
-                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66bdc85d2de3d351d4a49eef"
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66c7792eebc08a375f42c606"
             },
             "attributes": {
                 "type": "batch",
-                "eid": "batch:66bdc85d2de3d351d4a49eef",
-                "name": "ORM-0515762-001",
-                "digest": "54011783",
+                "eid": "batch:66c7792eebc08a375f42c606",
+                "name": "ORM-0515789-001",
+                "digest": "60591542",
                 "fields": {
                     "Batch Chemical Name": {
-                        "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one, hydrogen bromide"
+                        "value": "6-{[(1,3-dioxaindan-5-yl)methyl](methyl)amino}-1,3-dimethyl-2,4-dioxo-1,2,3,4-tetrahydropyrimidine-5-carbonitrile"
                     },
                     "Batch Molecular Formula": {
-                        "value": "C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>&middot;BRH"
+                        "value": "C<sub>16</sub>H<sub>16</sub>N<sub>4</sub>O<sub>4</sub>"
                     },
                     "Batch Purpose": {
                         "value": "Dummy compound"
@@ -162,10 +162,10 @@
                         "value": ""
                     },
                     "Formula Mass": {
-                        "value": "359.901 g/mol"
+                        "value": "328.33 g/mol"
                     },
                     "Name": {
-                        "value": "ORM-0515762-001"
+                        "value": "ORM-0515789-001"
                     },
                     "Project": {
                         "value": "Unspecified"
@@ -174,7 +174,7 @@
                         "value": "Internal"
                     },
                     "Submission Date": {
-                        "value": "2024-08-15T09:20:29.726Z"
+                        "value": "2024-08-22T17:45:18.412Z"
                     },
                     "Submitter": {
                         "value": "{userId=114, userName=timo.kangasperko@orion.fi, flags={isSystemStandardUser=true}, alias=timoka, email=timo.kangasperko@orion.fi, firstName=Timo, lastName=Kangasperko, picture={}, isEnabled=true}"
@@ -195,7 +195,7 @@
                 "type": "assetType",
                 "eid": "assetType:5d6e0287ee35880008c18db5",
                 "name": "Compounds",
-                "digest": "44564983",
+                "digest": "60064030",
                 "fields": {}
             }
         },
