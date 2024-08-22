@@ -36,7 +36,6 @@ try:
 except Exception as e:
     print(f"Error loading Kv file: {e}")
 
-
 # Kivy app classes
 class CustomFileChooserIconView(FileChooserIconView):
     selection = ListProperty([])

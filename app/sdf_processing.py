@@ -51,11 +51,11 @@ def process_sdf(files, callback):
                     main_molecule = obMol
                     fragment = None
                 elif len(separated_fragments) == 1:
-                    # Only one molecule, assume it's the main molecule
+                    # Only one molecule, assuming it's the main molecule
                     main_molecule = separated_fragments[0]
                     fragment = None
                 elif len(separated_fragments) >= 2:
-                    # Multiple fragments, assume the first is the salt/solvent and the second is the main molecule
+                    # Multiple fragments, assume the first is the salt and the second is the main molecule ??? works so far, will this be a problem?
                     main_molecule = separated_fragments[1]
                     fragment = separated_fragments[0]
                 else:
