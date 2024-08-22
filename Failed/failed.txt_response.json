@@ -1,0 +1,9 @@
+{
+    "errors": [
+        {
+            "status": "434",
+            "code": "Unknown",
+            "detail": "Failed to create new Asset:Value 'achiral' for field 'Stereochemistry' is invalid"
+        }
+    ]
+}
