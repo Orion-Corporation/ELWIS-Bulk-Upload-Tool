@@ -1,6 +1,7 @@
 from rdkit import Chem
 from openbabel import openbabel
 import requests
+import json
 from logger import log_to_general_log
 from config import BATCH_FIELDS_CONFIG, API_ENDPOINTS
 
