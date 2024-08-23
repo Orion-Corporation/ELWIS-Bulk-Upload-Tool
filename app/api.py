@@ -131,6 +131,7 @@ def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
             json.dump(response.json(), f, indent=4)
         
         # Extract orm_code from the response
+        # Todo: implement try catch to handle missing orm_code
         orm_code = response.json().get("data", {}).get("attributes", {}).get("name", "Unknown")
         
         if response.status_code in [200, 201]:

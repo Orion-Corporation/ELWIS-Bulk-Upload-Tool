@@ -2,6 +2,7 @@ import datetime
 import json
 from config import OUTPUT_PATHS
 
+# logger functions
 def handle_success(file, data, orm_code, OUTPUT_PATHS, callback):
     molecular_formula = data['data']['attributes']['synonyms'][1]
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the current timestamp
@@ -11,7 +12,7 @@ def handle_success(file, data, orm_code, OUTPUT_PATHS, callback):
     with open(OUTPUT_PATHS['success_log'], 'a') as success_log:
         success_log.write(f"Timestamp: {timestamp} - File: {file} - Molecule: {molecular_formula} - ORM Code: {orm_code} - API Response Status Code: 200\n")
     
-    callback(f"Success: {molecular_formula} - ORM Code: {orm_code} - File: {file} - logged successfully.")
+    callback(f"Success: {molecular_formula} - ORM Code: {orm_code} - File: {file} - uploaded successfully.")
 
 def handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback):
     molecular_formula = data['data']['attributes']['synonyms'][1]
@@ -50,3 +51,14 @@ def log_to_general_log(message):
     with open(OUTPUT_PATHS['general_log'], 'a') as f:
         f.write(log_message + '\n')
         f.flush()
+
+def log_failed_upload(file, molecule_data):
+    molecular_formula = molecule_data.get('MolecularFormula', '')
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the current timestamp
+    log_message = f"Failed to upload molecule: {molecular_formula} - File: {file} - Timestamp: {timestamp}"
+    
+    # Log the failed upload with timestamp
+    with open(OUTPUT_PATHS['failed_log'], 'a') as failed_log:
+        failed_log.write(log_message + '\n')
+    
+    log_to_general_log(log_message)

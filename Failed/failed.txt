@@ -1,0 +1,1 @@
+Failed to upload molecule: C18H19CL2N5OS - File: /home/robekott/ERAT/examples/compound_test.sdf - Timestamp: 2024-08-23 09:16:55

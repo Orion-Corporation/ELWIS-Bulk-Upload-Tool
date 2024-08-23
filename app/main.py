@@ -24,7 +24,7 @@ from rdkit import Chem
 from config import API_ENDPOINTS, OUTPUT_PATHS, api_key
 from sdf_processing import process_sdf
 from api import post_to_api
-from logger import log_to_general_log, log_duplicate
+from logger import log_to_general_log, log_duplicate, log_failed_upload
 
 # Set the window size
 Window.size = (1200, 600)
@@ -243,11 +243,11 @@ class MyApp(App):
 
             success = post_to_api(molecule_data, fragment_data, file, self.print_terminal, api_key, OUTPUT_PATHS)
             if success:
-                self.print_terminal(f'Compound successfully uploaded: {molecule_data.get("MolecularFormula", "")}')
+                # self.print_terminal(f'Compound successfully uploaded: {molecule_data.get("MolecularFormula", "")}')
                 self.processed_molecules.add(molecule_identifier)  # Mark this molecule as processed
             else:
-                self.print_terminal(f'Failed to upload compound: {molecule_data.get("MolecularFormula", "")}')
-
+                self.print_terminal(f'Failed to upload compound: {molecule_data.get("MolecularFormula", "")} - File: {file}')
+                log_failed_upload(file, molecule_data)
             Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
         process_molecule(0)
 
