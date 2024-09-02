@@ -166,8 +166,11 @@ class MyApp(App):
         # Use the correct keys from OUTPUT_PATHS
         log_files = [
             OUTPUT_PATHS['success_log'],
+            OUTPUT_PATHS['success_log_excel'],
             OUTPUT_PATHS['duplicate_log'],
+            OUTPUT_PATHS['duplicate_log_excel'],
             OUTPUT_PATHS['failed_log'],
+            OUTPUT_PATHS['failed_log_excel'],
             # OUTPUT_PATHS['general_log'] # General log is preserved, needs to be deleted manually
         ]
 
