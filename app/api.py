@@ -81,6 +81,7 @@ def get_existing_fragment_details(fragment_name, fragment_type, api_key):
 def upload_fragments(fragment_data, callback, headers, api_key):
     salt_details = None
     salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
+    salt_mf = fragment_data.get('MolecularFormula', '')
 
     # Ensure salt_name is a string
     if isinstance(salt_name, (list, tuple)):
@@ -92,8 +93,8 @@ def upload_fragments(fragment_data, callback, headers, api_key):
     print(f"Debug: Retrieved salt name from fragment_data: '{salt_name}'")
 
     if salt_name:
-        callback(f"Salt detected: {salt_name}")
-        print(f"Salt detected in fragment data: {salt_name}")  # Debug
+        callback(f"Salt detected: {salt_name} {salt_mf}")
+        print(f"Salt detected in fragment data: {salt_name} {salt_mf}")  # Debug
 
         salt_details = get_existing_fragment_details(salt_name, "salts", api_key)
         print(f"Debug: Retrieved salt details from API: '{salt_details}' for salt_name: '{salt_name}'")

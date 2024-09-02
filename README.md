@@ -3,9 +3,26 @@
 The ELWIS Registration Tool (ERAT) helps users process SDF files and sort compounds based on ELWIS API upload responses (successfull/failed/duplicate).
 
 ## Todo:
-- [x] ENAMINE
-- [ ] MOLPORT
-- [X] MCULE
-- [ ] Salts & Solvates
+- [ ] Add logic for salt duplicate detection based on SMILES instead of salt names
+- [ ] Update logs to include: timestamp, ORM code, database ID, molecule, file, and API response, with more important variables first
+- [ ] Add SDF supplier code (e.g., > <ID> Z2754556176) to logs
+- [ ] Write logs as Excel files
+- [ ] Log successful operations with details: Timestamp, SDF ID, ORM Code, etc
+- [ ] Retain general logs when deleting logs after upload
+- [ ] Save logs to an ELWIS notebook via API
+- [ ] Add validation schema step for SDF file property mappings and report any errors in properties
+- [ ] Add config json file for SDF properties - refactor current hard coding
+- [ ] Implement rollback function based on database IDs recorded in logs
+- [ ] Document test cases: 
+    - [ ] Handling duplicates
+    - [ ] Compound contains fragment / compound does not contain fragments
+- [ ] Authentication? mitigation by installation on the user's laptop?
+
+
+- [x] Support for SDF-files
+    - [x] ENAMINE
+    - [ ] MOLPORT
+    - [X] MCULE
+    - [ ] Salts & Solvates
 
 https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagger/index.html
