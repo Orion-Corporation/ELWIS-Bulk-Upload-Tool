@@ -1,0 +1,2 @@
+Timestamp: 2024-09-02 18:49:29 - File: /home/robekott/ERAT/examples/compound_test.sdf - Molecule: C18H19CL2N5OS - ORM Code: ORM-0514993
+Timestamp: 2024-09-02 18:49:31 - File: /home/robekott/ERAT/examples/compound_test.sdf - Molecule: C17H28N4O2 - ORM Code: ORM-0515804

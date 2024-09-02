@@ -52,13 +52,52 @@ def upload_fragment(fragment_data, fragment_type, callback, headers):
     callback(f"Failed to upload {fragment_type}. Status code: {response.status_code}, response: {response.text}")
     return None
 
-def get_existing_fragment_details(fragment_name, fragment_type, api_key):
+def upload_fragments(fragment_data, callback, headers, api_key):
+    salt_details = None
+    salt_mf = fragment_data.get('MolecularFormula', '').strip().upper()  # Use MF for detection
+
+    # Ensure salt_mf is a valid string
+    if not salt_mf:
+        print("No valid salt molecular formula found, skipping fragment upload.")
+        return None
+
+    # Debug log for salt molecular formula
+    print(f"Debug: Retrieved salt molecular formula from fragment_data: '{salt_mf}'")
+
+    callback(f"Salt detected: Molecular Formula {salt_mf}")
+    print(f"Salt detected in fragment data: Molecular Formula {salt_mf}")  # Debug
+
+    salt_details = get_existing_fragment_details(salt_mf, "salts", api_key)
+    print(f"Debug: Retrieved salt details from API: '{salt_details}' for salt MF: '{salt_mf}'")
+
+    if salt_details and salt_details.get('id'):
+        callback(f"Salt with Molecular Formula '{salt_mf}' already exists with ID: {salt_details['id']}, not uploading duplicate")
+    else:
+        salt_data = {
+            "data": {
+                "type": "salt",
+                "attributes": {
+                    "mf": salt_mf,
+                    "mw": f"{fragment_data.get('MW_salt', '')} g/mol"
+                }
+            }
+        }
+        salt_id = upload_fragment(salt_data, "salts", callback, headers)
+        if salt_id:
+            callback(f"Successfully uploaded salt with Molecular Formula: {salt_mf}")
+            salt_details = {'id': salt_id, 'mf': salt_mf, 'mw': salt_data['data']['attributes']['mw']}
+        else:
+            callback(f"Failed to upload salt with Molecular Formula: {salt_mf}")
+    
+    return salt_details
+
+def get_existing_fragment_details(fragment_mf, fragment_type, api_key):
     headers = {
         'accept': 'application/vnd.api+json',
         'x-api-key': api_key
     }
     params = {
-        'filter[name]': fragment_name
+        'filter[mf]': fragment_mf  # Use 'mf' for filtering
     }
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
     response = requests.get(fragment_endpoint, headers=headers, params=params)
@@ -66,62 +105,17 @@ def get_existing_fragment_details(fragment_name, fragment_type, api_key):
     if response.status_code in [200, 201]:
         results = response.json().get('data', [])
         for fragment_data in results:
-            # Ensure the name matches exactly
-            if fragment_data['attributes'].get('name', '').lower() == fragment_name.lower():
+            # Ensure the molecular formula matches exactly
+            if fragment_data['attributes'].get('mf', '').upper() == fragment_mf.upper():
                 print(f"Exact match found: {fragment_data}")
                 return {
                     'id': fragment_data['id'],
-                    'name': fragment_data['attributes'].get('name', ''),
                     'mf': fragment_data['attributes'].get('mf', ''),
                     'mw': fragment_data['attributes'].get('mw', '')
                 }
-        print(f"No exact match found for salt name: {fragment_name}")
+        print(f"No exact match found for salt molecular formula: {fragment_mf}")
     return None
 
-def upload_fragments(fragment_data, callback, headers, api_key):
-    salt_details = None
-    salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
-    salt_mf = fragment_data.get('MolecularFormula', '')
-
-    # Ensure salt_name is a string
-    if isinstance(salt_name, (list, tuple)):
-        salt_name = salt_name[0] if salt_name else ''
-    else:
-        salt_name = str(salt_name)
-
-    # Debug log for salt name
-    print(f"Debug: Retrieved salt name from fragment_data: '{salt_name}'")
-
-    if salt_name:
-        callback(f"Salt detected: {salt_name} {salt_mf}")
-        print(f"Salt detected in fragment data: {salt_name} {salt_mf}")  # Debug
-
-        salt_details = get_existing_fragment_details(salt_name, "salts", api_key)
-        print(f"Debug: Retrieved salt details from API: '{salt_details}' for salt_name: '{salt_name}'")
-
-        if salt_details and salt_details.get('id'):
-            callback(f"Salt '{salt_name}' already exists with ID: {salt_details['id']}, not uploading duplicate")
-        else:
-            salt_data = {
-                "data": {
-                    "type": "salt",
-                    "attributes": {
-                        "name": salt_name,
-                        "mf": fragment_data.get('MolecularFormula', ''),
-                        "mw": f"{fragment_data.get('MW_salt', '')} g/mol"
-                    }
-                }
-            }
-            salt_id = upload_fragment(salt_data, "salts", callback, headers)
-            if salt_id:
-                callback(f"Successfully uploaded salt: {salt_name}")
-                salt_details = {'id': salt_id, 'name': salt_name, 'mf': salt_data['data']['attributes']['mf'], 'mw': salt_data['data']['attributes']['mw']}
-            else:
-                callback(f"Failed to upload salt: {salt_name}")
-    else:
-        print("No valid salt name found, skipping fragment upload.")
-    
-    return salt_details
 
 def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
     data_json = json.dumps(data)

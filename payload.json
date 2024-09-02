@@ -80,7 +80,7 @@
                                         "rawValue": "39.4609",
                                         "displayValue": "39.4609 g/mol"
                                     },
-                                    "id": "SALT:{'id': '193', 'name': 'hydrogen bromide', 'mf': 'BRH', 'mw': '39.4609 g/mol'}",
+                                    "id": "SALT:{'id': '193', 'mf': 'BRH', 'mw': '39.4609 g/mol'}",
                                     "coefficient": 1
                                 }
                             ]

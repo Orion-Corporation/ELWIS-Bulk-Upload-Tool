@@ -1,29 +1,29 @@
 {
     "links": {
-        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66c835aff2881a6d65815124"
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5df5febc08a375f42f3f9"
     },
     "data": {
         "type": "material",
-        "id": "asset:66c835aff2881a6d65815124",
+        "id": "asset:66d5df5febc08a375f42f3f9",
         "links": {
-            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66c835aff2881a6d65815124"
+            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5df5febc08a375f42f3f9"
         },
         "attributes": {
             "library": "Compounds",
             "assetTypeId": "5d6e0287ee35880008c18db5",
-            "assetId": "66c835aff2881a6d65815124",
-            "id": "asset:66c835aff2881a6d65815124",
-            "eid": "asset:66c835aff2881a6d65815124",
-            "name": "ORM-0515804",
+            "assetId": "66d5df5febc08a375f42f3f9",
+            "id": "asset:66d5df5febc08a375f42f3f9",
+            "eid": "asset:66d5df5febc08a375f42f3f9",
+            "name": "ORM-0515812",
             "synonyms": [
                 "COCCN1CCNC1C1N(CC1(C)C)C(=O)CC1(CN)CC1",
                 "C17H28N4O2"
             ],
             "description": "",
-            "createdAt": "2024-08-23T07:09:35.656Z",
-            "editedAt": "2024-08-23T07:09:35.656Z",
+            "createdAt": "2024-09-02T15:53:04.139Z",
+            "editedAt": "2024-09-02T15:53:04.139Z",
             "type": "asset",
-            "digest": "80027722",
+            "digest": "49130185",
             "fields": {
                 "Chemical Name": {
                     "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide"
@@ -44,7 +44,7 @@
                     "value": "320.44 g/mol"
                 },
                 "Name": {
-                    "value": "ORM-0515804"
+                    "value": "ORM-0515812"
                 },
                 "Stereochemistry": {
                     "value": "No stereochemistry"
@@ -59,10 +59,10 @@
                 "data": [
                     {
                         "type": "material",
-                        "id": "batch:66c835aff2881a6d65815125",
+                        "id": "batch:66d5df60ebc08a375f42f3fa",
                         "meta": {
                             "links": {
-                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66c835aff2881a6d65815125"
+                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d5df60ebc08a375f42f3fa"
                             }
                         }
                     }
@@ -83,11 +83,11 @@
             },
             "chemicalDrawing": {
                 "links": {
-                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66c835aff2881a6d65815124/drawing?format=cdxml"
+                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5df5febc08a375f42f3f9/drawing?format=cdxml"
                 },
                 "data": {
                     "type": "materialDrawing",
-                    "id": "asset:66c835aff2881a6d65815124"
+                    "id": "asset:66d5df5febc08a375f42f3f9"
                 }
             },
             "createdBy": {
@@ -121,27 +121,16 @@
     },
     "included": [
         {
-            "type": "materialDrawing",
-            "id": "asset:66c835aff2881a6d65815124",
-            "links": {
-                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66c835aff2881a6d65815124/drawing?format=cdxml"
-            },
-            "attributes": {
-                "id": "asset:66c835aff2881a6d65815124",
-                "type": "CHEMICAL_DRAWING"
-            }
-        },
-        {
             "type": "material",
-            "id": "batch:66c835aff2881a6d65815125",
+            "id": "batch:66d5df60ebc08a375f42f3fa",
             "links": {
-                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66c835aff2881a6d65815125"
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d5df60ebc08a375f42f3fa"
             },
             "attributes": {
                 "type": "batch",
-                "eid": "batch:66c835aff2881a6d65815125",
-                "name": "ORM-0515804-001",
-                "digest": "74516505",
+                "eid": "batch:66d5df60ebc08a375f42f3fa",
+                "name": "ORM-0515812-001",
+                "digest": "36430729",
                 "fields": {
                     "Batch Chemical Name": {
                         "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide, hydrogen bromide"
@@ -165,7 +154,7 @@
                         "value": "359.901 g/mol"
                     },
                     "Name": {
-                        "value": "ORM-0515804-001"
+                        "value": "ORM-0515812-001"
                     },
                     "Project": {
                         "value": "Unspecified"
@@ -174,7 +163,7 @@
                         "value": "Internal"
                     },
                     "Submission Date": {
-                        "value": "2024-08-23T07:09:36.153Z"
+                        "value": "2024-09-02T15:53:04.418Z"
                     },
                     "Submitter": {
                         "value": "{userId=114, userName=timo.kangasperko@orion.fi, flags={isSystemStandardUser=true}, alias=timoka, email=timo.kangasperko@orion.fi, firstName=Timo, lastName=Kangasperko, picture={}, isEnabled=true}"
@@ -195,8 +184,19 @@
                 "type": "assetType",
                 "eid": "assetType:5d6e0287ee35880008c18db5",
                 "name": "Compounds",
-                "digest": "26069943",
+                "digest": "27013005",
                 "fields": {}
+            }
+        },
+        {
+            "type": "materialDrawing",
+            "id": "asset:66d5df5febc08a375f42f3f9",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5df5febc08a375f42f3f9/drawing?format=cdxml"
+            },
+            "attributes": {
+                "id": "asset:66d5df5febc08a375f42f3f9",
+                "type": "CHEMICAL_DRAWING"
             }
         },
         {
