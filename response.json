@@ -1,29 +1,29 @@
 {
     "links": {
-        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5f9eb250b7e433b4d039c"
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5fe2a9b8500592a953485"
     },
     "data": {
         "type": "material",
-        "id": "asset:66d5f9eb250b7e433b4d039c",
+        "id": "asset:66d5fe2a9b8500592a953485",
         "links": {
-            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5f9eb250b7e433b4d039c"
+            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5fe2a9b8500592a953485"
         },
         "attributes": {
             "library": "Compounds",
             "assetTypeId": "5d6e0287ee35880008c18db5",
-            "assetId": "66d5f9eb250b7e433b4d039c",
-            "id": "asset:66d5f9eb250b7e433b4d039c",
-            "eid": "asset:66d5f9eb250b7e433b4d039c",
-            "name": "ORM-0515826",
+            "assetId": "66d5fe2a9b8500592a953485",
+            "id": "asset:66d5fe2a9b8500592a953485",
+            "eid": "asset:66d5fe2a9b8500592a953485",
+            "name": "ORM-0515828",
             "synonyms": [
                 "COCCN1CCNC1C1N(CC1(C)C)C(=O)CC1(CN)CC1",
                 "C17H28N4O2"
             ],
             "description": "",
-            "createdAt": "2024-09-02T17:46:19.639Z",
-            "editedAt": "2024-09-02T17:46:19.639Z",
+            "createdAt": "2024-09-02T18:04:27.110Z",
+            "editedAt": "2024-09-02T18:04:27.110Z",
             "type": "asset",
-            "digest": "34896581",
+            "digest": "45158600",
             "fields": {
                 "Chemical Name": {
                     "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide"
@@ -44,7 +44,7 @@
                     "value": "320.44 g/mol"
                 },
                 "Name": {
-                    "value": "ORM-0515826"
+                    "value": "ORM-0515828"
                 },
                 "Stereochemistry": {
                     "value": "No stereochemistry"
@@ -59,10 +59,10 @@
                 "data": [
                     {
                         "type": "material",
-                        "id": "batch:66d5f9eb250b7e433b4d039d",
+                        "id": "batch:66d5fe2b9b8500592a953486",
                         "meta": {
                             "links": {
-                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d5f9eb250b7e433b4d039d"
+                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d5fe2b9b8500592a953486"
                             }
                         }
                     }
@@ -83,11 +83,11 @@
             },
             "chemicalDrawing": {
                 "links": {
-                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5f9eb250b7e433b4d039c/drawing?format=cdxml"
+                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5fe2a9b8500592a953485/drawing?format=cdxml"
                 },
                 "data": {
                     "type": "materialDrawing",
-                    "id": "asset:66d5f9eb250b7e433b4d039c"
+                    "id": "asset:66d5fe2a9b8500592a953485"
                 }
             },
             "createdBy": {
@@ -121,13 +121,67 @@
     },
     "included": [
         {
-            "type": "materialDrawing",
-            "id": "asset:66d5f9eb250b7e433b4d039c",
+            "type": "material",
+            "id": "batch:66d5fe2b9b8500592a953486",
             "links": {
-                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5f9eb250b7e433b4d039c/drawing?format=cdxml"
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d5fe2b9b8500592a953486"
             },
             "attributes": {
-                "id": "asset:66d5f9eb250b7e433b4d039c",
+                "type": "batch",
+                "eid": "batch:66d5fe2b9b8500592a953486",
+                "name": "ORM-0515828-001",
+                "digest": "14994468",
+                "fields": {
+                    "Batch Chemical Name": {
+                        "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide, hydrogen bromide"
+                    },
+                    "Batch Molecular Formula": {
+                        "value": "C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>&middot;BRH"
+                    },
+                    "Batch Purpose": {
+                        "value": "Dummy compound"
+                    },
+                    "Batch Type": {
+                        "value": "Discovery"
+                    },
+                    "Chemist": {
+                        "value": "TestUser MCChemist"
+                    },
+                    "Description": {
+                        "value": ""
+                    },
+                    "Formula Mass": {
+                        "value": "359.901 g/mol"
+                    },
+                    "Name": {
+                        "value": "ORM-0515828-001"
+                    },
+                    "Project": {
+                        "value": "Unspecified"
+                    },
+                    "Source": {
+                        "value": "Internal"
+                    },
+                    "Submission Date": {
+                        "value": "2024-09-02T18:04:27.303Z"
+                    },
+                    "Submitter": {
+                        "value": "{userId=114, userName=timo.kangasperko@orion.fi, flags={isSystemStandardUser=true}, alias=timoka, email=timo.kangasperko@orion.fi, firstName=Timo, lastName=Kangasperko, picture={}, isEnabled=true}"
+                    },
+                    "Synthesis Date": {
+                        "value": "2011-10-10T14:48Z"
+                    }
+                }
+            }
+        },
+        {
+            "type": "materialDrawing",
+            "id": "asset:66d5fe2a9b8500592a953485",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d5fe2a9b8500592a953485/drawing?format=cdxml"
+            },
+            "attributes": {
+                "id": "asset:66d5fe2a9b8500592a953485",
                 "type": "CHEMICAL_DRAWING"
             }
         },
@@ -141,7 +195,7 @@
                 "type": "assetType",
                 "eid": "assetType:5d6e0287ee35880008c18db5",
                 "name": "Compounds",
-                "digest": "16281990",
+                "digest": "20029383",
                 "fields": {}
             }
         },
@@ -167,60 +221,6 @@
                 "systemGroups": {
                     "links": {
                         "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114/systemGroups"
-                    }
-                }
-            }
-        },
-        {
-            "type": "material",
-            "id": "batch:66d5f9eb250b7e433b4d039d",
-            "links": {
-                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d5f9eb250b7e433b4d039d"
-            },
-            "attributes": {
-                "type": "batch",
-                "eid": "batch:66d5f9eb250b7e433b4d039d",
-                "name": "ORM-0515826-001",
-                "digest": "55980783",
-                "fields": {
-                    "Batch Chemical Name": {
-                        "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide, hydrogen bromide"
-                    },
-                    "Batch Molecular Formula": {
-                        "value": "C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>&middot;BRH"
-                    },
-                    "Batch Purpose": {
-                        "value": "Dummy compound"
-                    },
-                    "Batch Type": {
-                        "value": "Discovery"
-                    },
-                    "Chemist": {
-                        "value": "TestUser MCChemist"
-                    },
-                    "Description": {
-                        "value": ""
-                    },
-                    "Formula Mass": {
-                        "value": "359.901 g/mol"
-                    },
-                    "Name": {
-                        "value": "ORM-0515826-001"
-                    },
-                    "Project": {
-                        "value": "Unspecified"
-                    },
-                    "Source": {
-                        "value": "Internal"
-                    },
-                    "Submission Date": {
-                        "value": "2024-09-02T17:46:20.099Z"
-                    },
-                    "Submitter": {
-                        "value": "{userId=114, userName=timo.kangasperko@orion.fi, flags={isSystemStandardUser=true}, alias=timoka, email=timo.kangasperko@orion.fi, firstName=Timo, lastName=Kangasperko, picture={}, isEnabled=true}"
-                    },
-                    "Synthesis Date": {
-                        "value": "2011-10-10T14:48Z"
                     }
                 }
             }

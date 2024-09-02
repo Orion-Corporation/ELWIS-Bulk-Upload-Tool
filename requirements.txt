@@ -5,3 +5,4 @@ rdkit
 requests
 python-dotenv
 DateTime
+openpyxl

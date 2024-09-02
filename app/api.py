@@ -18,7 +18,7 @@ def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PA
     if uniqueness_result.get("data"):  # If the result is not empty, it's a duplicate
         orm_code = uniqueness_result["data"][0]["attributes"].get("name", "Unknown")
         log_duplicate(file, molecule_data, callback, orm_code)
-        return False
+        return True
     
     # Prepare api headers
     headers = {
@@ -40,6 +40,29 @@ def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PA
     with open('payload.json', 'w') as f:
         json.dump(payload, f, indent=4)
     return success
+
+def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS, molecule_data):
+    data_json = json.dumps(data)
+    try:
+        response = requests.post(endpoint, data=data_json, headers=headers)
+        # write response to json file
+        with open('response.json', 'w') as f:
+            json.dump(response.json(), f, indent=4)
+        
+        # Extract orm_code from the response
+        try:
+            orm_code = response.json().get("data", {}).get("attributes", {}).get("name", "Unknown")
+        except:
+            callback(f"ORM code not found in request: {str(e)}")
+        
+        if response.status_code in [200, 201]:
+            handle_success(file, data, orm_code, OUTPUT_PATHS, callback, response, molecule_data)
+            return True
+        handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback, response, molecule_data)
+        return False
+    except requests.exceptions.RequestException as e:
+        callback(f"Network error during request: {str(e)}")
+        return False
 
 def upload_fragment(fragment_data, fragment_type, callback, headers):
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
@@ -115,27 +138,3 @@ def get_existing_fragment_details(fragment_mf, fragment_type, api_key):
                 }
         print(f"No exact match found for salt molecular formula: {fragment_mf}")
     return None
-
-
-def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS, molecule_data):
-    data_json = json.dumps(data)
-    try:
-        response = requests.post(endpoint, data=data_json, headers=headers)
-        # write response to json file
-        with open('response.json', 'w') as f:
-            json.dump(response.json(), f, indent=4)
-        
-        # Extract orm_code from the response
-        try:
-            orm_code = response.json().get("data", {}).get("attributes", {}).get("name", "Unknown")
-        except:
-            callback(f"ORM code not found in request: {str(e)}")
-        
-        if response.status_code in [200, 201]:
-            handle_success(file, data, orm_code, OUTPUT_PATHS, callback, response, molecule_data)
-            return True
-        handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback, response, molecule_data)
-        return False
-    except requests.exceptions.RequestException as e:
-        callback(f"Network error during request: {str(e)}")
-        return False

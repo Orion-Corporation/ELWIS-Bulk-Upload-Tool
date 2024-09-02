@@ -17,9 +17,13 @@ def load_config(file_path, default):
 
 OUTPUT_PATHS = load_config('config/output_paths.json', {
     "success_log": "logs/Successfull/success.txt",
+    "success_log_excel": "logs/Successfull/success.xlsx",
     "duplicate_log": "logs/Failed/duplicates.txt",
+    "duplicate_log_excel": "logs/Failed/duplicates.xlsx",
     "failed_log": "logs/Failed/failed.txt",
+    "failed_log_excel": "logs/Failed/failed.xlsx",
     "general_log": "logs/General Log/logs.txt",
+    "general_log_excel": "logs/General Log/logs.xlsx",
     "download_folder": "downloads"
 })
 
