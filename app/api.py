@@ -34,7 +34,7 @@ def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PA
     payload = construct_payload(molecule_data, salt_id, fragment_data)
     
     # Send the request
-    success = send_request(payload, file, callback, API_ENDPOINTS['Compound Endpoint'], headers, OUTPUT_PATHS)
+    success = send_request(payload, file, callback, API_ENDPOINTS['Compound Endpoint'], headers, OUTPUT_PATHS, molecule_data)
     print(f"Payload sent for file {file}: {payload}")
     # write payload to json
     with open('payload.json', 'w') as f:
@@ -117,7 +117,7 @@ def get_existing_fragment_details(fragment_mf, fragment_type, api_key):
     return None
 
 
-def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
+def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS, molecule_data):
     data_json = json.dumps(data)
     try:
         response = requests.post(endpoint, data=data_json, headers=headers)
@@ -132,9 +132,9 @@ def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
             callback(f"ORM code not found in request: {str(e)}")
         
         if response.status_code in [200, 201]:
-            handle_success(file, data, orm_code, OUTPUT_PATHS, callback, response)
+            handle_success(file, data, orm_code, OUTPUT_PATHS, callback, response, molecule_data)
             return True
-        handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback, response)
+        handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback, response, molecule_data)
         return False
     except requests.exceptions.RequestException as e:
         callback(f"Network error during request: {str(e)}")

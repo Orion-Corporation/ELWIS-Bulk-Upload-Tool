@@ -68,6 +68,7 @@ def process_sdf(files, callback):
 
                 # Extract properties using RDKit
                 chemical_name = get_property(rdkit_mol, ["Chemical name", "Systematic name", "IUPAC"], '')
+                supplier_code = get_property(rdkit_mol, ["ID", "Query Mcule ID", "MOLPORTID"], '')
                 amount_mg = get_property(rdkit_mol, ["Amount_mg", "Amount (mg)", "QUANTITY"], 0)
                 compound_id = get_property(rdkit_mol, ["ID", "Delivered Mcule ID", "MOLPORTID"], '')
                 formula = get_property(rdkit_mol, ["Formula", "MOL FORMULA"], '')
@@ -81,6 +82,7 @@ def process_sdf(files, callback):
 
                 molecule_data = {
                     "Chemical name": chemical_name,
+                    "Supplier code": supplier_code,
                     "MolecularFormula": main_molecule.GetFormula().upper(),
                     "MW": main_molecule.GetMolWt(),
                     "Smile": smiles,

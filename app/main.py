@@ -168,7 +168,7 @@ class MyApp(App):
             OUTPUT_PATHS['success_log'],
             OUTPUT_PATHS['duplicate_log'],
             OUTPUT_PATHS['failed_log'],
-            OUTPUT_PATHS['general_log']
+            # OUTPUT_PATHS['general_log'] # General log is preserved, needs to be deleted manually
         ]
 
         for log_file in log_files:
