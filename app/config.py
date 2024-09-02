@@ -16,10 +16,10 @@ def load_config(file_path, default):
         return default
 
 OUTPUT_PATHS = load_config('config/output_paths.json', {
-    "success_log": "Successfull/success.txt",
-    "duplicate_log": "Failed/duplicates.txt",
-    "failed_log": "Failed/failed.txt",
-    "general_log": "logs.txt",
+    "success_log": "logs/Successfull/success.txt",
+    "duplicate_log": "logs/Failed/duplicates.txt",
+    "failed_log": "logs/Failed/failed.txt",
+    "general_log": "logs/General Log/logs.txt",
     "download_folder": "downloads"
 })
 

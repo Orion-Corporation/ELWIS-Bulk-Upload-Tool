@@ -6,13 +6,13 @@ from sdf_processing import construct_payload, check_uniqueness
 
 # API functions
 def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PATHS):
-    log_to_general_log(f"Checking uniqueness of molecule in file: {file}")
+    log_to_general_log(f"Checking uniqueness of molecule: {molecule_data.get('MolecularFormula', '')} in file: {file}")
     # Check uniqueness of the compound
     uniqueness_result = check_uniqueness(molecule_data, api_key)
     
     if uniqueness_result is None:
-        log_to_general_log(f"Failed to verify uniqueness for {file}, aborting upload.")
-        callback(f"Could not verify uniqueness for {file}. Aborting upload.")
+        log_to_general_log(f"Uniqueness result is None. Failed to verify uniqueness for {file}, aborting upload.")
+        callback(f"Uniqueness result is None. Could not verify uniqueness for {file}. Aborting upload.")
         return False
     
     if uniqueness_result.get("data"):  # If the result is not empty, it's a duplicate
@@ -43,7 +43,7 @@ def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PA
 
 def upload_fragment(fragment_data, fragment_type, callback, headers):
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
-    log_to_general_log(f"Attempting to upload fragment to {fragment_endpoint} with data: {fragment_data}")
+    log_to_general_log(f"Attempting to upload fragment to {fragment_endpoint} with fragment data: {fragment_data}")
     response = requests.post(fragment_endpoint, data=json.dumps(fragment_data), headers=headers)
     log_to_general_log(f"Received response for fragment upload: {response.status_code} - {response.text}")
     if response.status_code in [200, 201]:
@@ -126,16 +126,16 @@ def send_request(data, file, callback, endpoint, headers, OUTPUT_PATHS):
             json.dump(response.json(), f, indent=4)
         
         # Extract orm_code from the response
-        # Todo: implement try catch to handle missing orm_code
-        orm_code = response.json().get("data", {}).get("attributes", {}).get("name", "Unknown")
+        try:
+            orm_code = response.json().get("data", {}).get("attributes", {}).get("name", "Unknown")
+        except:
+            callback(f"ORM code not found in request: {str(e)}")
         
         if response.status_code in [200, 201]:
-            handle_success(file, data, orm_code, OUTPUT_PATHS, callback)
+            handle_success(file, data, orm_code, OUTPUT_PATHS, callback, response)
             return True
-        handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback)
+        handle_failure(file, data, response, orm_code, OUTPUT_PATHS, callback, response)
         return False
     except requests.exceptions.RequestException as e:
         callback(f"Network error during request: {str(e)}")
         return False
-    
-    

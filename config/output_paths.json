@@ -1,7 +1,7 @@
 {
-    "success_log": "Successfull/success.txt",
-    "duplicate_log": "Failed/duplicates.txt",
-    "failed_log": "Failed/failed.txt",
-    "general_log": "logs.txt",
+    "success_log": "logs/Successfull/success.txt",
+    "duplicate_log": "logs/Failed/duplicates.txt",
+    "failed_log": "logs/Failed/failed.txt",
+    "general_log": "logs/General Log/logs.txt",
     "download_folder": "downloads"
 }

@@ -178,7 +178,7 @@ class MyApp(App):
             except Exception as e:
                 self.print_terminal(f"Error deleting log file {log_file}: {str(e)}")
         
-        self.print_terminal("Output logs cleared.")
+        self.print_terminal("Output files & logs cleared.")
 
     def process_files(self, files):
         self.selected_files = files
@@ -208,13 +208,12 @@ class MyApp(App):
 
         self.schedule_upload(0, update_progress_bar)
 
-
     def schedule_upload(self, file_index, update_progress_bar):
         if not self.upload_in_progress or file_index >= len(self.selected_files):
             self.upload_in_progress = False
             self.button_stop_upload.disabled = True
             return
-        
+
         file = self.selected_files[file_index]
         molecules, fragments = process_sdf([file], self.print_terminal)
         if not molecules:
@@ -237,25 +236,28 @@ class MyApp(App):
             if molecule_identifier in self.processed_molecules:
                 orm_code = "Duplicate"
                 log_duplicate(file, molecule_data, self.print_terminal, orm_code)
-                self.print_terminal(f'Duplicate compound detected: {molecule_data.get("MolecularFormula", "")} - ORM Code: {orm_code}')
+                self.print_terminal(f'Duplicate compound detected: - ORM Code: {orm_code} - Molecular Formula: {molecule_data.get("MolecularFormula", "")} - From File: {file}')
                 Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
                 return
 
             success = post_to_api(molecule_data, fragment_data, file, self.print_terminal, api_key, OUTPUT_PATHS)
             if success:
-                # self.print_terminal(f'Compound successfully uploaded: {molecule_data.get("MolecularFormula", "")}')
-                self.processed_molecules.add(molecule_identifier)  # Mark this molecule as processed
+                # Mark this molecule as processed to avoid re-upload
+                self.processed_molecules.add(molecule_identifier)
             else:
-                self.print_terminal(f'Failed to upload compound: {molecule_data.get("MolecularFormula", "")} - File: {file}')
+                # Only log as failed if the API call genuinely fails and not due to a duplicate
+                # self.print_terminal(f'Failed to upload : {molecule_data.get("MolecularFormula", "")} - From File: {file}')
                 log_failed_upload(file, molecule_data)
+
             Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
+
         process_molecule(0)
 
     def schedule_next_file(self, file_index, update_progress_bar):
         if file_index + 1 >= len(self.selected_files):
             self.upload_in_progress = False
             self.button_stop_upload.disabled = True
-            self.print_terminal("End of Upload")
+            self.print_terminal("End of Upload, see logs for details.")
         else:
             Clock.schedule_once(lambda dt: self.schedule_upload(file_index + 1, update_progress_bar))
 
