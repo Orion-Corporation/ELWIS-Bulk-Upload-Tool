@@ -1,7 +1,11 @@
 {
-    "success_log": "Successfull/success.txt",
-    "duplicate_log": "Failed/duplicates.txt",
-    "failed_log": "Failed/failed.txt",
-    "general_log": "logs.txt",
+    "success_log": "logs/Successfull/success.txt",
+    "success_log_excel": "logs/Successfull/success.xlsx",
+    "duplicate_log": "logs/Failed/duplicates.txt",
+    "duplicate_log_excel": "logs/Failed/duplicates.xlsx",
+    "failed_log": "logs/Failed/failed.txt",
+    "failed_log_excel": "logs/Failed/failed.xlsx",
+    "general_log": "logs/General Log/logs.txt",
+    "general_log_excel": "logs/General Log/logs.xlsx",
     "download_folder": "downloads"
 }
