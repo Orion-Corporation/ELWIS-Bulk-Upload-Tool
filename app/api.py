@@ -1,8 +1,9 @@
 import requests
 import json
-from config import API_ENDPOINTS
+from config import API_ENDPOINTS, OUTPUT_PATHS
 from logger import log_to_general_log, handle_success, handle_failure, log_duplicate
 from sdf_processing import construct_payload, check_uniqueness
+import os
 
 # API functions
 def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PATHS):
@@ -138,3 +139,56 @@ def get_existing_fragment_details(fragment_mf, fragment_type, api_key):
                 }
         print(f"No exact match found for salt molecular formula: {fragment_mf}")
     return None
+
+def upload_logs(api_key):
+    """
+    Uploads log files to the specified endpoint.
+    """
+    headers = {
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+        'x-api-key': api_key
+    }
+
+    # List of log files to upload
+    log_files = [
+        OUTPUT_PATHS['success_log'],
+        OUTPUT_PATHS['duplicate_log'],
+        OUTPUT_PATHS['failed_log'],
+        OUTPUT_PATHS['general_log']
+    ]
+
+    # Base endpoint URL for uploading logs from the configuration
+    base_endpoint = API_ENDPOINTS.get('Log Upload Base Endpoint')
+
+    # Ensure the base endpoint exists
+    if not base_endpoint:
+        log_to_general_log("Log Upload Base Endpoint is not configured.")
+        return False
+
+    for log_file in log_files:
+        try:
+            # Check if the file exists
+            if not os.path.exists(log_file):
+                log_to_general_log(f"Log file not found: {log_file}, skipping upload.")
+                continue
+
+            # Dynamically create the endpoint URL with the log file name
+            file_name = os.path.basename(log_file)
+            endpoint = f"{base_endpoint}{file_name}?force=true"
+
+            with open(log_file, 'rb') as f:
+                files = {'file': (file_name, f, 'application/octet-stream')}
+                response = requests.post(endpoint, headers=headers, files=files)
+
+                # Log the response status
+                if response.status_code in [200, 201]:
+                    log_to_general_log(f"Successfully uploaded log file: {log_file}")
+                else:
+                    log_to_general_log(f"Failed to upload log file: {log_file}. Status code: {response.status_code} - Response: {response.text}")
+
+        except Exception as e:
+            log_to_general_log(f"Error uploading log file: {log_file} - {str(e)}")
+            continue
+
+    return True

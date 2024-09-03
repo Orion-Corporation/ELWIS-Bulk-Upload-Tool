@@ -23,7 +23,7 @@ import requests
 from rdkit import Chem
 from config import API_ENDPOINTS, OUTPUT_PATHS, api_key
 from sdf_processing import process_sdf
-from api import post_to_api
+from api import post_to_api, upload_logs
 from logger import log_to_general_log, log_duplicate, log_failed_upload
 
 # Set the window size
@@ -260,7 +260,12 @@ class MyApp(App):
         if file_index + 1 >= len(self.selected_files):
             self.upload_in_progress = False
             self.button_stop_upload.disabled = True
-            self.print_terminal("End of Upload, see logs for details.")
+            self.print_terminal("End of Upload, see logs folder for details.")
+
+            # Call the upload_logs function after all files have been processed
+            self.print_terminal("All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.")
+            upload_logs(api_key)
+            self.print_terminal("Log upload complete.")
         else:
             Clock.schedule_once(lambda dt: self.schedule_upload(file_index + 1, update_progress_bar))
 
