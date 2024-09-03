@@ -264,7 +264,7 @@ class MyApp(App):
 
             # Call the upload_logs function after all files have been processed
             self.print_terminal("All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.")
-            upload_txt_logs(api_key)
+            # upload_txt_logs(api_key)
             upload_xlsx_logs(api_key)
             self.print_terminal("Log upload complete.")
         else:

@@ -1,134 +1,51 @@
-2024-09-03 11:20:22 - Output files & logs cleared.
-2024-09-03 11:20:29 - Selected files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:20:31 - Found 1 files to process
-2024-09-03 11:20:31 - Starting to process SDF files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:20:31 - Starting to process: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:20:31 - Processing file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:20:31 - Total molecules extracted: 2
-2024-09-03 11:20:31 - Checking uniqueness of molecule: C18H19CL2N5OS in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:20:33 - Detected duplicate molecule: - ORM Code: ORM-0515833 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:20:34 - Duplicate: - ORM Code: ORM-0515833 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:20:34 - Checking uniqueness of molecule: C17H28N4O2 in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:20:35 - Detected duplicate molecule: - ORM Code: ORM-0515834 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:20:35 - Duplicate: - ORM Code: ORM-0515834 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:20:36 - End of Upload, see logs folder for details.
-2024-09-03 11:20:36 - All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.
-2024-09-03 11:20:36 - Log file not found: logs/Successfull/Successful-Compounds.txt, skipping upload.
-2024-09-03 11:20:36 - Successfully uploaded log file: logs/Failed/Duplicate-Compounds.txt
-2024-09-03 11:20:36 - Log file not found: logs/Failed/faiFailed-Compoundsled.txt, skipping upload.
-2024-09-03 11:20:37 - Successfully uploaded log file: logs/General Log/General-Log.txt
-2024-09-03 11:20:37 - Log upload complete.
-2024-09-03 11:22:30 - Selected files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:22:57 - Found 1 files to process
-2024-09-03 11:22:57 - Starting to process SDF files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:22:57 - Starting to process: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:22:57 - Processing file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:22:57 - Total molecules extracted: 2
-2024-09-03 11:22:57 - Checking uniqueness of molecule: C18H19CL2N5OS in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:22:58 - Detected duplicate molecule: - ORM Code: ORM-0515833 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:22:59 - Duplicate: - ORM Code: ORM-0515833 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:22:59 - Checking uniqueness of molecule: C17H28N4O2 in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:00 - Detected duplicate molecule: - ORM Code: ORM-0515834 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:00 - Duplicate: - ORM Code: ORM-0515834 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:00 - End of Upload, see logs folder for details.
-2024-09-03 11:23:00 - All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.
-2024-09-03 11:23:00 - Log file not found: logs/Successfull/Successful-Compounds.txt, skipping upload.
-2024-09-03 11:23:01 - Successfully uploaded log file: logs/Failed/Duplicate-Compounds.txt
-2024-09-03 11:23:01 - Log file not found: logs/Failed/faiFailed-Compoundsled.txt, skipping upload.
-2024-09-03 11:23:02 - Successfully uploaded log file: logs/General Log/General-Log.txt
-2024-09-03 11:23:02 - Log upload complete.
-2024-09-03 11:23:38 - Selected files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:23:39 - Found 1 files to process
-2024-09-03 11:23:39 - Starting to process SDF files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:23:39 - Starting to process: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:39 - Processing file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:39 - Total molecules extracted: 2
-2024-09-03 11:23:39 - Checking uniqueness of molecule: C18H19CL2N5OS in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:40 - Detected duplicate molecule: - ORM Code: ORM-0515833 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:40 - Duplicate: - ORM Code: ORM-0515833 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:40 - Checking uniqueness of molecule: C17H28N4O2 in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:41 - Detected duplicate molecule: - ORM Code: ORM-0515834 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:41 - Duplicate: - ORM Code: ORM-0515834 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:23:41 - End of Upload, see logs folder for details.
-2024-09-03 11:23:41 - All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.
-2024-09-03 11:23:41 - Log file not found: logs/Successfull/Successful-Compounds.xlsx, skipping upload.
-2024-09-03 11:23:42 - Successfully uploaded log file: logs/Failed/Duplicate-Compounds.xlsx
-2024-09-03 11:23:42 - Log file not found: logs/Failed/Failed-Compounds.xlsx, skipping upload.
-2024-09-03 11:23:43 - Successfully uploaded log file: logs/General Log/General-Log.xlsx
-2024-09-03 11:23:43 - Log upload complete.
-2024-09-03 11:26:36 - Selected files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:26:38 - Found 1 files to process
-2024-09-03 11:26:38 - Starting to process SDF files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:26:38 - Starting to process: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:26:38 - Processing file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:26:38 - Total molecules extracted: 2
-2024-09-03 11:26:38 - Checking uniqueness of molecule: C18H19CL2N5OS in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:26:39 - Detected duplicate molecule: - ORM Code: ORM-0515833 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:04:46 - Selected files: ['/home/robekott/ERAT/examples/compound_test.sdf']
+2024-09-03 12:04:51 - Found 1 files to process
+2024-09-03 12:04:51 - Starting to process SDF files: ['/home/robekott/ERAT/examples/compound_test.sdf']
+2024-09-03 12:04:51 - Starting to process: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:04:51 - Processing file: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:04:51 - Total molecules extracted: 2
+2024-09-03 12:04:51 - Checking uniqueness of molecule: C18H19CL2N5OS in file: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:04:53 - Detected duplicate molecule: - ORM Code: ORM-0515835 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
 
-2024-09-03 11:26:40 - Duplicate: - ORM Code: ORM-0515833 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:04:53 - Duplicate: - ORM Code: ORM-0515835 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
 
-2024-09-03 11:26:40 - Checking uniqueness of molecule: C17H28N4O2 in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:26:41 - Detected duplicate molecule: - ORM Code: ORM-0515834 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:04:53 - Checking uniqueness of molecule: C17H28N4O2 in file: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:04:54 - Detected duplicate molecule: - ORM Code: ORM-0515836 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
 
-2024-09-03 11:26:41 - Duplicate: - ORM Code: ORM-0515834 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:04:54 - Duplicate: - ORM Code: ORM-0515836 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
 
-2024-09-03 11:26:41 - End of Upload, see logs folder for details.
-2024-09-03 11:26:41 - All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.
-2024-09-03 11:26:41 - Log file not found: logs/Successfull/Successful-Compounds.txt, skipping upload.
-2024-09-03 11:26:42 - Successfully uploaded log file: logs/Failed/Duplicate-Compounds.txt
-2024-09-03 11:26:42 - Log file not found: logs/Failed/faiFailed-Compoundsled.txt, skipping upload.
-2024-09-03 11:26:43 - Successfully uploaded log file: logs/General Log/General-Log.txt
-2024-09-03 11:26:43 - Log upload complete.
-2024-09-03 11:31:43 - Output files & logs cleared.
-2024-09-03 11:31:49 - Selected files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:31:50 - Found 1 files to process
-2024-09-03 11:31:50 - Starting to process SDF files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:31:50 - Starting to process: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:31:50 - Processing file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:31:50 - Total molecules extracted: 2
-2024-09-03 11:31:50 - Checking uniqueness of molecule: C18H19CL2N5OS in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:31:52 - Detected duplicate molecule: - ORM Code: ORM-0515833 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:04:54 - End of Upload, see logs folder for details.
+2024-09-03 12:04:54 - All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.
+2024-09-03 12:04:54 - Log file not found: logs/Successfull/Successful-Compounds.txt, skipping upload.
+2024-09-03 12:04:55 - Successfully uploaded log file: logs/Failed/Duplicate-Compounds.txt
+2024-09-03 12:04:55 - Log file not found: logs/Failed/faiFailed-Compoundsled.txt, skipping upload.
+2024-09-03 12:04:57 - Successfully uploaded log file: logs/General Log/General-Log.txt
+2024-09-03 12:04:57 - Excel log file not found: logs/Successfull/Successful-Compounds.xlsx, skipping upload.
+2024-09-03 12:04:57 - Successfully uploaded Excel log file: logs/Failed/Duplicate-Compounds.xlsx
+2024-09-03 12:04:57 - Excel log file not found: logs/Failed/Failed-Compounds.xlsx, skipping upload.
+2024-09-03 12:04:58 - Successfully uploaded Excel log file: logs/General Log/General-Log.xlsx
+2024-09-03 12:04:58 - Log upload complete.
+2024-09-03 12:06:25 - Output files & logs cleared.
+2024-09-03 12:07:09 - Selected files: ['/home/robekott/ERAT/examples/compound_test.sdf']
+2024-09-03 12:07:09 - Found 1 files to process
+2024-09-03 12:07:09 - Starting to process SDF files: ['/home/robekott/ERAT/examples/compound_test.sdf']
+2024-09-03 12:07:09 - Starting to process: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:07:09 - Processing file: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:07:09 - Total molecules extracted: 2
+2024-09-03 12:07:09 - Checking uniqueness of molecule: C18H19CL2N5OS in file: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:07:11 - Detected duplicate molecule: - ORM Code: ORM-0515835 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
 
-2024-09-03 11:31:52 - Duplicate: - ORM Code: ORM-0515833 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:07:11 - Duplicate: - ORM Code: ORM-0515835 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
 
-2024-09-03 11:31:52 - Checking uniqueness of molecule: C17H28N4O2 in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:31:54 - Detected duplicate molecule: - ORM Code: ORM-0515834 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:07:11 - Checking uniqueness of molecule: C17H28N4O2 in file: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:07:13 - Detected duplicate molecule: - ORM Code: ORM-0515836 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
 
-2024-09-03 11:31:54 - Duplicate: - ORM Code: ORM-0515834 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:07:13 - Duplicate: - ORM Code: ORM-0515836 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
 
-2024-09-03 11:31:54 - End of Upload, see logs folder for details.
-2024-09-03 11:31:54 - All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.
-2024-09-03 11:31:54 - Log file not found: logs/Successfull/Successful-Compounds.txt, skipping upload.
-2024-09-03 11:31:55 - Successfully uploaded log file: logs/Failed/Duplicate-Compounds.txt
-2024-09-03 11:31:55 - Log file not found: logs/Failed/faiFailed-Compoundsled.txt, skipping upload.
-2024-09-03 11:32:11 - Successfully uploaded log file: logs/General Log/General-Log.txt
-2024-09-03 11:32:11 - Log upload complete.
-2024-09-03 11:39:41 - Selected files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:39:42 - Found 1 files to process
-2024-09-03 11:39:42 - Starting to process SDF files: ['/home/robekott/ERAT/examples/compound_test.sdf']
-2024-09-03 11:39:42 - Starting to process: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:39:42 - Processing file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:39:42 - Total molecules extracted: 2
-2024-09-03 11:39:42 - Checking uniqueness of molecule: C18H19CL2N5OS in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:39:47 - Successfully uploaded: - ORM Code: ORM-0515835 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From file: /home/robekott/ERAT/examples/compound_test.sdf - API response code: 201 - API response: {"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6cb517a22b309d98a6d3d"},"data":{"type":"material","id":"asset:66d6cb517a22b309d98a6d3d","links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6cb517a22b309d98a6d3d"},"attributes":{"library":"Compounds","assetTypeId":"5d6e0287ee35880008c18db5","assetId":"66d6cb517a22b309d98a6d3d","id":"asset:66d6cb517a22b309d98a6d3d","eid":"asset:66d6cb517a22b309d98a6d3d","name":"ORM-0515835","synonyms":["CN(CC(=O)NC1C(CL)CCCC1CL)CC1NC(N)C2C(C)C(C)SC2N1","C18H19CL2N5OS"],"description":"","createdAt":"2024-09-03T08:39:46.190Z","editedAt":"2024-09-03T08:39:46.190Z","type":"asset","digest":"88698125","fields":{"Chemical Name":{"value":"2-[({4-amino-5,6-dimethylthieno[2,3-d]pyrimidin-2-yl}methyl)(methyl)amino]-N-(2,6-dichlorophenyl)acetamide"},"Description":{"value":""},"Exact Mass":{"value":"423.06874"},"Material Library Type":{"value":"Compounds"},"Molecular Formula":{"value":"C<sub>18</sub>H<sub>19</sub>Cl<sub>2</sub>N<sub>5</sub>OS"},"Molecular Weight":{"value":"424.34 g/mol"},"Name":{"value":"ORM-0515835"},"Stereochemistry":{"value":"No stereochemistry"}},"flags":{"canTrash":true}},"relationships":{"batches":{"data":[{"type":"material","id":"batch:66d6cb527a22b309d98a6d3e","meta":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d6cb527a22b309d98a6d3e"}}}]},"ancestors":{"data":[{"type":"material","id":"assetType:5d6e0287ee35880008c18db5","meta":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/assetType:5d6e0287ee35880008c18db5"}}}]},"chemicalDrawing":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6cb517a22b309d98a6d3d/drawing?format=cdxml"},"data":{"type":"materialDrawing","id":"asset:66d6cb517a22b309d98a6d3d"}},"createdBy":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"},"data":{"type":"user","id":"114"}},"editedBy":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"},"data":{"type":"user","id":"114"}},"owner":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"},"data":{"type":"user","id":"114"}}}},"included":[{"type":"materialDrawing","id":"asset:66d6cb517a22b309d98a6d3d","links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6cb517a22b309d98a6d3d/drawing?format=cdxml"},"attributes":{"id":"asset:66d6cb517a22b309d98a6d3d","type":"CHEMICAL_DRAWING"}},{"type":"material","id":"batch:66d6cb527a22b309d98a6d3e","links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d6cb527a22b309d98a6d3e"},"attributes":{"type":"batch","eid":"batch:66d6cb527a22b309d98a6d3e","name":"ORM-0515835-001","digest":"82175204","fields":{"Batch Chemical Name":{"value":"2-[({4-amino-5,6-dimethylthieno[2,3-d]pyrimidin-2-yl}methyl)(methyl)amino]-N-(2,6-dichlorophenyl)acetamide"},"Batch Molecular Formula":{"value":"C<sub>18</sub>H<sub>19</sub>Cl<sub>2</sub>N<sub>5</sub>OS"},"Batch Purpose":{"value":"Dummy compound"},"Batch Type":{"value":"Discovery"},"Chemist":{"value":"TestUser MCChemist"},"Description":{"value":""},"Formula Mass":{"value":"424.34 g/mol"},"Name":{"value":"ORM-0515835-001"},"Project":{"value":"Unspecified"},"Source":{"value":"Internal"},"Submission Date":{"value":"2024-09-03T08:39:46.570Z"},"Submitter":{"value":"{userId=114, userName=timo.kangasperko@orion.fi, flags={isSystemStandardUser=true}, alias=timoka, email=timo.kangasperko@orion.fi, firstName=Timo, lastName=Kangasperko, picture={}, isEnabled=true}"},"Synthesis Date":{"value":"2011-10-10T14:48Z"}}}},{"type":"material","id":"assetType:5d6e0287ee35880008c18db5","links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/assetType:5d6e0287ee35880008c18db5"},"attributes":{"type":"assetType","eid":"assetType:5d6e0287ee35880008c18db5","name":"Compounds","digest":"25802876","fields":{}}},{"type":"user","id":"114","links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"},"attributes":{"userId":"114","userName":"timo.kangasperko@orion.fi","flags":{"isSystemStandardUser":true},"alias":"timoka","email":"timo.kangasperko@orion.fi","firstName":"Timo","lastName":"Kangasperko","isEnabled":true},"relationships":{"systemGroups":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114/systemGroups"}}}}]}
-
-2024-09-03 11:39:47 - Successfully uploaded: - ORM Code: ORM-0515835 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From file: /home/robekott/ERAT/examples/compound_test.sdf - API response code: 201
-
-2024-09-03 11:39:47 - Checking uniqueness of molecule: C17H28N4O2 in file: /home/robekott/ERAT/examples/compound_test.sdf
-2024-09-03 11:39:48 - Salt detected: Molecular Formula BRH
-2024-09-03 11:39:48 - Salt with Molecular Formula 'BRH' already exists with ID: 193, not uploading duplicate
-2024-09-03 11:39:49 - Successfully uploaded: - ORM Code: ORM-0515836 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From file: /home/robekott/ERAT/examples/compound_test.sdf - API response code: 201 - API response: {"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6cb55ebc08a375f42f43c"},"data":{"type":"material","id":"asset:66d6cb55ebc08a375f42f43c","links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6cb55ebc08a375f42f43c"},"attributes":{"library":"Compounds","assetTypeId":"5d6e0287ee35880008c18db5","assetId":"66d6cb55ebc08a375f42f43c","id":"asset:66d6cb55ebc08a375f42f43c","eid":"asset:66d6cb55ebc08a375f42f43c","name":"ORM-0515836","synonyms":["COCCN1CCNC1C1N(CC1(C)C)C(=O)CC1(CN)CC1","C17H28N4O2"],"description":"","createdAt":"2024-09-03T08:39:49.363Z","editedAt":"2024-09-03T08:39:49.363Z","type":"asset","digest":"10306431","fields":{"Chemical Name":{"value":"2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide"},"Description":{"value":""},"Exact Mass":{"value":"320.22123"},"Material Library Type":{"value":"Compounds"},"Molecular Formula":{"value":"C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>"},"Molecular Weight":{"value":"320.44 g/mol"},"Name":{"value":"ORM-0515836"},"Stereochemistry":{"value":"No stereochemistry"}},"flags":{"canTrash":true}},"relationships":{"batches":{"data":[{"type":"material","id":"batch:66d6cb55ebc08a375f42f43d","meta":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d6cb55ebc08a375f42f43d"}}}]},"ancestors":{"data":[{"type":"material","id":"assetType:5d6e0287ee35880008c18db5","meta":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/assetType:5d6e0287ee35880008c18db5"}}}]},"chemicalDrawing":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6cb55ebc08a375f42f43c/drawing?format=cdxml"},"data":{"type":"materialDrawing","id":"asset:66d6cb55ebc08a375f42f43c"}},"createdBy":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"},"data":{"type":"user","id":"114"}},"editedBy":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"},"data":{"type":"user","id":"114"}},"owner":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"},"data":{"type":"user","id":"114"}}}},"included":[{"type":"materialDrawing","id":"asset:66d6cb55ebc08a375f42f43c","links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6cb55ebc08a375f42f43c/drawing?format=cdxml"},"attributes":{"id":"asset:66d6cb55ebc08a375f42f43c","type":"CHEMICAL_DRAWING"}},{"type":"material","id":"assetType:5d6e0287ee35880008c18db5","links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/assetType:5d6e0287ee35880008c18db5"},"attributes":{"type":"assetType","eid":"assetType:5d6e0287ee35880008c18db5","name":"Compounds","digest":"25802876","fields":{}}},{"type":"user","id":"114","links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"},"attributes":{"userId":"114","userName":"timo.kangasperko@orion.fi","flags":{"isSystemStandardUser":true},"alias":"timoka","email":"timo.kangasperko@orion.fi","firstName":"Timo","lastName":"Kangasperko","isEnabled":true},"relationships":{"systemGroups":{"links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114/systemGroups"}}}},{"type":"material","id":"batch:66d6cb55ebc08a375f42f43d","links":{"self":"https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d6cb55ebc08a375f42f43d"},"attributes":{"type":"batch","eid":"batch:66d6cb55ebc08a375f42f43d","name":"ORM-0515836-001","digest":"94585640","fields":{"Batch Chemical Name":{"value":"2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide, hydrogen bromide"},"Batch Molecular Formula":{"value":"C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>&middot;BRH"},"Batch Purpose":{"value":"Dummy compound"},"Batch Type":{"value":"Discovery"},"Chemist":{"value":"TestUser MCChemist"},"Description":{"value":""},"Formula Mass":{"value":"359.901 g/mol"},"Name":{"value":"ORM-0515836-001"},"Project":{"value":"Unspecified"},"Source":{"value":"Internal"},"Submission Date":{"value":"2024-09-03T08:39:49.617Z"},"Submitter":{"value":"{userId=114, userName=timo.kangasperko@orion.fi, flags={isSystemStandardUser=true}, alias=timoka, email=timo.kangasperko@orion.fi, firstName=Timo, lastName=Kangasperko, picture={}, isEnabled=true}"},"Synthesis Date":{"value":"2011-10-10T14:48Z"}}}}]}
-
-2024-09-03 11:39:50 - Successfully uploaded: - ORM Code: ORM-0515836 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From file: /home/robekott/ERAT/examples/compound_test.sdf - API response code: 201
-
-2024-09-03 11:39:50 - End of Upload, see logs folder for details.
-2024-09-03 11:39:50 - All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.
-2024-09-03 11:39:51 - Successfully uploaded log file: logs/Successfull/Successful-Compounds.txt
-2024-09-03 11:39:52 - Successfully uploaded log file: logs/Failed/Duplicate-Compounds.txt
-2024-09-03 11:39:52 - Log file not found: logs/Failed/faiFailed-Compoundsled.txt, skipping upload.
-2024-09-03 11:39:53 - Successfully uploaded log file: logs/General Log/General-Log.txt
-2024-09-03 11:39:53 - Successfully uploaded Excel log file: logs/Successfull/Successful-Compounds.xlsx
-2024-09-03 11:39:54 - Successfully uploaded Excel log file: logs/Failed/Duplicate-Compounds.xlsx
-2024-09-03 11:39:54 - Excel log file not found: logs/Failed/Failed-Compounds.xlsx, skipping upload.
-2024-09-03 11:39:55 - Successfully uploaded Excel log file: logs/General Log/General-Log.xlsx
-2024-09-03 11:39:55 - Log upload complete.
+2024-09-03 12:07:13 - End of Upload, see logs folder for details.
+2024-09-03 12:07:13 - All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.
+2024-09-03 12:07:13 - Excel log file not found: logs/Successfull/Successful-Compounds.xlsx, skipping upload.
+2024-09-03 12:07:14 - Successfully uploaded Excel log file: logs/Failed/Duplicate-Compounds.xlsx
+2024-09-03 12:07:14 - Excel log file not found: logs/Failed/Failed-Compounds.xlsx, skipping upload.
+2024-09-03 12:07:15 - Successfully uploaded Excel log file: logs/General Log/General-Log.xlsx
+2024-09-03 12:07:15 - Log upload complete.
