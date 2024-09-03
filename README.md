@@ -13,9 +13,11 @@ The ELWIS Registration Tool (ERAT) helps users process SDF files and sort compou
 - [ ] Add config json file for SDF properties - refactor current hard coding
 - [ ] Implement rollback function based on database IDs recorded in logs
 - [ ] Document test cases: 
-    - [ ] Handling duplicates
-    - [ ] Compound contains fragment / compound does not contain fragments
-- [ ] Authentication? mitigation by installation on the user's laptop?
+    - [ ] Upload new compounds
+    - [ ] Handle duplicates
+    - [ ] Compound contains fragment / compound does not contain fragment / contains multiple fragments
+    - [ ] Repeat test cases for ENAMINE, MOLPORT, MCULE
+- [ ] Authentication? mitigated by installation on the user's laptop?
 - [ ] For one bulk upload only fetch salts once and store them for next compound check - don't fetch per compound to spare API overload
 
 
