@@ -140,13 +140,13 @@ def get_existing_fragment_details(fragment_mf, fragment_type, api_key):
         print(f"No exact match found for salt molecular formula: {fragment_mf}")
     return None
 
-def upload_logs(api_key):
+def upload_txt_logs(api_key):
     """
-    Uploads log files to the specified endpoint.
+    Uploads log files to the specified endpoint as plain text.
     """
     headers = {
-        'Content-Type': 'application/json',
-        'accept': 'application/json',
+        'accept': 'application/vnd.api+json',
+        'Content-Type': 'text/plain',  # Updated to plain text
         'x-api-key': api_key
     }
 
@@ -178,8 +178,8 @@ def upload_logs(api_key):
             endpoint = f"{base_endpoint}{file_name}?force=true"
 
             with open(log_file, 'rb') as f:
-                files = {'file': (file_name, f, 'application/octet-stream')}
-                response = requests.post(endpoint, headers=headers, files=files)
+                # Read the file content for a plain text upload
+                response = requests.post(endpoint, headers=headers, data=f)
 
                 # Log the response status
                 if response.status_code in [200, 201]:
@@ -189,6 +189,64 @@ def upload_logs(api_key):
 
         except Exception as e:
             log_to_general_log(f"Error uploading log file: {log_file} - {str(e)}")
+            continue
+
+    return True
+
+import requests
+import os
+from config import API_ENDPOINTS, OUTPUT_PATHS
+from logger import log_to_general_log
+
+def upload_xlsx_logs(api_key):
+    """
+    Uploads xlsx log files to the specified endpoint.
+    """
+    headers = {
+        'accept': 'application/vnd.api+json',
+        'Content-Type': 'application/octet-stream',  # Correct content type for xlsx files
+        'x-api-key': api_key
+    }
+
+    # List of Excel log files to upload
+    xlsx_log_files = [
+        OUTPUT_PATHS['success_log_excel'],      # Example: 'logs/Successfull/success.xlsx'
+        OUTPUT_PATHS['duplicate_log_excel'],    # Example: 'logs/Failed/duplicates.xlsx'
+        OUTPUT_PATHS['failed_log_excel'],       # Example: 'logs/Failed/failed.xlsx'
+        OUTPUT_PATHS['general_log_excel']       # Example: 'logs/General Log/logs.xlsx'
+    ]
+
+    # Base endpoint URL for uploading logs from the configuration
+    base_endpoint = API_ENDPOINTS.get('Log Upload Base Endpoint')
+
+    # Ensure the base endpoint exists
+    if not base_endpoint:
+        log_to_general_log("Log Upload Base Endpoint is not configured.")
+        return False
+
+    for log_file in xlsx_log_files:
+        try:
+            # Check if the file exists
+            if not os.path.exists(log_file):
+                log_to_general_log(f"Excel log file not found: {log_file}, skipping upload.")
+                continue
+
+            # Dynamically create the endpoint URL with the log file name
+            file_name = os.path.basename(log_file)
+            endpoint = f"{base_endpoint}{file_name}?force=true"
+
+            with open(log_file, 'rb') as f:
+                # Upload the file as binary data
+                response = requests.post(endpoint, headers=headers, data=f)
+
+                # Log the response status
+                if response.status_code in [200, 201]:
+                    log_to_general_log(f"Successfully uploaded Excel log file: {log_file}")
+                else:
+                    log_to_general_log(f"Failed to upload Excel log file: {log_file}. Status code: {response.status_code} - Response: {response.text}")
+
+        except Exception as e:
+            log_to_general_log(f"Error uploading Excel log file: {log_file} - {str(e)}")
             continue
 
     return True
