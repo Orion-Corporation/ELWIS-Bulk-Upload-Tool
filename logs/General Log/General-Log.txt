@@ -49,3 +49,26 @@
 2024-09-03 12:07:14 - Excel log file not found: logs/Failed/Failed-Compounds.xlsx, skipping upload.
 2024-09-03 12:07:15 - Successfully uploaded Excel log file: logs/General Log/General-Log.xlsx
 2024-09-03 12:07:15 - Log upload complete.
+2024-09-03 12:18:14 - Selected files: ['/home/robekott/ERAT/examples/compound_test.sdf']
+2024-09-03 12:18:15 - Found 1 files to process
+2024-09-03 12:18:15 - Starting to process SDF files: ['/home/robekott/ERAT/examples/compound_test.sdf']
+2024-09-03 12:18:15 - Starting to process: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:18:15 - Processing file: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:18:15 - Total molecules extracted: 2
+2024-09-03 12:18:15 - Checking uniqueness of molecule: C18H19CL2N5OS in file: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:18:17 - Detected duplicate molecule: - ORM Code: ORM-0515835 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
+
+2024-09-03 12:18:17 - Duplicate: - ORM Code: ORM-0515835 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
+
+2024-09-03 12:18:17 - Checking uniqueness of molecule: C17H28N4O2 in file: /home/robekott/ERAT/examples/compound_test.sdf
+2024-09-03 12:18:18 - Detected duplicate molecule: - ORM Code: ORM-0515836 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
+
+2024-09-03 12:18:18 - Duplicate: - ORM Code: ORM-0515836 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
+
+2024-09-03 12:18:18 - End of Upload, see logs folder for details.
+2024-09-03 12:18:18 - All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.
+2024-09-03 12:18:18 - Excel log file not found: logs/Successfull/Successful-Compounds.xlsx, skipping upload.
+2024-09-03 12:18:20 - Successfully uploaded Excel log file: logs/Failed/Duplicate-Compounds.xlsx
+2024-09-03 12:18:20 - Excel log file not found: logs/Failed/Failed-Compounds.xlsx, skipping upload.
+2024-09-03 12:18:20 - Successfully uploaded Excel log file: logs/General Log/General-Log.xlsx
+2024-09-03 12:18:20 - Log upload complete.

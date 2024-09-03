@@ -1,2 +1,4 @@
 Timestamp: 2024-09-03 12:07:11 - ORM Code: ORM-0515835 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
 Timestamp: 2024-09-03 12:07:13 - ORM Code: ORM-0515836 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
+Timestamp: 2024-09-03 12:18:17 - ORM Code: ORM-0515835 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
+Timestamp: 2024-09-03 12:18:18 - ORM Code: ORM-0515836 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf

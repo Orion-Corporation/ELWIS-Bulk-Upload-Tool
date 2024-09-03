@@ -4,6 +4,7 @@ from config import API_ENDPOINTS, OUTPUT_PATHS
 from logger import log_to_general_log, handle_success, handle_failure, log_duplicate
 from sdf_processing import construct_payload, check_uniqueness
 import os
+from datetime import datetime
 
 # API functions
 def post_to_api(molecule_data, fragment_data, file, callback, api_key, OUTPUT_PATHS):
@@ -232,8 +233,13 @@ def upload_xlsx_logs(api_key):
                 continue
 
             # Dynamically create the endpoint URL with the log file name
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             file_name = os.path.basename(log_file)
-            endpoint = f"{base_endpoint}{file_name}?force=true"
+            file_name_without_extension, file_extension = os.path.splitext(file_name)
+            # Append the timestamp to the file name
+            new_file_name = f"{file_name_without_extension}_{timestamp}{file_extension}"
+            # Use the new file name in the endpoint URL
+            endpoint = f"{base_endpoint}{new_file_name}?force=true"
 
             with open(log_file, 'rb') as f:
                 # Upload the file as binary data
