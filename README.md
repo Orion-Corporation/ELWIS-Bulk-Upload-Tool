@@ -28,3 +28,4 @@ The ELWIS Registration Tool (ERAT) helps users process SDF files and sort compou
     - [ ] Salts & Solvates
 
 https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagger/index.html
+
