@@ -175,8 +175,13 @@ def upload_txt_logs(api_key):
                 continue
 
             # Dynamically create the endpoint URL with the log file name
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             file_name = os.path.basename(log_file)
-            endpoint = f"{base_endpoint}{file_name}?force=true"
+            file_name_without_extension, file_extension = os.path.splitext(file_name)
+            # Append the timestamp to the file name
+            new_file_name = f"{file_name_without_extension}_{timestamp}{file_extension}"
+            # Use the new file name in the endpoint URL
+            endpoint = f"{base_endpoint}{new_file_name}?force=true"
 
             with open(log_file, 'rb') as f:
                 # Read the file content for a plain text upload
@@ -211,10 +216,10 @@ def upload_xlsx_logs(api_key):
 
     # List of Excel log files to upload
     xlsx_log_files = [
-        OUTPUT_PATHS['success_log_excel'],      # Example: 'logs/Successfull/success.xlsx'
-        OUTPUT_PATHS['duplicate_log_excel'],    # Example: 'logs/Failed/duplicates.xlsx'
-        OUTPUT_PATHS['failed_log_excel'],       # Example: 'logs/Failed/failed.xlsx'
-        OUTPUT_PATHS['general_log_excel']       # Example: 'logs/General Log/logs.xlsx'
+        OUTPUT_PATHS['success_log_excel'],
+        OUTPUT_PATHS['duplicate_log_excel'],
+        OUTPUT_PATHS['failed_log_excel'],
+        OUTPUT_PATHS['general_log_excel']   
     ]
 
     # Base endpoint URL for uploading logs from the configuration
