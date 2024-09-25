@@ -1,3 +1,4 @@
+# main.py
 from kivy.config import Config
 Config.set('kivy', 'window_icon', 'burana.ico')
 
@@ -14,7 +15,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 from kivy.core.window import Window
-from kivy.properties import ListProperty, BooleanProperty
+from kivy.properties import ListProperty
 from kivy.lang import Builder
 from kivy.clock import Clock
 import json
@@ -22,8 +23,8 @@ from openbabel import openbabel
 import requests
 from rdkit import Chem
 from config import API_ENDPOINTS, OUTPUT_PATHS, api_key
-from sdf_processing import process_sdf
-from api import post_to_api, upload_txt_logs, upload_xlsx_logs
+from sdf_processing import process_sdf, check_uniqueness, construct_payload
+from api import upload_xlsx_logs, get_existing_fragment_details, upload_fragment, send_request
 from logger import log_to_general_log, log_duplicate, log_failed_upload
 
 # Set the window size
@@ -119,7 +120,6 @@ class MyApp(App):
     filechooser_popup_open = False
     API_ENDPOINTS = API_ENDPOINTS
     OUTPUT_PATHS = OUTPUT_PATHS
-    upload_in_progress = BooleanProperty(False)
 
     def build(self):
         self.title = "Structure-Data Format (SDF) File Processor"
@@ -127,19 +127,15 @@ class MyApp(App):
         self.label = self.root.ids.label
         self.button_select = self.root.ids.button_select
         self.button_upload = self.root.ids.button_upload
-        self.button_stop_upload = self.root.ids.button_stop_upload
         self.button_readme = self.root.ids.button_readme
         self.button_clear_folders = self.root.ids.button_clear_folders
         self.terminal_output = self.root.ids.terminal_output
 
         self.button_select.bind(on_release=self.show_filechooser)
         self.button_upload.bind(on_release=self.upload_files)
-        self.button_stop_upload.bind(on_release=self.stop_upload)
         self.button_readme.bind(on_release=self.show_readme)
         self.button_clear_folders.bind(on_release=self.clear_output_folders)
         
-        self.upload_in_progress = False  
-
         if not api_key:
             self.print_terminal("Error: API key not found. Please ensure '.env' file contains a valid API key.")
             self.button_upload.disabled = True
@@ -184,95 +180,82 @@ class MyApp(App):
         self.print_terminal("Output files & logs cleared.")
 
     def process_files(self, files):
+        if not files:
+            self.print_terminal("No files selected.")
+            return
+
+        # Avoiding double-processing by ensuring this function is called once
+        if hasattr(self, 'selected_files') and self.selected_files == files:
+            self.print_terminal("Files are already being processed. Skipping reprocessing.")
+            return
+
+        # Proceed with processing the files
         self.selected_files = files
         self.label.text = f'Selected {len(files)} files.'
+        
+        # Clear the existing file list
         file_list = self.root.ids.file_list
         file_list.clear_widgets()
+
         for file in files:
             file_list.add_widget(Label(text=file, size_hint_y=None, height='30dp', font_size='12sp', color=[0, 0, 0, 1]))
+        
         self.button_upload.background_color = [0.04, 0.33, 0.64, 1]
         self.button_upload.disabled = False
         self.print_terminal(f'Selected files: {files}')
         
+        # Ensure filechooser state is reset
         if hasattr(self, 'filechooser_popup'):
             self.filechooser_popup.filechooser.selection = []
 
     def upload_files(self, instance=None):
-        if self.upload_in_progress:
-            self.print_terminal("Upload already in progress, skipping redundant call")
-            return
+        self.print_terminal("Starting upload process...")
+        self.print_terminal(f"Processing file(s): {self.selected_files}")
 
-        self.upload_in_progress = True
-        self.processed_molecules = set()
-        self.button_stop_upload.disabled = False
+        for file in self.selected_files:
+            # Step 1: Process the SDF file
+            molecules, fragments = process_sdf([file], self.print_terminal)
 
-        def update_progress_bar(dt):
-            pass
+            if not molecules:
+                self.print_terminal(f"No valid molecules found in file: {file}")
+                continue
 
-        self.schedule_upload(0, update_progress_bar)
+            for molecule_data, fragment_data in zip(molecules, fragments):
+                # Step 2: Check uniqueness of the molecule
+                uniqueness_result = check_uniqueness(molecule_data, api_key)
+                if uniqueness_result and uniqueness_result.get("data"):
+                    orm_code = uniqueness_result["data"][0]["attributes"].get("name", "Unknown")
+                    log_duplicate(file, molecule_data, self.print_terminal, orm_code)
+                    self.print_terminal(f'Duplicate compound detected: - ORM Code: {orm_code} - Molecular Formula: {molecule_data.get("MolecularFormula", "")} - From File: {file}')
+                    continue
 
-    def schedule_upload(self, file_index, update_progress_bar):
-        if not self.upload_in_progress or file_index >= len(self.selected_files):
-            self.upload_in_progress = False
-            self.button_stop_upload.disabled = True
-            return
+                # Step 3: Check if fragment_data is valid before proceeding
+                salt_id = None
+                salt_mf = fragment_data.get('MolecularFormula', '').strip().upper()
+                if salt_mf:
+                    # Check uniqueness of the fragment
+                    salt_details = get_existing_fragment_details(salt_mf, "salts", api_key)
+                    
+                    # Step 4: Upload fragment if not unique
+                    if not salt_details:
+                        salt_id = upload_fragment(fragment_data, "salts", self.print_terminal, api_key)
+                    else:
+                        salt_id = salt_details['id']
+                        self.print_terminal(f"Fragment with Molecular Formula '{salt_mf}' already exists with ID: {salt_id}")
 
-        file = self.selected_files[file_index]
-        molecules, fragments = process_sdf([file], self.print_terminal)
-        if not molecules:
-            self.print_terminal(f"No valid molecules found in file: {file}")
-            self.schedule_next_file(file_index, update_progress_bar)
-            return
+                # Step 5: Construct payload
+                payload = construct_payload(molecule_data, salt_id, fragment_data)
 
-        def process_molecule(molecule_index):
-            if not self.upload_in_progress or molecule_index >= len(molecules):
-                Clock.schedule_once(update_progress_bar)
-                self.schedule_next_file(file_index, update_progress_bar)
-                return
+                # Step 6: Send the payload
+                success = send_request(payload, file, self.print_terminal, API_ENDPOINTS['Compound Endpoint'], api_key, OUTPUT_PATHS, molecule_data)
+                if success:
+                    continue
+                else:
+                    log_failed_upload(file, molecule_data)
 
-            molecule_data = molecules[molecule_index]
-            fragment_data = fragments[molecule_index] if molecule_index < len(fragments) else {}
-
-            # Use the SMILES string or a unique identifier as the key
-            molecule_identifier = molecule_data.get("Smile", "")
-
-            if molecule_identifier in self.processed_molecules:
-                orm_code = "Duplicate"
-                log_duplicate(file, molecule_data, self.print_terminal, orm_code)
-                self.print_terminal(f'Duplicate compound detected: - ORM Code: {orm_code} - Molecular Formula: {molecule_data.get("MolecularFormula", "")} - From File: {file}')
-                Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
-                return
-
-            success = post_to_api(molecule_data, fragment_data, file, self.print_terminal, api_key, OUTPUT_PATHS)
-            if success:
-                # Mark this molecule as processed to avoid re-upload
-                self.processed_molecules.add(molecule_identifier)
-            else:
-                # Only log as failed if the API call genuinely fails and not due to a duplicate
-                # self.print_terminal(f'Failed to upload : {molecule_data.get("MolecularFormula", "")} - From File: {file}')
-                log_failed_upload(file, molecule_data)
-
-            Clock.schedule_once(lambda dt: process_molecule(molecule_index + 1))
-
-        process_molecule(0)
-
-    def schedule_next_file(self, file_index, update_progress_bar):
-        if file_index + 1 >= len(self.selected_files):
-            self.upload_in_progress = False
-            self.button_stop_upload.disabled = True
-            self.print_terminal("End of Upload, see logs folder for details.")
-
-            # Call the upload_logs function after all files have been processed
-            self.print_terminal("All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.")
-            # upload_txt_logs(api_key)
-            upload_xlsx_logs(api_key)
-            self.print_terminal("Log upload complete.")
-        else:
-            Clock.schedule_once(lambda dt: self.schedule_upload(file_index + 1, update_progress_bar))
-
-    def stop_upload(self, instance=None):
-        self.upload_in_progress = False
-        self.print_terminal("Upload stopped.")
+        self.print_terminal("All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.")
+        upload_xlsx_logs(api_key)
+        self.print_terminal("Log upload complete.")
 
     def print_terminal(self, message):
         log_to_general_log(message)

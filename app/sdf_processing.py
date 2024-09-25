@@ -1,3 +1,5 @@
+# sdf_processing.py
+
 from rdkit import Chem
 from openbabel import openbabel
 import requests
@@ -24,8 +26,6 @@ def process_sdf(files, callback):
     for sdf_file in files:
         print(f"Processing file: {sdf_file}")
         log_to_general_log(f"Starting to process: {sdf_file}")
-        callback(f"Processing file: {sdf_file}")
-
         # Load the SDF file using RDKit to extract all properties
         supplier = Chem.SDMolSupplier(sdf_file)
         if not supplier:
