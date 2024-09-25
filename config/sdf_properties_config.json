@@ -1,0 +1,16 @@
+{
+    "properties": {
+      "Chemical name": ["Chemical name", "Systematic name", "IUPAC"],
+      "Supplier code": ["ID", "Query Mcule ID", "MOLPORTID"],
+      "Amount_mg": ["Amount_mg", "Amount (mg)", "QUANTITY"],
+      "ID": ["ID", "Delivered Mcule ID", "MOLPORTID"],
+      "Formula": ["Formula", "MOL FORMULA"],
+      "Purity": ["Purity", "Guaranteed purity (%)", "PURITY CLASSIFIED"],
+      "PO": ["PO", "Customer PO", "PO NUMBER FROM CLIENT"],
+      "Plate_ID": ["Plate_ID", "Multi container ID", "BOX_NAME"],
+      "Well": ["Well", "Single container position", "BOX_ROW"],
+      "Barcode": ["Barcode", "VIAL_BARCODE"],
+      "Stereochemistry": ["Stereochem.data", "STEREOCHEMISTRY"]
+    }
+}
+  

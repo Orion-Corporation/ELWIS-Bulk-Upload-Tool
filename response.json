@@ -1,9 +1,229 @@
 {
-    "errors": [
+    "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6fad5ebc08a375f42f460"
+    },
+    "data": {
+        "type": "material",
+        "id": "asset:66d6fad5ebc08a375f42f460",
+        "links": {
+            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6fad5ebc08a375f42f460"
+        },
+        "attributes": {
+            "library": "Compounds",
+            "assetTypeId": "5d6e0287ee35880008c18db5",
+            "assetId": "66d6fad5ebc08a375f42f460",
+            "id": "asset:66d6fad5ebc08a375f42f460",
+            "eid": "asset:66d6fad5ebc08a375f42f460",
+            "name": "ORM-0515840",
+            "synonyms": [
+                "COCCN1CCNC1C1N(CC1(C)C)C(=O)CC1(CN)CC1",
+                "C17H28N4O2"
+            ],
+            "description": "",
+            "createdAt": "2024-09-03T12:02:30.194Z",
+            "editedAt": "2024-09-03T12:02:30.194Z",
+            "type": "asset",
+            "digest": "51160166",
+            "fields": {
+                "Chemical Name": {
+                    "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide"
+                },
+                "Description": {
+                    "value": ""
+                },
+                "Exact Mass": {
+                    "value": "320.22123"
+                },
+                "Material Library Type": {
+                    "value": "Compounds"
+                },
+                "Molecular Formula": {
+                    "value": "C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>"
+                },
+                "Molecular Weight": {
+                    "value": "320.44 g/mol"
+                },
+                "Name": {
+                    "value": "ORM-0515840"
+                },
+                "Stereochemistry": {
+                    "value": "No stereochemistry"
+                }
+            },
+            "flags": {
+                "canTrash": true
+            }
+        },
+        "relationships": {
+            "batches": {
+                "data": [
+                    {
+                        "type": "material",
+                        "id": "batch:66d6fad6ebc08a375f42f461",
+                        "meta": {
+                            "links": {
+                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d6fad6ebc08a375f42f461"
+                            }
+                        }
+                    }
+                ]
+            },
+            "ancestors": {
+                "data": [
+                    {
+                        "type": "material",
+                        "id": "assetType:5d6e0287ee35880008c18db5",
+                        "meta": {
+                            "links": {
+                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/assetType:5d6e0287ee35880008c18db5"
+                            }
+                        }
+                    }
+                ]
+            },
+            "chemicalDrawing": {
+                "links": {
+                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6fad5ebc08a375f42f460/drawing?format=cdxml"
+                },
+                "data": {
+                    "type": "materialDrawing",
+                    "id": "asset:66d6fad5ebc08a375f42f460"
+                }
+            },
+            "createdBy": {
+                "links": {
+                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+                },
+                "data": {
+                    "type": "user",
+                    "id": "114"
+                }
+            },
+            "editedBy": {
+                "links": {
+                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+                },
+                "data": {
+                    "type": "user",
+                    "id": "114"
+                }
+            },
+            "owner": {
+                "links": {
+                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+                },
+                "data": {
+                    "type": "user",
+                    "id": "114"
+                }
+            }
+        }
+    },
+    "included": [
         {
-            "status": "434",
-            "code": "Unknown",
-            "detail": "Failed to create new Asset:Value 'achiral' for field 'Stereochemistry' is invalid"
+            "type": "materialDrawing",
+            "id": "asset:66d6fad5ebc08a375f42f460",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:66d6fad5ebc08a375f42f460/drawing?format=cdxml"
+            },
+            "attributes": {
+                "id": "asset:66d6fad5ebc08a375f42f460",
+                "type": "CHEMICAL_DRAWING"
+            }
+        },
+        {
+            "type": "material",
+            "id": "batch:66d6fad6ebc08a375f42f461",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:66d6fad6ebc08a375f42f461"
+            },
+            "attributes": {
+                "type": "batch",
+                "eid": "batch:66d6fad6ebc08a375f42f461",
+                "name": "ORM-0515840-001",
+                "digest": "49770522",
+                "fields": {
+                    "Batch Chemical Name": {
+                        "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide, hydrogen bromide"
+                    },
+                    "Batch Molecular Formula": {
+                        "value": "C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>&middot;BRH"
+                    },
+                    "Batch Purpose": {
+                        "value": "Dummy compound"
+                    },
+                    "Batch Type": {
+                        "value": "Discovery"
+                    },
+                    "Chemist": {
+                        "value": "TestUser MCChemist"
+                    },
+                    "Description": {
+                        "value": ""
+                    },
+                    "Formula Mass": {
+                        "value": "359.901 g/mol"
+                    },
+                    "Name": {
+                        "value": "ORM-0515840-001"
+                    },
+                    "Project": {
+                        "value": "Unspecified"
+                    },
+                    "Source": {
+                        "value": "Internal"
+                    },
+                    "Submission Date": {
+                        "value": "2024-09-03T12:02:30.513Z"
+                    },
+                    "Submitter": {
+                        "value": "{userId=114, userName=timo.kangasperko@orion.fi, flags={isSystemStandardUser=true}, alias=timoka, email=timo.kangasperko@orion.fi, firstName=Timo, lastName=Kangasperko, picture={}, isEnabled=true}"
+                    },
+                    "Synthesis Date": {
+                        "value": "2011-10-10T14:48Z"
+                    }
+                }
+            }
+        },
+        {
+            "type": "material",
+            "id": "assetType:5d6e0287ee35880008c18db5",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/assetType:5d6e0287ee35880008c18db5"
+            },
+            "attributes": {
+                "type": "assetType",
+                "eid": "assetType:5d6e0287ee35880008c18db5",
+                "name": "Compounds",
+                "digest": "16793537",
+                "fields": {}
+            }
+        },
+        {
+            "type": "user",
+            "id": "114",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+            },
+            "attributes": {
+                "userId": "114",
+                "userName": "timo.kangasperko@orion.fi",
+                "flags": {
+                    "isSystemStandardUser": true
+                },
+                "alias": "timoka",
+                "email": "timo.kangasperko@orion.fi",
+                "firstName": "Timo",
+                "lastName": "Kangasperko",
+                "isEnabled": true
+            },
+            "relationships": {
+                "systemGroups": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114/systemGroups"
+                    }
+                }
+            }
         }
     ]
 }

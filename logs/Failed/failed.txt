@@ -1,2 +1,0 @@
-Failed to upload molecule: Timestamp: 2024-09-02 21:06:03 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
-Failed to upload molecule: Timestamp: 2024-09-02 21:06:05 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf

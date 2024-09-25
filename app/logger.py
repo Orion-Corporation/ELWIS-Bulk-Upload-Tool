@@ -8,7 +8,7 @@ def handle_success(file, data, orm_code, OUTPUT_PATHS, callback, response, molec
     molecular_formula = data['data']['attributes']['synonyms'][1]
     supplier_code = molecule_data.get('Supplier code', '')  # Extract the supplier code
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the current timestamp
-    log_to_general_log(f"Successfully uploaded: - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From file: {file} - API response code: {response.status_code} - API response: {response.text}")
+    log_to_general_log(f"Successfully uploaded: - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From file: {file} - API response code: {response.status_code} - API response: {response.text}\n")
     
     # Log the success information with timestamp
     with open(OUTPUT_PATHS['success_log'], 'a') as success_log:
@@ -26,13 +26,13 @@ def handle_success(file, data, orm_code, OUTPUT_PATHS, callback, response, molec
     }
     append_to_excel(OUTPUT_PATHS['success_log_excel'], success_log_entry)
     append_to_excel(OUTPUT_PATHS['general_log_excel'], success_log_entry)
-    callback(f"Successfully uploaded: - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From file: {file} - API response code: {response.status_code}")
+    callback(f"Successfully uploaded: - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From file: {file} - API response code: {response.status_code}\n")
 
 def handle_failure(file, data, orm_code, OUTPUT_PATHS, callback, response, molecule_data):
     molecular_formula = data['data']['attributes']['synonyms'][1]
     supplier_code = molecule_data.get('Supplier code', '')  # Extract the supplier code
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the current timestamp
-    log_to_general_log(f"Failed to upload: - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From File: {file} - API Response Code: {response.status_code} - Response: {response.text}")
+    log_to_general_log(f"Failed to upload: - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From File: {file} - API Response Code: {response.status_code} - Response: {response.text}\n")
     
     failure_log_entry = {
         "Timestamp": timestamp,
@@ -65,7 +65,7 @@ def log_duplicate(file, molecule_data, callback, orm_code):
     molecular_formula = molecule_data.get('MolecularFormula', '')
     supplier_code = molecule_data.get('Supplier code', '')  # Extract the supplier code
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the current timestamp
-    log_to_general_log(f"Detected duplicate molecule: - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From File: {file}")
+    log_to_general_log(f"Detected duplicate molecule: - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From File: {file}\n")
 
     duplicate_log_entry = {
         "Timestamp": timestamp,
@@ -81,7 +81,7 @@ def log_duplicate(file, molecule_data, callback, orm_code):
     with open(OUTPUT_PATHS['duplicate_log'], 'a') as duplicate_log:
         duplicate_log.write(f"Timestamp: {timestamp} - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From File: {file}\n")
     
-    callback(f"Duplicate: - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From File: {file}")
+    callback(f"Duplicate: - ORM Code: {orm_code} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From File: {file}\n")
 
 def log_to_general_log(message):
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -94,7 +94,7 @@ def log_failed_upload(file, molecule_data):
     molecular_formula = molecule_data.get('MolecularFormula', '')
     supplier_code = molecule_data.get('Supplier code', '')  # Extract the supplier code
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the current timestamp
-    log_message = f"Failed to upload molecule: Timestamp: {timestamp} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From File: {file}"
+    log_message = f"Failed to upload molecule: Timestamp: {timestamp} - Supplier Code: {supplier_code} - Molecular Formula: {molecular_formula} - From File: {file}\n"
     
     # Log the failed upload with timestamp
     with open(OUTPUT_PATHS['failed_log'], 'a') as failed_log:
