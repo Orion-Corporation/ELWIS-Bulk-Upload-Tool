@@ -167,7 +167,7 @@ class MyApp(App):
             OUTPUT_PATHS['duplicate_log_excel'],
             OUTPUT_PATHS['failed_log'],
             OUTPUT_PATHS['failed_log_excel'],
-            # OUTPUT_PATHS['general_log'] # General log is preserved, needs to be deleted manually
+            # OUTPUT_PATHS['general_log'] # General log is preserved, should only be deleted manually
         ]
 
         for log_file in log_files:
