@@ -51,7 +51,7 @@ def process_sdf(files, callback):
                     main_molecule = obMol
                     fragment = None
                 elif len(separated_fragments) == 1:
-                    # Only one molecule, assuming it's the main molecule
+                    # Only one molecule, main molecule
                     main_molecule = separated_fragments[0]
                     fragment = None
                 elif len(separated_fragments) >= 2:

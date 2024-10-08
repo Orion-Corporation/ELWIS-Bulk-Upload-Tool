@@ -213,7 +213,7 @@ class MyApp(App):
         self.print_terminal(f"Processing file(s): {self.selected_files}")
 
         for file in self.selected_files:
-            # Step 1: Process the SDF file
+            # Step 1: Process one SDF file, outputs list of molecules and fragments in cdxml format
             molecules, fragments = process_sdf([file], self.print_terminal)
 
             if not molecules:
