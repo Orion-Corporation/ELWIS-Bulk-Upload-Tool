@@ -1,6 +1,6 @@
 {
     "properties": {
-      "Chemical name": ["Chemical name", "Systematic name", "IUPAC"],
+      "Chemical name": ["Chemical name", "Chemical Name", "Systematic name", "IUPAC"],
       "Supplier code": ["ID", "Query Mcule ID", "MOLPORTID"],
       "Amount_mg": ["Amount_mg", "Amount (mg)", "QUANTITY"],
       "ID": ["ID", "Delivered Mcule ID", "MOLPORTID"],

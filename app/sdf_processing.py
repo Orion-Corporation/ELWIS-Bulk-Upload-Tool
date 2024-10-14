@@ -5,7 +5,7 @@ from openbabel import openbabel
 import requests
 import json
 from logger import log_to_general_log
-from config import BATCH_FIELDS_CONFIG, API_ENDPOINTS
+from config import BATCH_FIELDS_CONFIG, API_ENDPOINTS, SDF_PROPERTIES_CONFIG
 
 # SDF processing functions using OpenBabel
 def process_sdf(files, callback):
@@ -67,18 +67,17 @@ def process_sdf(files, callback):
                 print(f"SMILES: {smiles}")
 
                 # Extract properties using RDKit
-                chemical_name = get_property(rdkit_mol, ["Chemical name", "Systematic name", "IUPAC"], '')
-                supplier_code = get_property(rdkit_mol, ["ID", "Query Mcule ID", "MOLPORTID"], '')
-                amount_mg = get_property(rdkit_mol, ["Amount_mg", "Amount (mg)", "QUANTITY"], 0)
-                compound_id = get_property(rdkit_mol, ["ID", "Delivered Mcule ID", "MOLPORTID"], '')
-                formula = get_property(rdkit_mol, ["Formula", "MOL FORMULA"], '')
-                purity = get_property(rdkit_mol, ["Purity", "Guaranteed purity (%)", "PURITY CLASSIFIED"], '')
-                po = get_property(rdkit_mol, ["PO", "Customer PO", "PO NUMBER FROM CLIENT"], '')
-                plate_id = get_property(rdkit_mol, ["Plate_ID", "Multi container ID", "BOX_NAME"], '')
-                well = get_property(rdkit_mol, ["Well", "Single container position", "BOX_ROW"], '')
-                barcode = get_property(rdkit_mol, ["Barcode", "VIAL_BARCODE"], '')
-                # stereochemistry
-                stereochemistry = get_property(rdkit_mol, ["Stereochem.data", "STEREOCHEMISTRY"], 'No stereochemistry')
+                chemical_name = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Chemical name", ["Chemical name", "Systematic name", "IUPAC"]), '')
+                supplier_code = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Supplier code", ["ID", "Query Mcule ID", "MOLPORTID"]), '')
+                amount_mg = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Amount_mg", ["Amount_mg", "Amount (mg)", "QUANTITY"]), 0)
+                compound_id = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Compound ID", ["ID", "Delivered Mcule ID", "MOLPORTID"]), '')
+                formula = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Formula", ["Formula", "MOL FORMULA"]), '')
+                purity = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Purity", ["Purity", "Guaranteed purity (%)", "PURITY CLASSIFIED"]), '')
+                po = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("PO", ["PO", "Customer PO", "PO NUMBER FROM CLIENT"]), '')
+                plate_id = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Plate_ID", ["Plate_ID", "Multi container ID", "BOX_NAME"]), '')
+                well = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Well", ["Well", "Single container position", "BOX_ROW"]), '')
+                barcode = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Barcode", ["Barcode", "VIAL_BARCODE"]), '')
+                stereochemistry = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Stereochemistry", ["Stereochem.data", "STEREOCHEMISTRY"]), 'No stereochemistry')
 
                 molecule_data = {
                     "Chemical name": chemical_name,
@@ -286,6 +285,17 @@ def construct_payload(molecule_data, salt_id, fragment_data):
             }
         }
     }
+
+# TODO: LIBRARY ID
+            # {
+            #   "id": "62fcceeb19660304d1e5bef2",
+            #   "name": "Library ID",
+            #   "dataType": "TEXT",
+            #   "mandatory": false,
+            #   "hidden": false,
+            #   "definedBy": "USER_ADDED",
+            #   "inUse": true
+            # },
 
     if salt_id:
         fragments = {}

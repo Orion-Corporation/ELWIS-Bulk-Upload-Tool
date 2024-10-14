@@ -35,3 +35,5 @@ API_ENDPOINTS = load_config('config/api_endpoints.json', {
 })
 
 BATCH_FIELDS_CONFIG = load_config('config/batch_fields_config.json', {})
+
+SDF_PROPERTIES_CONFIG = load_config('config/sdf_properties_config.json', {})
