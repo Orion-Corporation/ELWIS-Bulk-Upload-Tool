@@ -13,17 +13,16 @@ API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagg
 - [X] Save logs to an ELWIS notebook via API
     - [X] .txt
     - [X] .xlsx
-- [ ] Add validation schema step for SDF file property mappings and report any errors in properties
 - [ ] Add config json file for SDF properties - refactor current hard coding
+- [ ] Add validation schema step for SDF file property mappings and report any errors in properties
 - [ ] Implement rollback function based on database IDs recorded in logs
-- [ ] Authentication? mitigated by installation on the user's laptop?
-- [ ] For one bulk upload only fetch salts once and store them for next compound check - don't fetch per compound to spare API overload
 - [x] Support for supplier SDF-files
     - [x] ENAMINE
     - [ ] MOLPORT
     - [X] MCULE
         Query Mcule ID -> batch field
         Ordered Mcule ID_single container ID
+        enamine ID = Mcule Product ID
     - [ ] Salts & Solvates
 - [ ] Library ID input from user 
 - [ ] User input for batch properties
@@ -33,7 +32,8 @@ API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagg
 - [ ] Remove salt name from Compound name
 - [ ] Upload compound without chemical name -> elwis adds this automatically?
 - [ ] >  <Supplier name> ChemBridge, Can vary, add vendor dictionary to map different names - based on Materials.json. Should be Easy to change as a user
-- [ ] enamine ID = Mcule Product ID, when expanding to Mcule
+- [ ] For one bulk upload only fetch salts once and store them for next compound check - don't fetch per compound to spare API overload
+- [ ] Authentication? mitigated by installation on the user's laptop?
 - [ ] Document test cases: 
     - [ ] Upload new compounds
     - [ ] Handle duplicates
@@ -55,4 +55,22 @@ API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagg
 - [X] Does the API support additional custom fields or metadata within payloads (specifically fragments) that may not be documented? POST schema in docs only describe name, mf, mw.
     Materials support custom fields (through admin panel configuration) but not fragments
 
+
+
+# Git Cheatsheet
+
+git status
+git pull origin <branch-name> -Fetches and merges changes from the remote branch to your current local branch
+git fetch origin - Downloads changes from the remote branch but doesn’t merge them. Use git status to see the changes ready to be merged.
+git add <file-name> - or .
+git commit -m ""
+git push origin <branch-name>
+git push origin <branch-name> --force
+git merge <branch-name> - Merges the specified branch into your current branch.
+git checkout <branch-name> - Switches to a new branch
+git checkout -b <new-branch-name> - Creates and switches to a new branch.
+git checkout -- <file-name> - Discards local changes to a specific file.
+git reset --hard - Resets all local changes to the last commit. Warning: This will erase all changes that haven’t been committed.
+git stash - Temporarily saves all modified tracked files, allowing you to switch branches without committing
+git stash apply - Reapplies the last stashed changes
 
