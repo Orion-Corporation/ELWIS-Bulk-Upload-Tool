@@ -224,10 +224,11 @@ def construct_payload(molecule_data, salt_id, fragment_data, project_value, libr
                         "id": "62f9fe5b74770f14d1de43a8",
                         "value": molecule_data.get("Stereochemistry", "No stereochemistry")
                     },
-                    {
-                        "id": "5d6e0287ee35880008c18db6",
-                        "value": molecule_data.get("Chemical name", "")
-                    },
+                    # Chemical Name assigned by ELWIS automatically
+                    # {
+                    #     "id": "5d6e0287ee35880008c18db6",
+                    #     "value": molecule_data.get("Chemical name", "")
+                    # },
                     {
                         "id": "5d6e0287ee35880008c18db7",
                         "value": {
@@ -319,7 +320,7 @@ def check_uniqueness(molecule_data, api_key, project_value, library_id):
 
     # Dynamically load values from BATCH_FIELDS_CONFIG
     source_value = BATCH_FIELDS_CONFIG.get("source", {}).get("value", "Acquired")
-    project_value = BATCH_FIELDS_CONFIG.get("project", {}).get("value", "Unspecified")
+    # project_value = BATCH_FIELDS_CONFIG.get("project", {}).get("value", "Unspecified") USES DROPDOWN VALUE
     synthesis_datetime_value = BATCH_FIELDS_CONFIG.get("synthesis_datetime", {}).get("value", "2011-10-10T14:48:00Z")
     chemist_value = BATCH_FIELDS_CONFIG.get("chemist", {}).get("value", "TestUser MCChemist")
     batch_purpose_value = BATCH_FIELDS_CONFIG.get("batch_purpose", {}).get("value", "Dummy compound")
@@ -342,10 +343,11 @@ def check_uniqueness(molecule_data, api_key, project_value, library_id):
                         "id": "62f9fe5b74770f14d1de43a8",
                         "value": molecule_data.get("Stereochemistry", "No stereochemistry")
                     },
-                    {
-                        "id": "5d6e0287ee35880008c18db6",
-                        "value": molecule_data.get("Chemical name", "")
-                    },
+                    # Chemical Name assigned by ELWIS automatically
+                    # {
+                    #     "id": "5d6e0287ee35880008c18db6",
+                    #     "value": molecule_data.get("Chemical name", "")
+                    # },
                     {
                         "id": "5d6e0287ee35880008c18db7",
                         "value": {
