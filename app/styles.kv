@@ -37,7 +37,29 @@ BoxLayout:
             size_hint_y: None
             height: self.minimum_height
             spacing: 10
-
+            Label:
+                text: "Select Project"
+                font_size: '20sp'
+                color: [0, 0, 0, 1]
+                size_hint_y: None
+                height: '40dp'
+            Button:
+                id: button_fetch_materials
+                text: "Fetch Materials"
+                background_normal: ''
+                background_color: [0.5, 0.5, 0.5, 1]
+                color: [1, 1, 1, 1]
+                size_hint_y: None
+                height: '48dp'
+            Spinner:
+                id: project_spinner
+                text: "Select a Project"
+                values: []
+                size_hint_y: None
+                height: '48dp'
+                background_color: [0.5, 0.5, 0.5, 1]
+                color: [1, 1, 1, 1]
+                on_text: app.on_project_selected(self, self.text)
             Label:
                 id: label
                 text: "Select SDF Files to Process"

@@ -8,7 +8,7 @@ from logger import log_to_general_log
 from config import BATCH_FIELDS_CONFIG, API_ENDPOINTS, SDF_PROPERTIES_CONFIG
 
 # SDF processing functions using OpenBabel
-def process_sdf(files, callback):
+def process_sdf(files, callback, project_value):
     print("Starting process_sdf")
     log_to_general_log(f"Found {len(files)} files to process")
     log_to_general_log(f"Starting to process SDF files: {files}")
@@ -185,7 +185,7 @@ def convert_mol_to_cdxml(molecule_data):
     print("Successfully converted molecule to CDXML format")
     return output_cdxml
 
-def construct_payload(molecule_data, salt_id, fragment_data):
+def construct_payload(molecule_data, salt_id, fragment_data, project_value):
     # Ensure name is a string
     salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
     if isinstance(salt_name, (list, tuple)):
@@ -286,16 +286,7 @@ def construct_payload(molecule_data, salt_id, fragment_data):
         }
     }
 
-# TODO: LIBRARY ID
-            # {
-            #   "id": "62fcceeb19660304d1e5bef2",
-            #   "name": "Library ID",
-            #   "dataType": "TEXT",
-            #   "mandatory": false,
-            #   "hidden": false,
-            #   "definedBy": "USER_ADDED",
-            #   "inUse": true
-            # },
+
 
     if salt_id:
         fragments = {}
@@ -315,7 +306,7 @@ def construct_payload(molecule_data, salt_id, fragment_data):
 
     return data
 
-def check_uniqueness(molecule_data, api_key):
+def check_uniqueness(molecule_data, api_key, project_value):
     headers = {
         'Content-Type': 'application/vnd.api+json',
         'accept': 'application/vnd.api+json',

@@ -2,5 +2,6 @@
     "Fragment Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments",
     "Compound Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/Compounds/assets",
     "Delete Salt": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/",
-    "Log Upload Base Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/journal%3Aadb4025a-3506-4fb0-a1be-f2069a6cd378/children/"
+    "Log Upload Base Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/journal%3Aadb4025a-3506-4fb0-a1be-f2069a6cd378/children/",
+    "Bulk Import Endpoint": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/Compounds/bulkImport?rule=NO_DUPLICATED&importType=zip"
 }

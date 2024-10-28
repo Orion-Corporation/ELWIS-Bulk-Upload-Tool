@@ -14,6 +14,8 @@ from kivy.uix.filechooser import FileChooserIconView
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
+from kivy.uix.spinner import Spinner
+from kivy.properties import StringProperty
 from kivy.core.window import Window
 from kivy.properties import ListProperty
 from kivy.lang import Builder
@@ -120,7 +122,8 @@ class MyApp(App):
     filechooser_popup_open = False
     API_ENDPOINTS = API_ENDPOINTS
     OUTPUT_PATHS = OUTPUT_PATHS
-
+    selected_project = StringProperty("")
+    
     def build(self):
         self.title = "Structure-Data Format (SDF) File Processor"
         self.root = Builder.load_file('styles.kv')
@@ -128,13 +131,19 @@ class MyApp(App):
         self.button_select = self.root.ids.button_select
         self.button_upload = self.root.ids.button_upload
         self.button_readme = self.root.ids.button_readme
+        self.button_fetch_materials = self.root.ids.button_fetch_materials
+        self.button_fetch_materials.bind(on_release=self.fetch_materials)
         self.button_clear_folders = self.root.ids.button_clear_folders
         self.terminal_output = self.root.ids.terminal_output
+        self.project_spinner = self.root.ids.project_spinner
 
         self.button_select.bind(on_release=self.show_filechooser)
         self.button_upload.bind(on_release=self.upload_files)
         self.button_readme.bind(on_release=self.show_readme)
         self.button_clear_folders.bind(on_release=self.clear_output_folders)
+        self.button_fetch_materials.bind(on_release=self.fetch_materials)
+        
+        self.load_project_options()
         
         if not api_key:
             self.print_terminal("Error: API key not found. Please ensure '.env' file contains a valid API key.")
@@ -142,6 +151,77 @@ class MyApp(App):
 
         return self.root
     
+    def fetch_materials(self, instance=None):
+        url = 'https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/libraries'
+        config_folder = 'config'
+        output_file = os.path.join(config_folder, 'Materials_table.json')
+        
+        # Ensure 'config' directory exists
+        os.makedirs(config_folder, exist_ok=True)
+        
+        headers = {
+            'accept': 'application/vnd.api+json',
+            'x-api-key': api_key
+        }
+
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status() 
+            materials_data = response.json()
+
+            with open(output_file, 'w') as f:
+                json.dump(materials_data, f, indent=4)
+
+            self.load_project_options()
+            self.print_terminal("Materials fetched and saved successfully.")
+            
+        except Exception as e:
+            self.print_terminal(f"Failed to fetch materials: {str(e)}")
+            
+    def load_project_options(self):
+        target_id = "63469c69ed8a726a31923537"
+
+        def find_options_by_id(data, target_id):
+            # Check if the current data is a dictionary
+            if isinstance(data, dict):
+                if data.get("id") == target_id:
+                    return data.get("options", [])
+                # Recursively search each value in the dictionary
+                for key, value in data.items():
+                    result = find_options_by_id(value, target_id)
+                    if result is not None:
+                        return result
+
+            # Check if the current data is a list
+            elif isinstance(data, list):
+                for item in data:
+                    result = find_options_by_id(item, target_id)
+                    if result is not None:
+                        return result
+
+            return None
+
+        try:
+            with open('config/Materials_table.json', 'r') as f:
+                data = json.load(f)
+
+            # Search for options associated with the target ID
+            project_options = find_options_by_id(data, target_id)
+
+            # Check if options were found
+            if not project_options:
+                raise ValueError(f"No options found for ID {target_id} in JSON file.")
+
+            # Set the dropdown values
+            self.project_spinner.values = project_options
+            self.print_terminal("Project options loaded successfully.")
+        except Exception as e:
+            self.print_terminal(f"Error loading project options: {str(e)}")
+            
+    def on_project_selected(self, spinner, text):
+        self.selected_project = text
+        self.print_terminal(f"Selected Project: {text}")
+                    
     def show_filechooser(self, instance=None):
         if MyApp.filechooser_popup_open:
             self.print_terminal("File chooser is already open, not opening another one.")
@@ -213,40 +293,40 @@ class MyApp(App):
         self.print_terminal(f"Processing file(s): {self.selected_files}")
 
         for file in self.selected_files:
-            # Step 1: Process one SDF file, outputs list of molecules and fragments in cdxml format
-            molecules, fragments = process_sdf([file], self.print_terminal)
+            # Step 1: Process SDF file, now passing the selected project
+            molecules, fragments = process_sdf([file], self.print_terminal, self.selected_project)
 
             if not molecules:
                 self.print_terminal(f"No valid molecules found in file: {file}")
                 continue
 
             for molecule_data, fragment_data in zip(molecules, fragments):
-                # Step 2: Check uniqueness of the molecule
-                uniqueness_result = check_uniqueness(molecule_data, api_key)
+                # Step 2: Check uniqueness of the molecule with selected project
+                uniqueness_result = check_uniqueness(molecule_data, api_key, self.selected_project)
                 if uniqueness_result and uniqueness_result.get("data"):
                     orm_code = uniqueness_result["data"][0]["attributes"].get("name", "Unknown")
                     log_duplicate(file, molecule_data, self.print_terminal, orm_code)
                     self.print_terminal(f'Duplicate compound detected: - ORM Code: {orm_code} - Molecular Formula: {molecule_data.get("MolecularFormula", "")} - From File: {file}')
                     continue
 
-                # Step 3: Check if fragment_data is valid before proceeding
+                # Step 3: Process fragment data
                 salt_id = None
                 salt_mf = fragment_data.get('MolecularFormula', '').strip().upper()
                 if salt_mf:
                     # Check uniqueness of the fragment
                     salt_details = get_existing_fragment_details(salt_mf, "salts", api_key)
                     
-                    # Step 4: Upload fragment if not unique
+                    # Upload fragment if not unique
                     if not salt_details:
                         salt_id = upload_fragment(fragment_data, "salts", self.print_terminal, api_key)
                     else:
                         salt_id = salt_details['id']
                         self.print_terminal(f"Fragment with Molecular Formula '{salt_mf}' already exists with ID: {salt_id}")
 
-                # Step 5: Construct payload
-                payload = construct_payload(molecule_data, salt_id, fragment_data)
+                # Step 4: Construct payload with selected project
+                payload = construct_payload(molecule_data, salt_id, fragment_data, self.selected_project)
 
-                # Step 6: Send the payload
+                # Step 5: Send the payload
                 success = send_request(payload, file, self.print_terminal, API_ENDPOINTS['Compound Endpoint'], api_key, OUTPUT_PATHS, molecule_data)
                 if success:
                     continue
@@ -256,6 +336,7 @@ class MyApp(App):
         self.print_terminal("All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.")
         upload_xlsx_logs(api_key)
         self.print_terminal("Log upload complete.")
+
 
     def print_terminal(self, message):
         log_to_general_log(message)

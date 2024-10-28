@@ -37,7 +37,7 @@ def send_request(data, file, callback, endpoint, api_key, OUTPUT_PATHS, molecule
     except requests.exceptions.RequestException as e:
         callback(f"Network error during request: {str(e)}")
         return False
-
+    
 # Function to upload fragment (salt)
 def upload_fragment(fragment_data, fragment_type, callback, api_key):
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"

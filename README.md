@@ -45,10 +45,21 @@ API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagg
 
 ## Tuomo discussion
 - [ ] Investigate bulk import function, delete Openbabel
-- [ ] List projects (API call Materials.json from Elwis)
+- [X] List projects (API call Materials.json from Elwis)
 - [ ] Input library ID (user pastes text string (no need to fetch with API))
-- [ ] 
+- [ ] Dictionary
 - [ ] Krypteerattu python tiedosto
+
+# TODO: LIBRARY ID
+            # {
+            #   "id": "62fcceeb19660304d1e5bef2",
+            #   "name": "Library ID",
+            #   "dataType": "TEXT",
+            #   "mandatory": false,
+            #   "hidden": false,
+            #   "definedBy": "USER_ADDED",
+            #   "inUse": true
+            # },
 
 ## Discussion points with Revvity:
 - [X] SDF file ingestion, how to handle varying formats and data?
