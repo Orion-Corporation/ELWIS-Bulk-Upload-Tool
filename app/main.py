@@ -291,56 +291,62 @@ class MyApp(App):
             self.filechooser_popup.filechooser.selection = []
 
     def upload_files(self, instance=None):
-        self.library_id = self.library_id_input.text.strip()
-        if not self.selected_project or self.selected_project == "Select a Project":
-            self.selected_project = "Unspecified"
-        self.print_terminal("Starting upload process...")
-        self.print_terminal(f"Processing file(s): {self.selected_files}")
+        try:
+            self.library_id = self.library_id_input.text.strip()
+            if not self.selected_project or self.selected_project == "Select a Project":
+                self.selected_project = "Unspecified"
+            self.print_terminal("Starting upload process...")
+            self.print_terminal(f"Processing file(s): {self.selected_files}")
 
-        for file in self.selected_files:
-            # Step 1: Process SDF file, now passing the selected project
-            molecules, fragments = process_sdf([file], self.print_terminal, self.selected_project)
-
-            if not molecules:
-                self.print_terminal(f"No valid molecules found in file: {file}")
-                continue
-
-            for molecule_data, fragment_data in zip(molecules, fragments):
-                # Step 2: Check uniqueness of the molecule with selected project
-                uniqueness_result = check_uniqueness(molecule_data, api_key, self.selected_project, self.library_id)
-                if uniqueness_result and uniqueness_result.get("data"):
-                    orm_code = uniqueness_result["data"][0]["attributes"].get("name", "Unknown")
-                    log_duplicate(file, molecule_data, self.print_terminal, orm_code)
-                    self.print_terminal(f'Duplicate compound detected: - ORM Code: {orm_code} - Molecular Formula: {molecule_data.get("MolecularFormula", "")} - From File: {file}')
+            for file in self.selected_files:
+                # Step 1: Process SDF file, now passing the selected project
+                try:
+                    molecules, fragments = process_sdf([file], self.print_terminal, self.selected_project)
+                except Exception as e:
+                    self.print_terminal(f"Error processing SDF file {file}: {e}")
                     continue
 
-                # Step 3: Process fragment data
-                salt_id = None
-                salt_mf = fragment_data.get('MolecularFormula', '').strip().upper()
-                if salt_mf:
-                    # Check uniqueness of the fragment
-                    salt_details = get_existing_fragment_details(salt_mf, "salts", api_key)
+                if not molecules:
+                    self.print_terminal(f"No valid molecules found in file: {file}")
+                    continue
+
+                for molecule_data, fragment_data in zip(molecules, fragments):
+                    # Step 2: Check uniqueness of the molecule with selected project
+                    try:
+                        uniqueness_result = check_uniqueness(molecule_data, api_key, self.selected_project, self.library_id)
+                    except Exception as e:
+                        self.print_terminal(f"Error checking uniqueness for file {file}: {e}")
+                        continue
                     
-                    # Upload fragment if not unique
-                    if not salt_details:
-                        salt_id = upload_fragment(fragment_data, "salts", self.print_terminal, api_key)
-                    else:
-                        salt_id = salt_details['id']
-                        self.print_terminal(f"Fragment with Molecular Formula '{salt_mf}' already exists with ID: {salt_id}")
+                    if uniqueness_result and uniqueness_result.get("data"):
+                        orm_code = uniqueness_result["data"][0]["attributes"].get("name", "Unknown")
+                        log_duplicate(file, molecule_data, self.print_terminal, orm_code)
+                        self.print_terminal(f'Duplicate compound detected: - ORM Code: {orm_code} - Molecular Formula: {molecule_data.get("MolecularFormula", "")} - From File: {file}')
+                        continue
 
-                # Step 4: Construct payload with selected project
-                payload = construct_payload(molecule_data, salt_id, fragment_data, self.selected_project, self.library_id)
+                    # Step 4: Construct payload with selected project
+                    try:
+                        payload = construct_payload(molecule_data, None, fragment_data, self.selected_project, self.library_id)
+                    except Exception as e:
+                        self.print_terminal(f"Error constructing payload for file {file}: {e}")
+                        continue
 
-                # Step 5: Send the payload
-                success = send_request(payload, file, self.print_terminal, API_ENDPOINTS['Compound Endpoint'], api_key, OUTPUT_PATHS, molecule_data)
-                if success:
-                    continue
-                else:
-                    log_failed_upload(file, molecule_data)
+                    # Step 5: Send the payload
+                    try:
+                        success = send_request(payload, file, self.print_terminal, API_ENDPOINTS['Compound Endpoint'], api_key, OUTPUT_PATHS, molecule_data)
+                        if not success:
+                            log_failed_upload(file, molecule_data)
+                    except Exception as e:
+                        self.print_terminal(f"Error sending request for file {file}: {e}")
+                        log_failed_upload(file, molecule_data)
 
-        self.print_terminal("All files processed. Now uploading logs to Registration - Bulk registration via API logs Journal.")
-        upload_xlsx_logs(api_key)
-        self.print_terminal("Log upload complete.")
+            self.print_terminal("All files processed. Now uploading logs.")
+            upload_xlsx_logs(api_key)
+            self.print_terminal("Log upload complete.")
+
+        except Exception as e:
+            self.print_terminal(f"Unexpected error during upload process: {e}")
+
 
 
     def print_terminal(self, message):

@@ -18,21 +18,21 @@ API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagg
 - [ ] Implement rollback function based on database IDs recorded in logs
 - [x] Support for supplier SDF-files
     - [x] ENAMINE
-    - [ ] MOLPORT
+    - [X] MOLPORT
+        - [ ] Problems with reading all molecules in file?
     - [X] MCULE
         Query Mcule ID -> batch field
         Ordered Mcule ID_single container ID
         enamine ID = Mcule Product ID
     - [ ] Salts & Solvates
     - [ ] Refactor process_sdf function to vendor specific?
-- [ ] Library ID input from user (user interactive prompt, copy paste)
+- [X] Library ID input from user (user interactive prompt, copy paste)
     - Library ID compounds-> batch
 - [ ] User input for batch properties
     - [ ] Use Materials libraries for lists
     - [ ] Update list from API "/materials/libraries"
         Map input data to pre-defined limited lists expected by the API
-- [ ] Remove salt name from Compound name
-- [ ] Upload compound without chemical name -> elwis adds this automatically?
+- [X] Upload compound without chemical name -> elwis adds this automatically?
 - [ ] >  <Supplier name> ChemBridge, Can vary, add vendor dictionary to map different names - based on Materials.json. Should be Easy to change as a user
 - [ ] For one bulk upload only fetch salts once and store them for next compound check - don't fetch per compound to spare API overload
 - [ ] Authentication? mitigated by installation on the user's laptop?
@@ -49,17 +49,6 @@ API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagg
 - [X] Input library ID (user pastes text string (no need to fetch with API))
 - [ ] Dictionary
 - [ ] Krypteerattu python tiedosto
-
-# TODO: LIBRARY ID
-            # {
-            #   "id": "62fcceeb19660304d1e5bef2",
-            #   "name": "Library ID",
-            #   "dataType": "TEXT",
-            #   "mandatory": false,
-            #   "hidden": false,
-            #   "definedBy": "USER_ADDED",
-            #   "inUse": true
-            # },
 
 ## Discussion points with Revvity:
 - [X] SDF file ingestion, how to handle varying formats and data?

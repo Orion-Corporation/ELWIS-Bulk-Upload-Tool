@@ -5,7 +5,8 @@ from openbabel import openbabel
 import requests
 import json
 from logger import log_to_general_log
-from config import BATCH_FIELDS_CONFIG, API_ENDPOINTS, SDF_PROPERTIES_CONFIG
+from config import BATCH_FIELDS_CONFIG, API_ENDPOINTS, SDF_PROPERTIES_CONFIG, VIABLE_SUPPLIERS
+from config import load_viable_suppliers
 
 # SDF processing functions using OpenBabel
 def process_sdf(files, callback, project_value):
@@ -69,6 +70,7 @@ def process_sdf(files, callback, project_value):
                 # Extract properties using RDKit
                 chemical_name = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Chemical name", ["Chemical name", "Systematic name", "IUPAC"]), '')
                 supplier_code = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Supplier code", ["ID", "Query Mcule ID", "MOLPORTID"]), '')
+                supplier_name = get_normalized_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Supplier name", ["Supplier name", "SUPPLIER NAME"]), 'Unknown')
                 amount_mg = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Amount_mg", ["Amount_mg", "Amount (mg)", "QUANTITY"]), 0)
                 compound_id = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Compound ID", ["ID", "Delivered Mcule ID", "MOLPORTID"]), '')
                 formula = get_property(rdkit_mol, SDF_PROPERTIES_CONFIG.get("Formula", ["Formula", "MOL FORMULA"]), '')
@@ -82,6 +84,7 @@ def process_sdf(files, callback, project_value):
                 molecule_data = {
                     "Chemical name": chemical_name,
                     "Supplier code": supplier_code,
+                    "Supplier name": supplier_name,
                     "MolecularFormula": main_molecule.GetFormula().upper(),
                     "MW": main_molecule.GetMolWt(),
                     "Smile": smiles,
@@ -155,6 +158,40 @@ def get_property(mol, prop_names, default_value):
         if mol.HasProp(prop_name):
             return mol.GetProp(prop_name)
     return default_value
+
+import re
+
+def normalize_name(name):
+    # Remove non-alphabetic characters and convert to lowercase
+    normalized_name = re.sub(r'[^a-zA-Z]', '', name).lower()
+    # Remove common suffixes like "inc", "co", "ltd", etc., if they appear at the end of the string
+    normalized_name = re.sub(r'(inc|co|ltd|corp|llc|gmbh|bv|plc)$', '', normalized_name)
+    # Return the cleaned name with leading/trailing whitespace stripped
+    return normalized_name.strip()
+
+def get_normalized_property(mol, prop_names, default_value):
+    VIABLE_SUPPLIERS = load_viable_suppliers()
+    for prop_name in prop_names:
+        if mol.HasProp(prop_name):
+            # Get the raw supplier name from the SDF and normalize it
+            sdf_supplier_name = mol.GetProp(prop_name).strip()
+            normalized_sdf_name = normalize_name(sdf_supplier_name)
+            print(f"Normalized SDF name: {normalized_sdf_name}")
+            print(f"Loaded VIABLE_SUPPLIERS: {VIABLE_SUPPLIERS}")
+
+            # Search for an exact match in normalized form with VIABLE_SUPPLIERS
+            for viable_supplier in VIABLE_SUPPLIERS:
+                normalized_viable_name = normalize_name(viable_supplier)
+                print(f"Normalized Viable Supplier: {normalized_viable_name}")
+
+                # If a match is found, return the exact form from VIABLE_SUPPLIERS
+                if normalized_sdf_name == normalized_viable_name:
+                    print(f"Matched SDF name '{sdf_supplier_name}' with viable supplier '{viable_supplier}'")
+                    return viable_supplier
+
+    # Return default if no properties match
+    return default_value
+
 
 def convert_mol_to_cdxml(molecule_data):
     obConversion = openbabel.OBConversion()
@@ -282,6 +319,10 @@ def construct_payload(molecule_data, salt_id, fragment_data, project_value, libr
                                 {
                                 "id": "62fcceeb19660304d1e5bef2",
                                 "value": library_id
+                                },
+                                {
+                                "id": "62fa0b5b19660304d1e5b2de", 
+                                "value": molecule_data.get("Supplier name", "Unknown")
                                 }
                             ]
                         }
@@ -401,6 +442,10 @@ def check_uniqueness(molecule_data, api_key, project_value, library_id):
                                 {
                                     "id": "62fcceeb19660304d1e5bef2",
                                     "value": library_id
+                                },
+                                {
+                                "id": "62fa0b5b19660304d1e5b2de", 
+                                "value": molecule_data.get("Supplier name", "Unknown")
                                 }
                             ]
                         }

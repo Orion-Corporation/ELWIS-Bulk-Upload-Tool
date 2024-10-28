@@ -37,3 +37,38 @@ API_ENDPOINTS = load_config('config/api_endpoints.json', {
 BATCH_FIELDS_CONFIG = load_config('config/batch_fields_config.json', {})
 
 SDF_PROPERTIES_CONFIG = load_config('config/sdf_properties_config.json', {})
+
+def load_viable_suppliers(materials_table_path='config/Materials_table.json'):
+    try:
+        with open(materials_table_path, 'r') as f:
+            data = json.load(f)
+
+            # Traverse through the nested structure to reach "fields"
+            for item in data.get("data", []):
+                attributes = item.get("attributes", {})
+                batches = attributes.get("batches", {})
+                fields = batches.get("fields", [])
+
+                # Now search through fields for the target ID
+                for field in fields:
+                    if field.get("id") == "62fa0b5b19660304d1e5b2de" and field.get("name") == "Supplier Name":
+                        return field.get("options", [])
+
+            print("Target ID not found in materials table.")
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error loading materials table: {e}")
+    return []
+
+# Load viable suppliers at the start
+VIABLE_SUPPLIERS = load_viable_suppliers()
+
+def load_supplier_synonyms(file_path='config/supplier_synonyms.json'):
+    try:
+        with open(file_path, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print("Supplier synonyms file not found.")
+        return {}
+
+# Load synonyms for supplier names
+SUPPLIER_SYNONYMS = load_supplier_synonyms()

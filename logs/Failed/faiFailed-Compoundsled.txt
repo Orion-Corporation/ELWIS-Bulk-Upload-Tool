@@ -1,0 +1,38 @@
+Failed to upload molecule: Timestamp: 2024-10-28 13:03:54 - Supplier Code: Z195631098 - Molecular Formula: C18H19CL2N5OS - From File: /home/robekott/ERAT/examples/compound_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:03:56 - Supplier Code: Z2754556176 - Molecular Formula: C17H28N4O2 - From File: /home/robekott/ERAT/examples/compound_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:28:20 - Supplier Code: MCULE-2227031507 - Molecular Formula: C21H17CLN2O2 - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:28:21 - Supplier Code: MCULE-3988458386 - Molecular Formula: C16H14CLN5O - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:31:45 - Supplier Code: MCULE-2227031507 - Molecular Formula: C21H17CLN2O2 - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:31:47 - Supplier Code: MCULE-3988458386 - Molecular Formula: C16H14CLN5O - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:34:42 - Supplier Code: MCULE-2227031507 - Molecular Formula: C21H17CLN2O2 - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:34:44 - Supplier Code: MCULE-3988458386 - Molecular Formula: C16H14CLN5O - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:37:12 - Supplier Code: MCULE-2227031507 - Molecular Formula: C21H17CLN2O2 - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:37:14 - Supplier Code: MCULE-3988458386 - Molecular Formula: C16H14CLN5O - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:38:28 - Supplier Code: MCULE-3988458386 - Molecular Formula: C16H14CLN5O - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:50:20 - Supplier Code: MCULE-2227031507 - Molecular Formula: C21H17CLN2O2 - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:54:41 - Supplier Code: MCULE-2227031507 - Molecular Formula: C21H17CLN2O2 - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:54:43 - Supplier Code: MCULE-3988458386 - Molecular Formula: C16H14CLN5O - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:56:58 - Supplier Code: MCULE-2227031507 - Molecular Formula: C21H17CLN2O2 - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:57:00 - Supplier Code: MCULE-3988458386 - Molecular Formula: C16H14CLN5O - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 13:58:23 - Supplier Code: MCULE-3988458386 - Molecular Formula: C16H14CLN5O - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 14:01:18 - Supplier Code: MCULE-3988458386 - Molecular Formula: C16H14CLN5O - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
+Failed to upload molecule: Timestamp: 2024-10-28 18:43:39 - Supplier Code: MCULE-3988458386 - Molecular Formula: C16H14CLN5O - From File: /home/robekott/ERAT/MCULE/mcule_test.sdf
+
