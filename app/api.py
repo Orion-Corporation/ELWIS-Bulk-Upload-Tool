@@ -86,7 +86,7 @@ def get_existing_fragment_details(fragment_mf, fragment_type, api_key):
         'x-api-key': api_key
     }
     params = {
-        'filter[mf]': fragment_mf  # Use 'mf' for filtering
+        'filter[mf]': fragment_mf  # Filtering for molecular formula
     }
     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
     response = requests.get(fragment_endpoint, headers=headers, params=params)
@@ -94,7 +94,7 @@ def get_existing_fragment_details(fragment_mf, fragment_type, api_key):
     if response.status_code in [200, 201]:
         results = response.json().get('data', [])
         for fragment_data in results:
-            # Ensure the molecular formula matches exactly
+            # Ensure the molecular formula matches
             if fragment_data['attributes'].get('mf', '').upper() == fragment_mf.upper():
                 return {
                     'id': fragment_data['id'],
@@ -109,7 +109,7 @@ def upload_txt_logs(api_key):
     """
     headers = {
         'accept': 'application/vnd.api+json',
-        'Content-Type': 'text/plain',  # Updated to plain text
+        'Content-Type': 'text/plain', # Use plain text for txt files
         'x-api-key': api_key
     }
 
@@ -121,7 +121,7 @@ def upload_txt_logs(api_key):
         OUTPUT_PATHS['general_log']
     ]
 
-    # Base endpoint URL for uploading logs from the configuration
+    # Base endpoint URL
     base_endpoint = API_ENDPOINTS.get('Log Upload Base Endpoint')
 
     # Ensure the base endpoint exists
@@ -161,18 +161,13 @@ def upload_txt_logs(api_key):
 
     return True
 
-import requests
-import os
-from config import API_ENDPOINTS, OUTPUT_PATHS
-from logger import log_to_general_log
-
 def upload_xlsx_logs(api_key):
     """
     Uploads xlsx log files to the specified endpoint.
     """
     headers = {
         'accept': 'application/vnd.api+json',
-        'Content-Type': 'application/octet-stream',  # Correct content type for xlsx files
+        'Content-Type': 'application/octet-stream', # Use binary data for Excel files
         'x-api-key': api_key
     }
 

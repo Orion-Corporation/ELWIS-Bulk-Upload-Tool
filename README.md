@@ -19,24 +19,28 @@ API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagg
 - [x] Support for supplier SDF-files
     - [x] ENAMINE
     - [X] MOLPORT
-        - [ ] Problems with reading all molecules in file?
+        - [ ] Problems with reading all molecules in file? SDF files sometimes have odd delimiters?
     - [X] MCULE
         Query Mcule ID -> batch field
         Ordered Mcule ID_single container ID
         enamine ID = Mcule Product ID
     - [ ] Salts & Solvates
     - [ ] Refactor process_sdf function to vendor specific?
-- [X] Library ID input from user (user interactive prompt, copy paste)
-    - Library ID compounds-> batch
 - [ ] User input for batch properties
-    - [ ] Use Materials libraries for lists
-    - [ ] Update list from API "/materials/libraries"
+    - [X] Library ID input from user (user interactive prompt, copy paste)
+    - [X] Use Materials table for projects
+    - [X] Update list from API "/materials/libraries" automatically
         Map input data to pre-defined limited lists expected by the API
+    - [ ] UI input for the rest
 - [X] Upload compound without chemical name -> elwis adds this automatically?
-- [ ] >  <Supplier name> ChemBridge, Can vary, add vendor dictionary to map different names - based on Materials.json. Should be Easy to change as a user
-- [ ] For one bulk upload only fetch salts once and store them for next compound check - don't fetch per compound to spare API overload
+- [X] >  <Supplier name> ChemBridge, Can vary, add vendor dictionary to map different names - based on Materials.json. Should be Easy to change as a user
+    - [ ] Fill out / complete manual mapping
+    - [X] Automatic normalization and mapping
+        - [ ] Still issues with "Inc, Corp, Ltd..."
 - [ ] Authentication? mitigated by installation on the user's laptop?
-    - [ ] Krypteerattu python tiedosto
+    - [ ] Encrypted build of python executable with hidden api key
+- [ ] Optimize:
+    - [ ] For one bulk upload only fetch salts once and store them for next compound check - don't fetch per compound speed up
 - [ ] Document test cases: 
     - [ ] Upload new compounds
     - [ ] Handle duplicates
@@ -44,20 +48,26 @@ API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagg
     - [ ] Repeat test cases for ENAMINE, MOLPORT, MCULE
 
 ## Tuomo discussion
-- [ ] Investigate bulk import function, delete Openbabel
-- [X] List projects (API call Materials.json from Elwis)
-- [X] Input library ID (user pastes text string (no need to fetch with API))
+- [ ] Investigate bulk import function, delete Openbabel'
+    - [ ] need to create summary file which is problematic?
+- [X] List projects (API call Materials.json from Elwis) and map selected project to batch payload
+- [X] Input library ID (user pastes text string (no need to fetch with API)) and map to batch payload
 - [ ] Dictionary
-- [ ] Krypteerattu python tiedosto
+    - [X] supplier_synonyms.json created and started, implemented in logic
+        - [ ] fill out / complete with problematic mappings (Inc, Corp, Ltd...)
+    - [X] Automatic normalization and mapping of supplier names to fetched materials_table
+- [ ] Build app to encrypted python executable with hidden api key
 
 ## Discussion points with Revvity:
 - [X] SDF file ingestion, how to handle varying formats and data?
-    Lift out to config file and hardcode based on supplier ID
+    Lift out to config file and hardcode based on supplier ID, needs to be hardcoded...
 - [X] General API usage
-- [X] New bulk import function, would it make sense to use that instead?  
+- [X] New bulk import function, would it make sense to use that instead?
+    No.. maybe in the future
 - [X] More robust Mol --> CDXML conversion
     Tool exists but proprietary
     RDKit is fine
+    Openbabel or https://github.com/kienerj/pycdxml only option ...
 - [X] API rate limitations? Batch size limitations? Bulk Upload Optimization: Is there a way to optimize bulk uploads for large data sets to reduce processing times on your end?
     keep under 200 api calls per minute, error code 429 check for rate limitation error, if sleep else not
     no need for bulk size limitation
@@ -67,7 +77,6 @@ API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagg
 
 
 # Git Cheatsheet
-
 git status
 git pull origin <branch-name> (Fetches and merges changes from the remote branch to your current local branch)
 git fetch origin (Downloads changes from the remote branch but doesn’t merge them. Use git status to see the changes ready to be merged.)

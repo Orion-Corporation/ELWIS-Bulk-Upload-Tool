@@ -1,29 +1,29 @@
 {
     "links": {
-        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671fc2c4b1b4403b714883d9"
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671fc99b1a12207a92bcb05a"
     },
     "data": {
         "type": "material",
-        "id": "asset:671fc2c4b1b4403b714883d9",
+        "id": "asset:671fc99b1a12207a92bcb05a",
         "links": {
-            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671fc2c4b1b4403b714883d9"
+            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671fc99b1a12207a92bcb05a"
         },
         "attributes": {
             "library": "Compounds",
             "assetTypeId": "5d6e0287ee35880008c18db5",
-            "assetId": "671fc2c4b1b4403b714883d9",
-            "id": "asset:671fc2c4b1b4403b714883d9",
-            "eid": "asset:671fc2c4b1b4403b714883d9",
-            "name": "ORM-0516055",
+            "assetId": "671fc99b1a12207a92bcb05a",
+            "id": "asset:671fc99b1a12207a92bcb05a",
+            "eid": "asset:671fc99b1a12207a92bcb05a",
+            "name": "ORM-0516057",
             "synonyms": [
                 "C1(C([NH]NN1)NC1CCC(CL)CC1)C(=O)NC1CCC(CC1)C",
                 "C16H14CLN5O"
             ],
             "description": "",
-            "createdAt": "2024-10-28T16:58:44.799Z",
-            "editedAt": "2024-10-28T16:58:44.799Z",
+            "createdAt": "2024-10-28T17:27:55.840Z",
+            "editedAt": "2024-10-28T17:27:55.840Z",
             "type": "asset",
-            "digest": "92009000",
+            "digest": "93385593",
             "fields": {
                 "Chemical Name": {
                     "value": "5-((4-chlorophenyl)amino)-N-(p-tolyl)-1H-1,2,3-triazole-4-carboxamide"
@@ -44,7 +44,7 @@
                     "value": "327.77 g/mol"
                 },
                 "Name": {
-                    "value": "ORM-0516055"
+                    "value": "ORM-0516057"
                 },
                 "Stereochemistry": {
                     "value": "No stereochemistry"
@@ -59,10 +59,10 @@
                 "data": [
                     {
                         "type": "material",
-                        "id": "batch:671fc2c4b1b4403b714883da",
+                        "id": "batch:671fc99c1a12207a92bcb05b",
                         "meta": {
                             "links": {
-                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:671fc2c4b1b4403b714883da"
+                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:671fc99c1a12207a92bcb05b"
                             }
                         }
                     }
@@ -83,11 +83,11 @@
             },
             "chemicalDrawing": {
                 "links": {
-                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671fc2c4b1b4403b714883d9/drawing?format=cdxml"
+                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671fc99b1a12207a92bcb05a/drawing?format=cdxml"
                 },
                 "data": {
                     "type": "materialDrawing",
-                    "id": "asset:671fc2c4b1b4403b714883d9"
+                    "id": "asset:671fc99b1a12207a92bcb05a"
                 }
             },
             "createdBy": {
@@ -121,27 +121,16 @@
     },
     "included": [
         {
-            "type": "materialDrawing",
-            "id": "asset:671fc2c4b1b4403b714883d9",
-            "links": {
-                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671fc2c4b1b4403b714883d9/drawing?format=cdxml"
-            },
-            "attributes": {
-                "id": "asset:671fc2c4b1b4403b714883d9",
-                "type": "CHEMICAL_DRAWING"
-            }
-        },
-        {
             "type": "material",
-            "id": "batch:671fc2c4b1b4403b714883da",
+            "id": "batch:671fc99c1a12207a92bcb05b",
             "links": {
-                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:671fc2c4b1b4403b714883da"
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:671fc99c1a12207a92bcb05b"
             },
             "attributes": {
                 "type": "batch",
-                "eid": "batch:671fc2c4b1b4403b714883da",
-                "name": "ORM-0516055-001",
-                "digest": "93721643",
+                "eid": "batch:671fc99c1a12207a92bcb05b",
+                "name": "ORM-0516057-001",
+                "digest": "59455064",
                 "fields": {
                     "Batch Chemical Name": {
                         "value": "5-((4-chlorophenyl)amino)-N-(p-tolyl)-1H-1,2,3-triazole-4-carboxamide"
@@ -165,19 +154,19 @@
                         "value": "327.77 g/mol"
                     },
                     "Library ID": {
-                        "value": "test library ID"
+                        "value": ""
                     },
                     "Name": {
-                        "value": "ORM-0516055-001"
+                        "value": "ORM-0516057-001"
                     },
                     "Project": {
-                        "value": "YAP-TEAD"
+                        "value": "Unspecified"
                     },
                     "Source": {
                         "value": "Internal"
                     },
                     "Submission Date": {
-                        "value": "2024-10-28T16:58:45.059Z"
+                        "value": "2024-10-28T17:27:56.113Z"
                     },
                     "Submitter": {
                         "value": "{userId=114, userName=timo.kangasperko@orion.fi, flags={isSystemStandardUser=true}, alias=timoka, email=timo.kangasperko@orion.fi, firstName=Timo, lastName=Kangasperko, picture={}, isEnabled=true}"
@@ -201,8 +190,19 @@
                 "type": "assetType",
                 "eid": "assetType:5d6e0287ee35880008c18db5",
                 "name": "Compounds",
-                "digest": "71686129",
+                "digest": "59951413",
                 "fields": {}
+            }
+        },
+        {
+            "type": "materialDrawing",
+            "id": "asset:671fc99b1a12207a92bcb05a",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671fc99b1a12207a92bcb05a/drawing?format=cdxml"
+            },
+            "attributes": {
+                "id": "asset:671fc99b1a12207a92bcb05a",
+                "type": "CHEMICAL_DRAWING"
             }
         },
         {

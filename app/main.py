@@ -153,7 +153,7 @@ class MyApp(App):
 
         return self.root
     
-    def fetch_materials(self, instance=None):
+    def fetch_materials(self, instance=None): # TODO: Move to api.py ...
         url = 'https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/libraries'
         config_folder = 'config'
         output_file = os.path.join(config_folder, 'Materials_table.json')
@@ -180,7 +180,7 @@ class MyApp(App):
         except Exception as e:
             self.print_terminal(f"Failed to fetch materials: {str(e)}")
             
-    def load_project_options(self):
+    def load_project_options(self): # TODO: Move to config.py ...
         target_id = "63469c69ed8a726a31923537"
 
         def find_options_by_id(data, target_id):
@@ -290,6 +290,8 @@ class MyApp(App):
         if hasattr(self, 'filechooser_popup'):
             self.filechooser_popup.filechooser.selection = []
 
+    # When Upload Compounds button is pressed:
+    # TODO: make this an asynchroneous function to avoid blocking the UI (cancel button, for example)
     def upload_files(self, instance=None):
         try:
             self.library_id = self.library_id_input.text.strip()
@@ -299,7 +301,7 @@ class MyApp(App):
             self.print_terminal(f"Processing file(s): {self.selected_files}")
 
             for file in self.selected_files:
-                # Step 1: Process SDF file, now passing the selected project
+                # Step 1: Process SDF file
                 try:
                     molecules, fragments = process_sdf([file], self.print_terminal, self.selected_project)
                 except Exception as e:
@@ -311,7 +313,7 @@ class MyApp(App):
                     continue
 
                 for molecule_data, fragment_data in zip(molecules, fragments):
-                    # Step 2: Check uniqueness of the molecule with selected project
+                    # Step 2: Check uniqueness of the molecule 
                     try:
                         uniqueness_result = check_uniqueness(molecule_data, api_key, self.selected_project, self.library_id)
                     except Exception as e:
@@ -324,7 +326,7 @@ class MyApp(App):
                         self.print_terminal(f'Duplicate compound detected: - ORM Code: {orm_code} - Molecular Formula: {molecule_data.get("MolecularFormula", "")} - From File: {file}')
                         continue
 
-                    # Step 4: Construct payload with selected project
+                    # Step 4: Construct payload
                     try:
                         payload = construct_payload(molecule_data, None, fragment_data, self.selected_project, self.library_id)
                     except Exception as e:
@@ -346,8 +348,6 @@ class MyApp(App):
 
         except Exception as e:
             self.print_terminal(f"Unexpected error during upload process: {e}")
-
-
 
     def print_terminal(self, message):
         log_to_general_log(message)

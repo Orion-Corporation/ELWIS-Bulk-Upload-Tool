@@ -6,7 +6,7 @@ import requests
 import json
 from logger import log_to_general_log
 from config import BATCH_FIELDS_CONFIG, API_ENDPOINTS, SDF_PROPERTIES_CONFIG, VIABLE_SUPPLIERS
-from config import load_viable_suppliers
+from config import load_viable_suppliers, load_supplier_synonyms
 
 # SDF processing functions using OpenBabel
 def process_sdf(files, callback, project_value):
@@ -27,7 +27,7 @@ def process_sdf(files, callback, project_value):
     for sdf_file in files:
         print(f"Processing file: {sdf_file}")
         log_to_general_log(f"Starting to process: {sdf_file}")
-        # Load the SDF file using RDKit to extract all properties
+        # Load the SDF file using RDKit
         supplier = Chem.SDMolSupplier(sdf_file)
         if not supplier:
             print(f"RDKit could not read file: {sdf_file}")
@@ -57,13 +57,15 @@ def process_sdf(files, callback, project_value):
                     fragment = None
                 elif len(separated_fragments) >= 2:
                     # Multiple fragments, assume the first is the salt and the second is the main molecule ??? works so far, will this be a problem?
+                    # sort by size? any other open babel tags/properties to identify the main compound?
+                    # can vendor provide a flag to identify the main compound? or not include salts in molecular coordinates?
                     main_molecule = separated_fragments[1]
                     fragment = separated_fragments[0]
                 else:
                     print("Error: Unexpected number of fragments.")
                     continue
 
-                # Extract molecular data using RDKit
+                # Extract smiles using RDKit
                 smiles = obConversion_smiles.WriteString(main_molecule).strip().upper()
                 print(f"SMILES: {smiles}")
 
@@ -162,36 +164,42 @@ def get_property(mol, prop_names, default_value):
 import re
 
 def normalize_name(name):
-    # Remove non-alphabetic characters and convert to lowercase
+    # Remove non-alphabetic characters and convert to lowercase, regex generated with chatgpt, needs to be validated
     normalized_name = re.sub(r'[^a-zA-Z]', '', name).lower()
-    # Remove common suffixes like "inc", "co", "ltd", etc., if they appear at the end of the string
-    normalized_name = re.sub(r'(inc|co|ltd|corp|llc|gmbh|bv|plc)$', '', normalized_name)
-    # Return the cleaned name with leading/trailing whitespace stripped
+    # Remove common suffixes like "inc", "co", "ltd", etc., if they appear at the end of the string, regex generated with chatgpt, needs to be validated
+    normalized_name = re.sub(r'(inc|co|ltd|corp|llc|gmbh|bv|plc)$', '', normalized_name) # TODO: some suppliers have ltd and corp, this will not work
+    # Strip trailing and preceding whitespaces
     return normalized_name.strip()
 
 def get_normalized_property(mol, prop_names, default_value):
+    # Load viable suppliers and supplier synonyms only once
     VIABLE_SUPPLIERS = load_viable_suppliers()
+    SUPPLIER_SYNONYMS = load_supplier_synonyms()
+    
     for prop_name in prop_names:
         if mol.HasProp(prop_name):
-            # Get the raw supplier name from the SDF and normalize it
+            # Get the raw supplier name from the SDF
             sdf_supplier_name = mol.GetProp(prop_name).strip()
-            normalized_sdf_name = normalize_name(sdf_supplier_name)
-            print(f"Normalized SDF name: {normalized_sdf_name}")
-            print(f"Loaded VIABLE_SUPPLIERS: {VIABLE_SUPPLIERS}")
 
+            # First, check if the supplier name has a manual synonym mapping
+            if sdf_supplier_name in SUPPLIER_SYNONYMS:
+                # Return the mapped name from SUPPLIER_SYNONYMS if found
+                return SUPPLIER_SYNONYMS[sdf_supplier_name]
+            
+            # If no manual synonym exists, proceed with automatic normalization & mapping
+            normalized_sdf_name = normalize_name(sdf_supplier_name)
+            
             # Search for an exact match in normalized form with VIABLE_SUPPLIERS
             for viable_supplier in VIABLE_SUPPLIERS:
+                # Normalize the supplier name from VIABLE_SUPPLIERS
                 normalized_viable_name = normalize_name(viable_supplier)
-                print(f"Normalized Viable Supplier: {normalized_viable_name}")
 
                 # If a match is found, return the exact form from VIABLE_SUPPLIERS
                 if normalized_sdf_name == normalized_viable_name:
-                    print(f"Matched SDF name '{sdf_supplier_name}' with viable supplier '{viable_supplier}'")
                     return viable_supplier
 
     # Return default if no properties match
     return default_value
-
 
 def convert_mol_to_cdxml(molecule_data):
     obConversion = openbabel.OBConversion()
@@ -235,7 +243,9 @@ def construct_payload(molecule_data, salt_id, fragment_data, project_value, libr
         solvate_name = solvate_name[0] if solvate_name else ''
     else:
         solvate_name = str(solvate_name)
-        
+    
+    # Dynamically load values from BATCH_FIELDS_CONFIG
+    # TODO: add UI here to allow user to set these values without having to modify a config file
     source_value = BATCH_FIELDS_CONFIG.get("source", {}).get("value", "Acquired")
     # project_value = BATCH_FIELDS_CONFIG.get("project", {}).get("value", "Unspecified") USES DROPDOWN VALUE
     synthesis_datetime_value = BATCH_FIELDS_CONFIG.get("synthesis_datetime", {}).get("value", "2011-10-10T14:48:00Z")
@@ -360,6 +370,7 @@ def check_uniqueness(molecule_data, api_key, project_value, library_id):
     }
 
     # Dynamically load values from BATCH_FIELDS_CONFIG
+    # TODO: add UI here to allow user to set these values
     source_value = BATCH_FIELDS_CONFIG.get("source", {}).get("value", "Acquired")
     # project_value = BATCH_FIELDS_CONFIG.get("project", {}).get("value", "Unspecified") USES DROPDOWN VALUE
     synthesis_datetime_value = BATCH_FIELDS_CONFIG.get("synthesis_datetime", {}).get("value", "2011-10-10T14:48:00Z")
@@ -455,7 +466,7 @@ def check_uniqueness(molecule_data, api_key, project_value, library_id):
         }
     }
 
-    uniqueness_endpoint = f"{API_ENDPOINTS['Compound Endpoint']}/uniquenessCheck"
+    uniqueness_endpoint = f"{API_ENDPOINTS['Compound Endpoint']}/uniquenessCheck" # TODO: Move to api.py ...
     response = requests.post(uniqueness_endpoint, headers=headers, data=json.dumps(data))
     print(f"Uniqueness response: {response.text}")
     if response.status_code in [200, 201]:
