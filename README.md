@@ -46,7 +46,7 @@ API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagg
 ## Tuomo discussion
 - [ ] Investigate bulk import function, delete Openbabel
 - [X] List projects (API call Materials.json from Elwis)
-- [ ] Input library ID (user pastes text string (no need to fetch with API))
+- [X] Input library ID (user pastes text string (no need to fetch with API))
 - [ ] Dictionary
 - [ ] Krypteerattu python tiedosto
 

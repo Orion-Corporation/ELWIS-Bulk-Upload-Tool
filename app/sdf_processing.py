@@ -185,7 +185,7 @@ def convert_mol_to_cdxml(molecule_data):
     print("Successfully converted molecule to CDXML format")
     return output_cdxml
 
-def construct_payload(molecule_data, salt_id, fragment_data, project_value):
+def construct_payload(molecule_data, salt_id, fragment_data, project_value, library_id):
     # Ensure name is a string
     salt_name = fragment_data.get('Salt_name', '') or fragment_data.get('Salt_Name', '')
     if isinstance(salt_name, (list, tuple)):
@@ -200,7 +200,7 @@ def construct_payload(molecule_data, salt_id, fragment_data, project_value):
         solvate_name = str(solvate_name)
         
     source_value = BATCH_FIELDS_CONFIG.get("source", {}).get("value", "Acquired")
-    project_value = BATCH_FIELDS_CONFIG.get("project", {}).get("value", "Unspecified")
+    # project_value = BATCH_FIELDS_CONFIG.get("project", {}).get("value", "Unspecified") USES DROPDOWN VALUE
     synthesis_datetime_value = BATCH_FIELDS_CONFIG.get("synthesis_datetime", {}).get("value", "2011-10-10T14:48:00Z")
     chemist_value = BATCH_FIELDS_CONFIG.get("chemist", {}).get("value", "TestUser MCChemist")
     batch_purpose_value = BATCH_FIELDS_CONFIG.get("batch_purpose", {}).get("value", "Dummy compound")
@@ -277,6 +277,10 @@ def construct_payload(molecule_data, salt_id, fragment_data, project_value):
                                 {
                                 "id": "62fa096d19660304d1e5b2da",
                                 "value": batch_type_value
+                                },
+                                {
+                                "id": "62fcceeb19660304d1e5bef2",
+                                "value": library_id
                                 }
                             ]
                         }
@@ -306,7 +310,7 @@ def construct_payload(molecule_data, salt_id, fragment_data, project_value):
 
     return data
 
-def check_uniqueness(molecule_data, api_key, project_value):
+def check_uniqueness(molecule_data, api_key, project_value, library_id):
     headers = {
         'Content-Type': 'application/vnd.api+json',
         'accept': 'application/vnd.api+json',
@@ -391,6 +395,10 @@ def check_uniqueness(molecule_data, api_key, project_value):
                                 {
                                     "id": "62fa096d19660304d1e5b2da",  # Batch Type
                                     "value": batch_type_value
+                                },
+                                {
+                                    "id": "62fcceeb19660304d1e5bef2",
+                                    "value": library_id
                                 }
                             ]
                         }

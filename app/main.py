@@ -30,7 +30,7 @@ from api import upload_xlsx_logs, get_existing_fragment_details, upload_fragment
 from logger import log_to_general_log, log_duplicate, log_failed_upload
 
 # Set the window size
-Window.size = (1200, 600)
+Window.size = (1400, 700)
 kivy.logger.Logger.setLevel(logging.ERROR)
 
 # Load Kivy file
@@ -123,6 +123,7 @@ class MyApp(App):
     API_ENDPOINTS = API_ENDPOINTS
     OUTPUT_PATHS = OUTPUT_PATHS
     selected_project = StringProperty("")
+    library_id = StringProperty("")
     
     def build(self):
         self.title = "Structure-Data Format (SDF) File Processor"
@@ -136,6 +137,7 @@ class MyApp(App):
         self.button_clear_folders = self.root.ids.button_clear_folders
         self.terminal_output = self.root.ids.terminal_output
         self.project_spinner = self.root.ids.project_spinner
+        self.library_id_input = self.root.ids.library_id_input
 
         self.button_select.bind(on_release=self.show_filechooser)
         self.button_upload.bind(on_release=self.upload_files)
@@ -289,6 +291,9 @@ class MyApp(App):
             self.filechooser_popup.filechooser.selection = []
 
     def upload_files(self, instance=None):
+        self.library_id = self.library_id_input.text.strip()
+        if not self.selected_project or self.selected_project == "Select a Project":
+            self.selected_project = "Unspecified"
         self.print_terminal("Starting upload process...")
         self.print_terminal(f"Processing file(s): {self.selected_files}")
 
@@ -302,7 +307,7 @@ class MyApp(App):
 
             for molecule_data, fragment_data in zip(molecules, fragments):
                 # Step 2: Check uniqueness of the molecule with selected project
-                uniqueness_result = check_uniqueness(molecule_data, api_key, self.selected_project)
+                uniqueness_result = check_uniqueness(molecule_data, api_key, self.selected_project, self.library_id)
                 if uniqueness_result and uniqueness_result.get("data"):
                     orm_code = uniqueness_result["data"][0]["attributes"].get("name", "Unknown")
                     log_duplicate(file, molecule_data, self.print_terminal, orm_code)
@@ -324,7 +329,7 @@ class MyApp(App):
                         self.print_terminal(f"Fragment with Molecular Formula '{salt_mf}' already exists with ID: {salt_id}")
 
                 # Step 4: Construct payload with selected project
-                payload = construct_payload(molecule_data, salt_id, fragment_data, self.selected_project)
+                payload = construct_payload(molecule_data, salt_id, fragment_data, self.selected_project, self.library_id)
 
                 # Step 5: Send the payload
                 success = send_request(payload, file, self.print_terminal, API_ENDPOINTS['Compound Endpoint'], api_key, OUTPUT_PATHS, molecule_data)

@@ -1,50 +1,50 @@
 {
     "links": {
-        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671f4774bc105f6067d3957e"
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671f4ea61a12207a92bcb004"
     },
     "data": {
         "type": "material",
-        "id": "asset:671f4774bc105f6067d3957e",
+        "id": "asset:671f4ea61a12207a92bcb004",
         "links": {
-            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671f4774bc105f6067d3957e"
+            "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671f4ea61a12207a92bcb004"
         },
         "attributes": {
             "library": "Compounds",
             "assetTypeId": "5d6e0287ee35880008c18db5",
-            "assetId": "671f4774bc105f6067d3957e",
-            "id": "asset:671f4774bc105f6067d3957e",
-            "eid": "asset:671f4774bc105f6067d3957e",
-            "name": "ORM-0516003",
+            "assetId": "671f4ea61a12207a92bcb004",
+            "id": "asset:671f4ea61a12207a92bcb004",
+            "eid": "asset:671f4ea61a12207a92bcb004",
+            "name": "ORM-0516013",
             "synonyms": [
-                "COCCN1CCNC1C1N(CC1(C)C)C(=O)CC1(CN)CC1",
-                "C17H28N4O2"
+                "C1(C([NH]NN1)NC1CCC(CL)CC1)C(=O)NC1CCC(CC1)C",
+                "C16H14CLN5O"
             ],
             "description": "",
-            "createdAt": "2024-10-28T08:12:36.905Z",
-            "editedAt": "2024-10-28T08:12:36.905Z",
+            "createdAt": "2024-10-28T08:43:18.149Z",
+            "editedAt": "2024-10-28T08:43:18.149Z",
             "type": "asset",
-            "digest": "38794071",
+            "digest": "34482990",
             "fields": {
                 "Chemical Name": {
-                    "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide"
+                    "value": "5-[(4-chlorophenyl)amino]-N-(4-methylphenyl)-1H-1,2,3-triazole-4-carboxamide"
                 },
                 "Description": {
                     "value": ""
                 },
                 "Exact Mass": {
-                    "value": "320.22123"
+                    "value": "327.08869"
                 },
                 "Material Library Type": {
                     "value": "Compounds"
                 },
                 "Molecular Formula": {
-                    "value": "C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>"
+                    "value": "C<sub>16</sub>H<sub>14</sub>ClN<sub>5</sub>O"
                 },
                 "Molecular Weight": {
-                    "value": "320.44 g/mol"
+                    "value": "327.77 g/mol"
                 },
                 "Name": {
-                    "value": "ORM-0516003"
+                    "value": "ORM-0516013"
                 },
                 "Stereochemistry": {
                     "value": "No stereochemistry"
@@ -59,10 +59,10 @@
                 "data": [
                     {
                         "type": "material",
-                        "id": "batch:671f4775bc105f6067d3957f",
+                        "id": "batch:671f4ea61a12207a92bcb005",
                         "meta": {
                             "links": {
-                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:671f4775bc105f6067d3957f"
+                                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:671f4ea61a12207a92bcb005"
                             }
                         }
                     }
@@ -83,11 +83,11 @@
             },
             "chemicalDrawing": {
                 "links": {
-                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671f4774bc105f6067d3957e/drawing?format=cdxml"
+                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671f4ea61a12207a92bcb004/drawing?format=cdxml"
                 },
                 "data": {
                     "type": "materialDrawing",
-                    "id": "asset:671f4774bc105f6067d3957e"
+                    "id": "asset:671f4ea61a12207a92bcb004"
                 }
             },
             "createdBy": {
@@ -121,22 +121,33 @@
     },
     "included": [
         {
-            "type": "material",
-            "id": "batch:671f4775bc105f6067d3957f",
+            "type": "materialDrawing",
+            "id": "asset:671f4ea61a12207a92bcb004",
             "links": {
-                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:671f4775bc105f6067d3957f"
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671f4ea61a12207a92bcb004/drawing?format=cdxml"
+            },
+            "attributes": {
+                "id": "asset:671f4ea61a12207a92bcb004",
+                "type": "CHEMICAL_DRAWING"
+            }
+        },
+        {
+            "type": "material",
+            "id": "batch:671f4ea61a12207a92bcb005",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/batch:671f4ea61a12207a92bcb005"
             },
             "attributes": {
                 "type": "batch",
-                "eid": "batch:671f4775bc105f6067d3957f",
-                "name": "ORM-0516003-001",
-                "digest": "32351343",
+                "eid": "batch:671f4ea61a12207a92bcb005",
+                "name": "ORM-0516013-001",
+                "digest": "93426211",
                 "fields": {
                     "Batch Chemical Name": {
-                        "value": "2-[1-(aminomethyl)cyclopropyl]-1-{2-[1-(2-methoxyethyl)-1H-imidazol-2-yl]-3,3-dimethylazetidin-1-yl}ethan-1-one hydrobromide, hydrogen bromide"
+                        "value": "5-[(4-chlorophenyl)amino]-N-(4-methylphenyl)-1H-1,2,3-triazole-4-carboxamide"
                     },
                     "Batch Molecular Formula": {
-                        "value": "C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>&middot;BRH"
+                        "value": "C<sub>16</sub>H<sub>14</sub>ClN<sub>5</sub>O"
                     },
                     "Batch Purpose": {
                         "value": "Dummy compound"
@@ -151,10 +162,13 @@
                         "value": ""
                     },
                     "Formula Mass": {
-                        "value": "359.901 g/mol"
+                        "value": "327.77 g/mol"
+                    },
+                    "Library ID": {
+                        "value": ""
                     },
                     "Name": {
-                        "value": "ORM-0516003-001"
+                        "value": "ORM-0516013-001"
                     },
                     "Project": {
                         "value": "Unspecified"
@@ -163,7 +177,7 @@
                         "value": "Internal"
                     },
                     "Submission Date": {
-                        "value": "2024-10-28T08:12:37.534Z"
+                        "value": "2024-10-28T08:43:18.520Z"
                     },
                     "Submitter": {
                         "value": "{userId=114, userName=timo.kangasperko@orion.fi, flags={isSystemStandardUser=true}, alias=timoka, email=timo.kangasperko@orion.fi, firstName=Timo, lastName=Kangasperko, picture={}, isEnabled=true}"
@@ -184,7 +198,7 @@
                 "type": "assetType",
                 "eid": "assetType:5d6e0287ee35880008c18db5",
                 "name": "Compounds",
-                "digest": "13184553",
+                "digest": "81258343",
                 "fields": {}
             }
         },
@@ -212,17 +226,6 @@
                         "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114/systemGroups"
                     }
                 }
-            }
-        },
-        {
-            "type": "materialDrawing",
-            "id": "asset:671f4774bc105f6067d3957e",
-            "links": {
-                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/materials/asset:671f4774bc105f6067d3957e/drawing?format=cdxml"
-            },
-            "attributes": {
-                "id": "asset:671f4774bc105f6067d3957e",
-                "type": "CHEMICAL_DRAWING"
             }
         }
     ]
