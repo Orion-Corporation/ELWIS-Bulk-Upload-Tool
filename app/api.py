@@ -79,29 +79,29 @@ def upload_fragment(fragment_data, fragment_type, callback, api_key):
     callback(f"Failed to upload {fragment_type}. Status code: {response.status_code}, response: {response.text}")
     return None
 
-# Function to check if a fragment already exists
-def get_existing_fragment_details(fragment_mf, fragment_type, api_key):
-    headers = {
-        'accept': 'application/vnd.api+json',
-        'x-api-key': api_key
-    }
-    params = {
-        'filter[mf]': fragment_mf  # Filtering for molecular formula
-    }
-    fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
-    response = requests.get(fragment_endpoint, headers=headers, params=params)
+# # Function to check if a fragment already exists
+# def get_existing_fragment_details(fragment_mf, fragment_type, api_key):
+#     headers = {
+#         'accept': 'application/vnd.api+json',
+#         'x-api-key': api_key
+#     }
+#     params = {
+#         'filter[mf]': fragment_mf  # Filtering for molecular formula
+#     }
+#     fragment_endpoint = f"{API_ENDPOINTS['Fragment Endpoint']}/{fragment_type}"
+#     response = requests.get(fragment_endpoint, headers=headers, params=params)
 
-    if response.status_code in [200, 201]:
-        results = response.json().get('data', [])
-        for fragment_data in results:
-            # Ensure the molecular formula matches
-            if fragment_data['attributes'].get('mf', '').upper() == fragment_mf.upper():
-                return {
-                    'id': fragment_data['id'],
-                    'mf': fragment_data['attributes'].get('mf', ''),
-                    'mw': fragment_data['attributes'].get('mw', '')
-                }
-    return None
+#     if response.status_code in [200, 201]:
+#         results = response.json().get('data', [])
+#         for fragment_data in results:
+#             # Ensure the molecular formula matches
+#             if fragment_data['attributes'].get('mf', '').upper() == fragment_mf.upper():
+#                 return {
+#                     'id': fragment_data['id'],
+#                     'mf': fragment_data['attributes'].get('mf', ''),
+#                     'mw': fragment_data['attributes'].get('mw', '')
+#                 }
+#     return None
 
 def upload_txt_logs(api_key):
     """

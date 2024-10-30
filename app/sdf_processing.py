@@ -101,7 +101,7 @@ def process_sdf(files, callback, project_value):
                     "Stereochemistry": stereochemistry
                 }
 
-                print(f"Extracted molecule data: {molecule_data}")
+                # print(f"Extracted molecule data: {molecule_data}")
 
                 # Extract fragment properties using RDKit
                 fragment_data = {}
@@ -167,7 +167,7 @@ def normalize_name(name):
     # Remove non-alphabetic characters and convert to lowercase, regex generated with chatgpt, needs to be validated
     normalized_name = re.sub(r'[^a-zA-Z]', '', name).lower()
     # Remove common suffixes like "inc", "co", "ltd", etc., if they appear at the end of the string, regex generated with chatgpt, needs to be validated
-    normalized_name = re.sub(r'(inc|co|ltd|corp|llc|gmbh|bv|plc)$', '', normalized_name) # TODO: some suppliers have ltd and corp, this will not work
+    normalized_name = re.sub(r'(inc|co|ltd|corp|llc|gmbh|bv|plc)$', '', normalized_name)
     # Strip trailing and preceding whitespaces
     return normalized_name.strip()
 

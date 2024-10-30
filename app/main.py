@@ -26,7 +26,7 @@ import requests
 from rdkit import Chem
 from config import API_ENDPOINTS, OUTPUT_PATHS, api_key
 from sdf_processing import process_sdf, check_uniqueness, construct_payload
-from api import upload_xlsx_logs, get_existing_fragment_details, upload_fragment, send_request
+from api import upload_xlsx_logs, upload_fragment, send_request
 from logger import log_to_general_log, log_duplicate, log_failed_upload
 
 # Set the window size
@@ -328,7 +328,7 @@ class MyApp(App):
 
                     # Step 4: Construct payload
                     try:
-                        payload = construct_payload(molecule_data, None, fragment_data, self.selected_project, self.library_id)
+                        payload =   (molecule_data, None, fragment_data, self.selected_project, self.library_id)
                     except Exception as e:
                         self.print_terminal(f"Error constructing payload for file {file}: {e}")
                         continue
@@ -341,10 +341,18 @@ class MyApp(App):
                     except Exception as e:
                         self.print_terminal(f"Error sending request for file {file}: {e}")
                         log_failed_upload(file, molecule_data)
+                    
+                    # Step 6: Upload fragment (salt)
+                    try:
+                        fragment_type = "salts"
+                        upload_fragment(fragment_data, fragment_type, self.print_terminal, api_key)
+                    except Exception as e:
+                        self.print_terminal(f"Error uploading fragment for file {file}: {e}")
+                        log_failed_upload(file, molecule_data)
 
             self.print_terminal("All files processed. Now uploading logs.")
-            upload_xlsx_logs(api_key)
-            self.print_terminal("Log upload complete.")
+            # upload_xlsx_logs(api_key)
+            # self.print_terminal("Log upload complete.")
 
         except Exception as e:
             self.print_terminal(f"Unexpected error during upload process: {e}")

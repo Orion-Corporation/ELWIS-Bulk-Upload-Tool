@@ -69,22 +69,7 @@
                                 "id": "62fa096d19660304d1e5b2da",
                                 "value": "Discovery"
                             }
-                        ],
-                        "fragments": {
-                            "salts": [
-                                {
-                                    "type": "SALT",
-                                    "name": "hydrogen bromide",
-                                    "mf": "BRH",
-                                    "mw": {
-                                        "rawValue": "39.4609",
-                                        "displayValue": "39.4609 g/mol"
-                                    },
-                                    "id": "SALT:{'id': '193', 'mf': 'BRH', 'mw': '39.4609 g/mol'}",
-                                    "coefficient": 1
-                                }
-                            ]
-                        }
+                        ]
                     }
                 }
             }
