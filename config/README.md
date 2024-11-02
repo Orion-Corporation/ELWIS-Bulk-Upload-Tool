@@ -1,0 +1,1 @@
+This "Config" folder contains all congifuration jsons for the code

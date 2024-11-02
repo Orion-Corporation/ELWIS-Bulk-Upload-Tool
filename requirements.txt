@@ -6,3 +6,7 @@ requests
 python-dotenv
 DateTime
 openpyxl
+os
+json
+time
+datetime

@@ -1,3 +1,34 @@
+curl -X 'POST' \
+'https: //orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/search?sort=-createdAt&source=IVT' \
+-H 'accept: application/vnd.api+json' \
+-H 'x-api-key: ' \
+-H 'Content-Type: application/json' \
+-d '{
+    "query": {
+        "$and": [
+            {
+                "$match": {
+                    "field": "materials.Library ID",
+                    "in": "tags",
+                    "as": "text",
+                    "value": "testlibrary1",
+                    "mode": "keyword"
+                }
+            }
+        ]
+    },
+    "options": {
+        "offset": 0,
+        "limit": 1000,
+        "stop-after-items": 1000000,
+        "sort": {
+            "createdAt": "desc"
+        }
+    },
+    "meta": {
+        "reason": "Advanced Search"
+    }
+}'
 {
     "meta": {
         "took-ms": 116,

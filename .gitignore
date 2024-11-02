@@ -1,23 +1,11 @@
 
-app/api_key.py
-sorted_files/salts_solvate.sdf
 .env
-Failed files/Duplicates/duplicates.txt
-Failed files/Duplicates/salts_solvate.sdf
-Failed files/salts_solvate.sdf
-logs.txt
+logs/*
 *.pyc
 /app/__pycache__
-/Successfull
-/Failed files
-app/myenv
 .venv
 app/Miniconda3-latest-Linux-x86_64.sh
 miniconda.sh
-MCULE/*
-MOLPORT/*
-SALTS_SOLVATES/*
-ENAMINE/*
 build/*
 dist/*
 app/libs/*
