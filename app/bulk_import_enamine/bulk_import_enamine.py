@@ -45,6 +45,7 @@ def process_sdf(file_path):
 
         # Apply FragmentParent to remove salts from the molecule
         mol = FragmentParent(mol)
+        Chem.AssignStereochemistry(mol, force=True, cleanIt=True) 
         stereochemistry = "No stereochemistry" if CalcNumAtomStereoCenters(mol) == 0 else "Unresolved stereochemistry"
 
         # Set other molecule properties
@@ -97,6 +98,9 @@ def send_to_api(zip_file_name):
         job_id = response.json().get("data", {}).get("id")
         if job_id:
             check_job_status(job_id)
+            # Clean up the job on server
+            delete_url = f"{base_url}/materials/bulkImport/jobs/{job_id}"
+            response = requests.delete(delete_url, headers=headers)
     else:
         print(f"Failed to send data. Status code: {response.status_code}")
         print(response.text)
@@ -264,6 +268,7 @@ def main():
     
     # Upload salts to the correct ORM-code-batch based on supplier product code
     upload_salts(batches)
+    os.system("rm -f summary.zip")
 
 if __name__ == "__main__":
     main()
