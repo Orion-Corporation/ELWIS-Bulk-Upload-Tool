@@ -1,8 +1,8 @@
-# ERAT: ELWIS Registration Tool
-
-The ELWIS Registration Tool (ERAT) helps users process SDF files and sort compounds based on ELWIS API upload responses (successfull/failed/duplicate).
+# ELWIS-Bulk-Upload-Tool
+Tool to bulk upload compounds and associated salts from SDF files to Revvitys Signals Inventory
 
 API docs: https://orionsandbox.signalsresearch.revvitycloud.eu/docs/extapi/swagger/index.html
+Visio: https://orionfi-my.sharepoint.com/:u:/g/personal/robert_kottelin_orionpharma_com/EfdN7WO_oNpOiYUMHWypGcIBkk0s_8Uia4qQM1HSi9-8Hg?e=DkKIJS
 
 ## Todo:
 - [X] Add logic for salt duplicate detection based on SMILES instead of salt names - Not possible since API "get_salts" endpoint only return name, mf and mw. Added duplicate detection logic based on salt molecular formula instead.
