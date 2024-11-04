@@ -12,8 +12,12 @@ load_dotenv()
 api_key = os.getenv('API_KEY')
 
 # Load salt formulas from salts_dictionary.json
-with open("config/salts_dictionary_enamine.json", "r") as f:
+with open("config/salts_dictionary.json", "r") as f:
     salts_dict = json.load(f)
+    
+# Load Molport supplier synonyms
+with open("config/supplier_synonyms_molport.json", "r") as f:
+    supplier_synonyms = json.load(f)
 
 # API endpoint and headers
 base_url = "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0"
@@ -29,7 +33,7 @@ def process_sdf(file_path):
     libraryID = "testlibrary1"
     project = "Unspecified"
     synthesis_date = "2011-11-10T13:37:00Z"
-    supplier_name = "Enamine"
+    # supplier_name = "Enamine" # Set dynamically from Molport SDF
     source = "Acquired"
     chemist = "External chemist"
     batch_purpose = "Test compound"
@@ -37,8 +41,6 @@ def process_sdf(file_path):
 
     file = Chem.SDMolSupplier(file_path)
     sdf_writer = Chem.SDWriter("summary.sdf")
-    
-    # todo: chunk up in many jobs with limit under 1000 or less
     
     for mol in file:
         if mol is None:
@@ -50,12 +52,33 @@ def process_sdf(file_path):
         Chem.AssignStereochemistry(mol, force=True, cleanIt=True) 
         stereochemistry = "No stereochemistry" if CalcNumAtomStereoCenters(mol) == 0 else "Unresolved stereochemistry"
 
+        # Map Molport Supplier Name using supplier synonyms
+        original_supplier_name = mol.GetProp("SUPPLIER NAME")
+        supplier_product_code = mol.GetProp("CATALOG NUMBER")
+        
+        # Check if supplier name exists in synonyms, otherwise skip molecule and report an error
+        if original_supplier_name not in supplier_synonyms:
+            print(f"Error: Supplier name '{original_supplier_name}' not found in supplier_synonyms_molport.json. Skipping molecule {supplier_product_code}")
+            continue
+        supplier_name = supplier_synonyms[original_supplier_name]
+        
+        # Generate Well value from BOX_ROW and BOX_COLUMN
+        box_row = mol.GetProp("BOX_ROW")
+        box_column = int(mol.GetProp("BOX_COLUMN"))
+        if box_column < 10:
+            well = box_row + "0" + str(box_column) # Add leading zero for single digit columns
+            # print(well)
+        else:
+            well = box_row + str(box_column)
+            # print(well)
+
+    
         # Set other molecule properties
-        mol.SetProp("Supplier_Product_Code", mol.GetProp("ID"))
-        mol.SetProp("Plate_ID", mol.GetProp("Plate_ID"))
-        mol.SetProp("Well", mol.GetProp("Well"))
-        mol.SetProp("Batch_Code", mol.GetProp("Barcode"))
-        mol.SetProp("Amount", mol.GetProp("Amount_mg") + " mg")
+        mol.SetProp("Supplier_Product_Code", mol.GetProp("CATALOG NUMBER"))
+        mol.SetProp("Plate_ID", mol.GetProp("BOX_NAME"))
+        mol.SetProp("Well", well)
+        mol.SetProp("Batch_Code", mol.GetProp("MOLPORTID"))
+        mol.SetProp("Amount", mol.GetProp("AMOUNT_IN_VIAL") + " mg")
         mol.SetProp("Library_ID", libraryID)
         mol.SetProp("Project", project)
         mol.SetProp("Synthesis_Date", synthesis_date)
@@ -67,14 +90,14 @@ def process_sdf(file_path):
         mol.SetProp("Batch_Type", batch_type)
         
         # Collect salt properties
-        if mol.HasProp("Salt_ratio") and mol.HasProp("Salt_Name") and mol.HasProp("MW_salt"):
+        if mol.HasProp("SALT RATIO") and mol.HasProp("SALT DATA") and mol.HasProp("MOL WEIGHT SALT"):
             print(f"Salt properties found for {mol.GetProp('Supplier_Product_Code')}, collecting salt data...")
-            salt_ratio = float(mol.GetProp("Salt_ratio"))
-            salt_name = mol.GetProp("Salt_Name")
-            mw_salt = mol.GetProp("MW_salt")
+            salt_ratio = float(mol.GetProp("SALT RATIO"))
+            salt_name = mol.GetProp("SALT DATA")
+            mw_salt = mol.GetProp("MOL WEIGHT SALT")
             
             # Save supplier code : salt data in hashmap "supplier_code_salt_data"
-            supplier_code = mol.GetProp("Supplier_Product_Code") 
+            supplier_code = mol.GetProp("Supplier_Product_Code")
             supplier_code_salt_data[supplier_code] = {
                 "Salt_ratio": salt_ratio,
                 "Salt_name": salt_name,
@@ -193,69 +216,38 @@ def fetch_batches(library_id):
         print(response.text)
         return {}
 
-# Fetch all salts
-def fetch_salts():
-    salt_fetch_url = f"{base_url}/fragments/salts"
-    response = requests.get(salt_fetch_url, headers=headers)
-    
-    # Check for successful response
-    if response.status_code == 200:
-        elwis_salts_list = response.json()
-        return elwis_salts_list
-    else:
-        print(f"Failed to fetch salts. Status code: {response.status_code}")
-        return None
-
 # Upload salts to the correct batch based on supplier product code
-def upload_salts(batches, elwis_salts_list):
+def upload_salts(batches):
     for supplier_code, batch_eid in batches.items():
         salt_data = supplier_code_salt_data.get(supplier_code)
         if salt_data:
-            # Lookup salt code in salts_dictionary_enamine.json
-            salt_code = salts_dict.get(salt_data["Salt_name"].lower(), "")
-            
-            if not salt_code:
-                print(f"Did not find Salt Code salts_dictionary_enamine.json for '{salt_data['Salt_name']}'.")
+            # Lookup molecular formula in salts_dictionary.json
+            mf_formula = salts_dict.get(salt_data["Salt_name"].lower(), "")
+            if not mf_formula:
+                print(f"Incomplete salt data in salts_dictionary.json for '{salt_data['Salt_name']}'.")
 
-            # Search for the matching salt in elwis_salts_list based on the salt name
-            elwis_salt = next((item for item in elwis_salts_list["data"] 
-                               if item["attributes"]["name"] == salt_code), None)
-            
-            if elwis_salt is None:
-                print(f"Salt '{salt_code}' not found in ELWIS salts list.")
-                continue
-
-            # Extract required properties from the matching salt
-            elwis_salt_id = elwis_salt["id"]
-            elwis_salt_type = elwis_salt["attributes"]["type"]
-            elwis_salt_name = elwis_salt["attributes"]["name"]
-            elwis_mf = elwis_salt["attributes"]["mf"]
-            elwis_mw_salt = elwis_salt["attributes"]["mw"]
-
-            # Structure the payload using the extracted values
             salt_payload = {
                 "data": {
                     "attributes": {
                         "fragments": {
                             "salts": [
                                 {
-                                    "id": f"SALT:{elwis_salt_id}",
+                                    "id": f"SALT:{supplier_code}", # OK?? Will create duplicate salts?
                                     "coefficient": int(salt_data["Salt_ratio"]),
-                                    "mf": elwis_mf,
+                                    "mf": mf_formula, # Mapped MF based on salt name --> MF in salts_dictionary.json
                                     "mw": {
-                                        "displayValue": elwis_mw_salt,
-                                        "rawValue": elwis_mw_salt.split()[0]  # Extracting just the numerical part
+                                        "displayValue": f"{salt_data['MW_salt']} g/mol",
+                                        "rawValue": str(salt_data["MW_salt"])
                                     },
-                                    "name": elwis_salt_name,
-                                    "type": elwis_salt_type
+                                    "name": salt_data["Salt_name"],
+                                    "type": "SALT"
                                 }
                             ],
-                            "solvates": []  # Empty list as required in payload structure
+                            "solvates": [] # Needs to be here in payloads structure
                         }
                     }
                 }
             }
-            
             patch_url = f"{base_url}/materials/{batch_eid}?force=true"
             response = requests.patch(patch_url, headers=headers, data=json.dumps(salt_payload))
             if response.status_code in [200, 201]:
@@ -290,11 +282,9 @@ def download_failure_report(failures_url, retries=3, delay=10):
 def main():
     global supplier_code_salt_data
     supplier_code_salt_data = {}
-    
-    elwis_salts_list = fetch_salts()
 
     # Process and upload compounds
-    sdf_file_path = 'examples/compound_test.sdf'
+    sdf_file_path = 'MOLPORT/molport_test.sdf'
     zip_file_name, library_id = process_sdf(sdf_file_path)  # Get library ID from process_sdf
     send_to_api(zip_file_name)
     
@@ -302,7 +292,7 @@ def main():
     batches = fetch_batches(library_id)
     
     # Upload salts to the correct ORM-code-batch based on supplier product code
-    upload_salts(batches, elwis_salts_list)
+    upload_salts(batches)
     os.system("rm -f summary.zip")
 
 if __name__ == "__main__":

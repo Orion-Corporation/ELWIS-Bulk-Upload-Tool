@@ -1,0 +1,613 @@
+curl -X 'POST' \
+'https: //orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/search?sort=-createdAt&source=IVT' \
+-H 'accept: application/vnd.api+json' \
+-H 'x-api-key: ' \
+-H 'Content-Type: application/json' \
+-d '{
+    "query": {
+        "$and": [
+            {
+                "$match": {
+                    "field": "materials.Library ID",
+                    "in": "tags",
+                    "as": "text",
+                    "value": "testlibrary1",
+                    "mode": "keyword"
+                }
+            }
+        ]
+    },
+    "options": {
+        "offset": 0,
+        "limit": 1000,
+        "stop-after-items": 1000000,
+        "sort": {
+            "createdAt": "desc"
+        }
+    },
+    "meta": {
+        "reason": "Advanced Search"
+    }
+}'
+{
+    "meta": {
+        "took-ms": 116,
+        "query-timed-out": false,
+        "query-reached-limit": false,
+        "count": 2,
+        "total": 2
+    },
+    "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/search?sort=-createdAt&source=IVT"
+    },
+    "data": [
+        {
+            "type": "indexData",
+            "id": "batch:6725f9fef694827b953d016a",
+            "meta": {
+                "highlight": {
+                    "@tags": {
+                        "materials.Library ID": [
+                            "<em>testlibrary1</em>"
+                        ]
+                    }
+                }
+            },
+            "attributes": {
+                "owner": "114",
+                "eid": "batch:6725f9fef694827b953d016a",
+                "editedBy": "114",
+                "modifiedAt": "2024-11-02T10:07:58.414Z",
+                "description": "",
+                "type": "batch",
+                "createdAt": "2024-11-02T10:07:58.414Z",
+                "createdBy": "114",
+                "isTemplate": false,
+                "name": "ORM-0516091-001",
+                "tags": {
+                    "system.ExID": "ExID.e9377.100",
+                    "system.Keywords": "Timo Kangasperko",
+                    "materials.Molecular Weight": 424.34,
+                    "materials.Supplier Name": "Enamine",
+                    "materials.Chemist": "External chemist",
+                    "materials.Well": "B01",
+                    "materials.Stereochemistry": "No stereochemistry",
+                    "materials.Source": "Acquired",
+                    "materials.Chemical Name": "2-(((4-amino-5,6-dimethylthieno[2,3-d]pyrimidin-2-yl)methyl)(methyl)amino)-N-(2,6-dichlorophenyl)acetamide",
+                    "materials.Plate ID": "1845145-01",
+                    "materials.Batch Code": "2140940710",
+                    "materials.Library ID": "testlibrary1",
+                    "materials.Batch Purpose": "Test compound",
+                    "materials.Submission Date": "2024-11-02T10:07:58.414Z",
+                    "materials.Exact Mass": 423.06874,
+                    "materials.Formula Mass": 424.34,
+                    "materials.Synthesis Date": "2011-11-10T13:37Z",
+                    "materials.Amount": 0.0052,
+                    "materials.Supplier Product Code": "Z195631098",
+                    "materials.Batch Molecular Formula": "C18H19Cl2N5OS",
+                    "materials.Batch Chemical Name": "2-(((4-amino-5,6-dimethylthieno[2,3-d]pyrimidin-2-yl)methyl)(methyl)amino)-N-(2,6-dichlorophenyl)acetamide",
+                    "materials.Batch Type": "Discovery",
+                    "materials.Project": "Unspecified",
+                    "materials.Barcode": "2140940710",
+                    "materials.Molecular Formula": "C18H19Cl2N5OS"
+                }
+            },
+            "relationships": {
+                "entity": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/batch:6725f9fef694827b953d016a"
+                    },
+                    "data": {
+                        "type": "entity",
+                        "id": "batch:6725f9fef694827b953d016a"
+                    }
+                }
+            }
+        },
+        {
+            "type": "indexData",
+            "id": "batch:6725f9faf694827b953d0168",
+            "meta": {
+                "highlight": {
+                    "@tags": {
+                        "materials.Library ID": [
+                            "<em>testlibrary1</em>"
+                        ]
+                    }
+                }
+            },
+            "attributes": {
+                "owner": "114",
+                "eid": "batch:6725f9faf694827b953d0168",
+                "editedBy": "114",
+                "modifiedAt": "2024-11-02T10:07:55.071Z",
+                "description": "",
+                "type": "batch",
+                "createdAt": "2024-11-02T10:07:55.071Z",
+                "createdBy": "114",
+                "isTemplate": false,
+                "name": "ORM-0516090-001",
+                "tags": {
+                    "system.ExID": "ExID.c9377.100",
+                    "system.Keywords": "Timo Kangasperko",
+                    "materials.Molecular Weight": 320.44,
+                    "materials.Supplier Name": "Enamine",
+                    "materials.Chemist": "External chemist",
+                    "materials.Well": "H09",
+                    "materials.Stereochemistry": "Unresolved stereochemistry",
+                    "materials.Source": "Acquired",
+                    "materials.Chemical Name": "2-(1-(aminomethyl)cyclopropyl)-1-(2-(1-(2-methoxyethyl)-1H-imidazol-2-yl)-3,3-dimethylazetidin-1-yl)ethan-1-one",
+                    "materials.Plate ID": "1845145-01",
+                    "materials.Batch Code": "2140940780",
+                    "materials.Library ID": "testlibrary1",
+                    "materials.Batch Purpose": "Test compound",
+                    "materials.Submission Date": "2024-11-02T10:07:55.071Z",
+                    "materials.Exact Mass": 320.22123,
+                    "materials.Formula Mass": 320.44,
+                    "materials.Synthesis Date": "2011-11-10T13:37Z",
+                    "materials.Amount": 0.0051,
+                    "materials.Supplier Product Code": "Z2754556176",
+                    "materials.Batch Molecular Formula": "C17H28N4O2",
+                    "materials.Batch Chemical Name": "2-(1-(aminomethyl)cyclopropyl)-1-(2-(1-(2-methoxyethyl)-1H-imidazol-2-yl)-3,3-dimethylazetidin-1-yl)ethan-1-one",
+                    "materials.Batch Type": "Discovery",
+                    "materials.Project": "Unspecified",
+                    "materials.Barcode": "2140940780",
+                    "materials.Molecular Formula": "C17H28N4O2"
+                }
+            },
+            "relationships": {
+                "entity": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/batch:6725f9faf694827b953d0168"
+                    },
+                    "data": {
+                        "type": "entity",
+                        "id": "batch:6725f9faf694827b953d0168"
+                    }
+                }
+            }
+        }
+    ],
+    "included": [
+        {
+            "type": "entity",
+            "id": "asset:6725f9f9f694827b953d0167",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/asset:6725f9f9f694827b953d0167"
+            },
+            "attributes": {
+                "type": "asset",
+                "eid": "asset:6725f9f9f694827b953d0167",
+                "name": "ORM-0516090",
+                "digest": "67367492",
+                "fields": {
+                    "Material Library Type": {
+                        "value": "Compounds"
+                    },
+                    "Name": {
+                        "value": "ORM-0516090"
+                    },
+                    "Stereochemistry": {
+                        "value": "Unresolved stereochemistry"
+                    }
+                },
+                "flags": {}
+            }
+        },
+        {
+            "type": "entity",
+            "id": "asset:6725f9fdf694827b953d0169",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/asset:6725f9fdf694827b953d0169"
+            },
+            "attributes": {
+                "type": "asset",
+                "eid": "asset:6725f9fdf694827b953d0169",
+                "name": "ORM-0516091",
+                "digest": "20238259",
+                "fields": {
+                    "Material Library Type": {
+                        "value": "Compounds"
+                    },
+                    "Name": {
+                        "value": "ORM-0516091"
+                    },
+                    "Stereochemistry": {
+                        "value": "No stereochemistry"
+                    }
+                },
+                "flags": {}
+            }
+        },
+        {
+            "type": "entity",
+            "id": "assetType:5d6e0287ee35880008c18db5",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/assetType:5d6e0287ee35880008c18db5"
+            },
+            "attributes": {
+                "type": "assetType",
+                "eid": "assetType:5d6e0287ee35880008c18db5",
+                "name": "Compounds",
+                "digest": "81655349",
+                "fields": {
+                    "Material Library Type": {
+                        "value": "Compounds"
+                    },
+                    "Name": {
+                        "value": "Compounds"
+                    }
+                },
+                "flags": {}
+            }
+        },
+        {
+            "type": "entity",
+            "id": "batch:6725f9faf694827b953d0168",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/batch:6725f9faf694827b953d0168"
+            },
+            "attributes": {
+                "id": "batch:6725f9faf694827b953d0168",
+                "eid": "batch:6725f9faf694827b953d0168",
+                "name": "ORM-0516090-001",
+                "description": "",
+                "createdAt": "2024-11-02T10:07:55.071Z",
+                "editedAt": "2024-11-02T10:07:55.071Z",
+                "type": "batch",
+                "digest": "75569170",
+                "fields": {
+                    "Amount": {
+                        "value": "5.1 mg"
+                    },
+                    "Barcode": {
+                        "value": "2140940780"
+                    },
+                    "Batch Chemical Name": {
+                        "value": "2-(1-(aminomethyl)cyclopropyl)-1-(2-(1-(2-methoxyethyl)-1H-imidazol-2-yl)-3,3-dimethylazetidin-1-yl)ethan-1-one"
+                    },
+                    "Batch Code": {
+                        "value": "2140940780"
+                    },
+                    "Batch Molecular Formula": {
+                        "value": "C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>"
+                    },
+                    "Batch Purpose": {
+                        "value": "Test compound"
+                    },
+                    "Batch Type": {
+                        "value": "Discovery"
+                    },
+                    "Chemical Name": {
+                        "value": "2-(1-(aminomethyl)cyclopropyl)-1-(2-(1-(2-methoxyethyl)-1H-imidazol-2-yl)-3,3-dimethylazetidin-1-yl)ethan-1-one"
+                    },
+                    "Chemist": {
+                        "value": "External chemist"
+                    },
+                    "Description": {
+                        "value": ""
+                    },
+                    "Exact Mass": {
+                        "value": "320.22123"
+                    },
+                    "Formula Mass": {
+                        "value": "320.44 g/mol"
+                    },
+                    "Library ID": {
+                        "value": "testlibrary1"
+                    },
+                    "Molecular Formula": {
+                        "value": "C<sub>17</sub>H<sub>28</sub>N<sub>4</sub>O<sub>2</sub>"
+                    },
+                    "Molecular Weight": {
+                        "value": "320.44 g/mol"
+                    },
+                    "Name": {
+                        "value": "ORM-0516090-001"
+                    },
+                    "Plate ID": {
+                        "value": "1845145-01"
+                    },
+                    "Project": {
+                        "value": "Unspecified"
+                    },
+                    "Source": {
+                        "value": "Acquired"
+                    },
+                    "Stereochemistry": {
+                        "value": "Unresolved stereochemistry"
+                    },
+                    "Submission Date": {
+                        "value": "2024-11-02T10:07:55.071Z"
+                    },
+                    "Submitter": {
+                        "value": {
+                            "userId": "114",
+                            "userName": "timo.kangasperko@orion.fi",
+                            "flags": {
+                                "isSystemStandardUser": true
+                            },
+                            "alias": "timoka",
+                            "email": "timo.kangasperko@orion.fi",
+                            "firstName": "Timo",
+                            "lastName": "Kangasperko",
+                            "picture": {},
+                            "isEnabled": true
+                        }
+                    },
+                    "Supplier Name": {
+                        "value": "Enamine"
+                    },
+                    "Supplier Product Code": {
+                        "value": "Z2754556176"
+                    },
+                    "Synthesis Date": {
+                        "value": "2011-11-10T13:37Z"
+                    },
+                    "Well": {
+                        "value": "H09"
+                    }
+                },
+                "flags": {
+                    "canEdit": true
+                }
+            },
+            "relationships": {
+                "createdBy": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+                    },
+                    "data": {
+                        "type": "user",
+                        "id": "114"
+                    }
+                },
+                "editedBy": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+                    },
+                    "data": {
+                        "type": "user",
+                        "id": "114"
+                    }
+                },
+                "ancestors": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/batch:6725f9faf694827b953d0168/ancestors"
+                    },
+                    "data": [
+                        {
+                            "type": "entity",
+                            "id": "assetType:5d6e0287ee35880008c18db5",
+                            "meta": {
+                                "links": {
+                                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/assetType:5d6e0287ee35880008c18db5"
+                                }
+                            }
+                        },
+                        {
+                            "type": "entity",
+                            "id": "asset:6725f9f9f694827b953d0167",
+                            "meta": {
+                                "links": {
+                                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/asset:6725f9f9f694827b953d0167"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "owner": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+                    },
+                    "data": {
+                        "type": "user",
+                        "id": "114"
+                    }
+                },
+                "source": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/batch:6725f9faf694827b953d0168/export"
+                    }
+                }
+            }
+        },
+        {
+            "type": "user",
+            "id": "114",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+            },
+            "attributes": {
+                "userId": "114",
+                "userName": "timo.kangasperko@orion.fi",
+                "flags": {
+                    "isSystemStandardUser": true
+                },
+                "alias": "timoka",
+                "email": "timo.kangasperko@orion.fi",
+                "firstName": "Timo",
+                "lastName": "Kangasperko",
+                "isEnabled": true
+            },
+            "relationships": {
+                "systemGroups": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114/systemGroups"
+                    }
+                }
+            }
+        },
+        {
+            "type": "entity",
+            "id": "batch:6725f9fef694827b953d016a",
+            "links": {
+                "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/batch:6725f9fef694827b953d016a"
+            },
+            "attributes": {
+                "id": "batch:6725f9fef694827b953d016a",
+                "eid": "batch:6725f9fef694827b953d016a",
+                "name": "ORM-0516091-001",
+                "description": "",
+                "createdAt": "2024-11-02T10:07:58.414Z",
+                "editedAt": "2024-11-02T10:07:58.414Z",
+                "type": "batch",
+                "digest": "79947223",
+                "fields": {
+                    "Amount": {
+                        "value": "5.2 mg"
+                    },
+                    "Barcode": {
+                        "value": "2140940710"
+                    },
+                    "Batch Chemical Name": {
+                        "value": "2-(((4-amino-5,6-dimethylthieno[2,3-d]pyrimidin-2-yl)methyl)(methyl)amino)-N-(2,6-dichlorophenyl)acetamide"
+                    },
+                    "Batch Code": {
+                        "value": "2140940710"
+                    },
+                    "Batch Molecular Formula": {
+                        "value": "C<sub>18</sub>H<sub>19</sub>Cl<sub>2</sub>N<sub>5</sub>OS"
+                    },
+                    "Batch Purpose": {
+                        "value": "Test compound"
+                    },
+                    "Batch Type": {
+                        "value": "Discovery"
+                    },
+                    "Chemical Name": {
+                        "value": "2-(((4-amino-5,6-dimethylthieno[2,3-d]pyrimidin-2-yl)methyl)(methyl)amino)-N-(2,6-dichlorophenyl)acetamide"
+                    },
+                    "Chemist": {
+                        "value": "External chemist"
+                    },
+                    "Description": {
+                        "value": ""
+                    },
+                    "Exact Mass": {
+                        "value": "423.06874"
+                    },
+                    "Formula Mass": {
+                        "value": "424.34 g/mol"
+                    },
+                    "Library ID": {
+                        "value": "testlibrary1"
+                    },
+                    "Molecular Formula": {
+                        "value": "C<sub>18</sub>H<sub>19</sub>Cl<sub>2</sub>N<sub>5</sub>OS"
+                    },
+                    "Molecular Weight": {
+                        "value": "424.34 g/mol"
+                    },
+                    "Name": {
+                        "value": "ORM-0516091-001"
+                    },
+                    "Plate ID": {
+                        "value": "1845145-01"
+                    },
+                    "Project": {
+                        "value": "Unspecified"
+                    },
+                    "Source": {
+                        "value": "Acquired"
+                    },
+                    "Stereochemistry": {
+                        "value": "No stereochemistry"
+                    },
+                    "Submission Date": {
+                        "value": "2024-11-02T10:07:58.414Z"
+                    },
+                    "Submitter": {
+                        "value": {
+                            "userId": "114",
+                            "userName": "timo.kangasperko@orion.fi",
+                            "flags": {
+                                "isSystemStandardUser": true
+                            },
+                            "alias": "timoka",
+                            "email": "timo.kangasperko@orion.fi",
+                            "firstName": "Timo",
+                            "lastName": "Kangasperko",
+                            "picture": {},
+                            "isEnabled": true
+                        }
+                    },
+                    "Supplier Name": {
+                        "value": "Enamine"
+                    },
+                    "Supplier Product Code": {
+                        "value": "Z195631098"
+                    },
+                    "Synthesis Date": {
+                        "value": "2011-11-10T13:37Z"
+                    },
+                    "Well": {
+                        "value": "B01"
+                    }
+                },
+                "flags": {
+                    "canEdit": true
+                }
+            },
+            "relationships": {
+                "createdBy": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+                    },
+                    "data": {
+                        "type": "user",
+                        "id": "114"
+                    }
+                },
+                "editedBy": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+                    },
+                    "data": {
+                        "type": "user",
+                        "id": "114"
+                    }
+                },
+                "ancestors": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/batch:6725f9fef694827b953d016a/ancestors"
+                    },
+                    "data": [
+                        {
+                            "type": "entity",
+                            "id": "assetType:5d6e0287ee35880008c18db5",
+                            "meta": {
+                                "links": {
+                                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/assetType:5d6e0287ee35880008c18db5"
+                                }
+                            }
+                        },
+                        {
+                            "type": "entity",
+                            "id": "asset:6725f9fdf694827b953d0169",
+                            "meta": {
+                                "links": {
+                                    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/asset:6725f9fdf694827b953d0169"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "owner": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/users/114"
+                    },
+                    "data": {
+                        "type": "user",
+                        "id": "114"
+                    }
+                },
+                "source": {
+                    "links": {
+                        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/entities/batch:6725f9fef694827b953d016a/export"
+                    }
+                }
+            }
+        }
+    ]
+}(base) robekott@CL-JM4FY04:~/ERAT$

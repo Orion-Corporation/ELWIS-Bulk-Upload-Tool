@@ -17,3 +17,10 @@ https://orionfi-my.sharepoint.com/:u:/g/personal/robert_kottelin_orionpharma_com
 ### 4. Upload Salts (`upload_salts`)
    - For each batch ID retrieved, finds corresponding salt data, looks up the molecular formula from `salts_dict`, and builds a structured payload.
    - Sends this payload to the API to attach the salts to the respective batch.
+
+
+Changes:
+- Implement loop to chunk up molecules to 1000
+- fetch salts, map salt name (Salt Code) to salt upload
+Same supplier_code can be present in multiple batches, fix:
+if supplier_code and batch_eid and supplier_code in supplier_code_salt_data:
