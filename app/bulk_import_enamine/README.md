@@ -69,7 +69,8 @@ Example chunking behavior:
 
 ## Usage
 
-1. Place the SDF file for the compounds under `examples/compound_test.sdf`.
-2. Ensure `config/salts_dictionary_enamine.json` contains the salt mappings.
-3. Set up the `.env` file with the API key.
-4. Run the script: python bulk_import_enamine.py
+1. Create conda env if necessary, install 'pip install -r requirements.txt'
+2. Place the test SDF file for the compounds under `examples/compound_test.sdf`.
+3. Ensure `config/salts_dictionary_enamine.json` contains the salt mappings.
+4. Set up the `.env` file with the API key in root directory.
+5. Run the script: python app//bulk_import_enamine/bulk_import_enamine.py
