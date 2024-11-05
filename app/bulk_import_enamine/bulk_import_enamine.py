@@ -24,8 +24,7 @@ headers = {
     'x-api-key': api_key
 }
 
-# Process molecules from SDF file
-def process_sdf(file_path):    
+def process_sdf(molecules):
     libraryID = "testlibrary1"
     project = "Unspecified"
     synthesis_date = "2011-11-10T13:37:00Z"
@@ -35,22 +34,12 @@ def process_sdf(file_path):
     batch_purpose = "Test compound"
     batch_type = "Discovery"
 
-    file = Chem.SDMolSupplier(file_path)
     sdf_writer = Chem.SDWriter("summary.sdf")
-    
-    # todo: chunk up in many jobs with limit under 1000 or less
-    
-    for mol in file:
-        if mol is None:
-            print("Error reading molecule.")
-            continue
-
-        # Apply FragmentParent to remove salts from the molecule
+    for mol in molecules:
         mol = FragmentParent(mol)
-        Chem.AssignStereochemistry(mol, force=True, cleanIt=True) 
+        Chem.AssignStereochemistry(mol, force=True, cleanIt=True)
         stereochemistry = "No stereochemistry" if CalcNumAtomStereoCenters(mol) == 0 else "Unresolved stereochemistry"
 
-        # Set other molecule properties
         mol.SetProp("Supplier_Product_Code", mol.GetProp("ID"))
         mol.SetProp("Plate_ID", mol.GetProp("Plate_ID"))
         mol.SetProp("Well", mol.GetProp("Well"))
@@ -65,84 +54,60 @@ def process_sdf(file_path):
         mol.SetProp("Chemist", chemist)
         mol.SetProp("Batch_Purpose", batch_purpose)
         mol.SetProp("Batch_Type", batch_type)
-        
-        # Collect salt properties
+
         if mol.HasProp("Salt_ratio") and mol.HasProp("Salt_Name") and mol.HasProp("MW_salt"):
-            print(f"Salt properties found for {mol.GetProp('Supplier_Product_Code')}, collecting salt data...")
             salt_ratio = float(mol.GetProp("Salt_ratio"))
             salt_name = mol.GetProp("Salt_Name")
             mw_salt = mol.GetProp("MW_salt")
-            
-            # Save supplier code : salt data in hashmap "supplier_code_salt_data"
-            supplier_code = mol.GetProp("Supplier_Product_Code") 
+            supplier_code = mol.GetProp("Supplier_Product_Code")
             supplier_code_salt_data[supplier_code] = {
                 "Salt_ratio": salt_ratio,
                 "Salt_name": salt_name,
                 "MW_salt": mw_salt
             }
-        else: print(f"No salt properties found for {mol.GetProp('Supplier_Product_Code')}.")
-        
         sdf_writer.write(mol)
 
     sdf_writer.close()
-    os.system("rm -f summary.zip")
     os.system("zip summary.zip summary.sdf")
     os.remove("summary.sdf")
     return "summary.zip", libraryID
 
-def send_to_api(zip_file_name):
+def send_to_api(processed_zip_file):
     bulk_import_url = f"{base_url}/materials/Compounds/bulkImport?rule=USE_MATCHES&importType=zip"
-    with open(zip_file_name, 'rb') as zip_file_contents:
+    with open(processed_zip_file, 'rb') as zip_file_contents:
         payload = zip_file_contents.read()
     response = requests.post(bulk_import_url, headers=headers, data=payload)
     if response.status_code in [200, 201]:
-        print("Bulk import job submitted successfully... Checking job status.")
         job_id = response.json().get("data", {}).get("id")
         if job_id:
             check_job_status(job_id)
-            # Clean up the job on server
             delete_url = f"{base_url}/materials/bulkImport/jobs/{job_id}"
-            response = requests.delete(delete_url, headers=headers)
+            requests.delete(delete_url, headers=headers)
     else:
         print(f"Failed to send data. Status code: {response.status_code}")
         print(response.text)
-        
+    os.remove(processed_zip_file)
+
 def check_job_status(job_id):
-    # Polls the job status until completion and saves failure report if available.
     status_url = f"{base_url}/materials/bulkImport/jobs/{job_id}"
     failures_url = f"{status_url}/failures"
-
     while True:
         response = requests.get(status_url, headers=headers)
         job_data = response.json()
-
-        # Get job status from response
         status = job_data.get("data", {}).get("attributes", {}).get("status", "")
         print(f"Current job status: {status}")
-        # print(f"Response: {job_data}")
-        
+
         if status == "COMPLETED":
-            # print("Import job COMPLETED successfully.")
-            print(f"Response: {job_data}")
             report = job_data.get("data", {}).get("attributes", {}).get("report", {})
-            duplicated = report.get("duplicated", 0)
-            failed = report.get("failed", 0)
-
-            # Complete with duplicates or failed items
-            if duplicated > 0 or failed > 0:
-                print("Detected duplicated or failed items. Downloading failure report...")
+            print(f"Job Data: {job_data}")
+            if report.get("duplicated", 0) > 0 or report.get("failed", 0) > 0:
                 download_failure_report(failures_url)
-            else: break
-
-        elif status == "FAILED":
-            print("Import job failed. Downloading failure report...")
-            # download_failure_report(failures_url)
             break
-
-        # Wait before polling again
+        elif status == "FAILED":
+            download_failure_report(failures_url)
+            break
         time.sleep(5)
 
-# Fetch all compounds and retrieve batch EIDs for those with salts
 def fetch_batches(library_id):
     query_payload = {
         "query": {
@@ -169,70 +134,56 @@ def fetch_batches(library_id):
             "reason": "Advanced Search"
         }
     }
-    
     query_url = f"{base_url}/entities/search"
     response = requests.post(query_url, headers=headers, data=json.dumps(query_payload))
+    batches = {}
+    
     if response.status_code == 200:
-        batches = {}
         data = response.json().get("data", [])
-        
-        # Iterate over batches, ensuring we only get the latest unique batches per supplier code
         for item in data:
             attributes = item.get("attributes", {})
             supplier_code = attributes.get("tags", {}).get("materials.Supplier Product Code")
             batch_eid = attributes.get("eid")
-            
-            # Only add batch_eid if it hasn't been processed before for this supplier code
-            if supplier_code and batch_eid and supplier_code in supplier_code_salt_data:
-                # Check if this supplier_code is already mapped, skip if already processed
-                if supplier_code not in batches:
-                    batches[supplier_code] = batch_eid
-        return batches
+            orm_name = attributes.get("name")
+            if supplier_code and batch_eid and supplier_code in supplier_code_salt_data and supplier_code not in batches:
+                batches[supplier_code] = {"batch_eid": batch_eid, "name": orm_name}
     else:
         print("Failed to fetch batches.")
         print(response.text)
-        return {}
+    return batches
 
-# Fetch all salts
 def fetch_salts():
     salt_fetch_url = f"{base_url}/fragments/salts"
     response = requests.get(salt_fetch_url, headers=headers)
-    
-    # Check for successful response
     if response.status_code == 200:
-        elwis_salts_list = response.json()
-        return elwis_salts_list
+        return response.json()
     else:
         print(f"Failed to fetch salts. Status code: {response.status_code}")
         return None
 
-# Upload salts to the correct batch based on supplier product code
 def upload_salts(batches, elwis_salts_list):
-    for supplier_code, batch_eid in batches.items():
-        salt_data = supplier_code_salt_data.get(supplier_code)
-        if salt_data:
-            # Lookup salt code in salts_dictionary_enamine.json
-            salt_code = salts_dict.get(salt_data["Salt_name"].lower(), "")
+    for supplier_code, batch_info in batches.items(): # supplier_code is the key, batch_info is the value, supplier_code mapped to salt data in fetch_batches()
+        batch_eid = batch_info["batch_eid"]
+        orm_name = batch_info["name"]
+        
+        salt_data = supplier_code_salt_data.get(supplier_code) # Get salt data based on supplier product code
+        
+        if salt_data: # If False, skip salt upload
+            salt_code = salts_dict.get(salt_data["Salt_name"].lower(), "") # Get salt name from supplier_code_salt_data and map to salt code in salts dictionary
             
-            if not salt_code:
-                print(f"Did not find Salt Code salts_dictionary_enamine.json for '{salt_data['Salt_name']}'.")
-
-            # Search for the matching salt in elwis_salts_list based on the salt name
-            elwis_salt = next((item for item in elwis_salts_list["data"] 
-                               if item["attributes"]["name"] == salt_code), None)
+            elwis_salt = next((item for item in elwis_salts_list["data"] if item["attributes"]["name"] == salt_code), None) # Match sdf salt code to ELWIS salt code
             
             if elwis_salt is None:
-                print(f"Salt '{salt_code}' not found in ELWIS salts list.")
+                print(f"Salt '{salt_code}' not found in ELWIS for '{supplier_code}', name '{salt_data['Salt_name']}' missing in salt dictionary")
                 continue
-
-            # Extract required properties from the matching salt
+            
+            # Construct payload, coefficient from sdf, other data from ELWIS
             elwis_salt_id = elwis_salt["id"]
             elwis_salt_type = elwis_salt["attributes"]["type"]
             elwis_salt_name = elwis_salt["attributes"]["name"]
             elwis_mf = elwis_salt["attributes"]["mf"]
             elwis_mw_salt = elwis_salt["attributes"]["mw"]
 
-            # Structure the payload using the extracted values
             salt_payload = {
                 "data": {
                     "attributes": {
@@ -244,66 +195,73 @@ def upload_salts(batches, elwis_salts_list):
                                     "mf": elwis_mf,
                                     "mw": {
                                         "displayValue": elwis_mw_salt,
-                                        "rawValue": elwis_mw_salt.split()[0]  # Extracting just the numerical part
+                                        "rawValue": elwis_mw_salt.split()[0]
                                     },
                                     "name": elwis_salt_name,
                                     "type": elwis_salt_type
                                 }
                             ],
-                            "solvates": []  # Empty list as required in payload structure
+                            "solvates": []
                         }
                     }
                 }
             }
-            
             patch_url = f"{base_url}/materials/{batch_eid}?force=true"
             response = requests.patch(patch_url, headers=headers, data=json.dumps(salt_payload))
             if response.status_code in [200, 201]:
-                print(f"Salt data for {supplier_code} uploaded successfully to batch {batch_eid}")
+                # Print success message with supplier code and ORM name
+                print(f"Salt data for {supplier_code} ({orm_name}) uploaded successfully to batch {batch_eid}")
             else:
-                print(f"Failed to upload salt data for {supplier_code}. Status code: {response.status_code}")
+                print(f"Failed to upload salt data for {supplier_code} ({orm_name}). Status code: {response.status_code}")
                 print(response.text)
 
 def download_failure_report(failures_url, retries=3, delay=10):
-    """Attempts to download the failure report, with retries if not immediately available."""
     for attempt in range(retries):
-        print(f"Attempt {attempt + 1} to download failure report from: {failures_url}")
         response = requests.get(failures_url, headers=headers)
-
-        # Check response status and log details
-        print(f"Failure report download response code: {response.status_code}")
-        print(f"Failure report download response text: {response.text}")
-
-        if response.status_code == 200 or response.status_code == 201:
+        if response.status_code in [200, 201]:
             with open("bulk_import_enamine/failure_report.json", "w") as f:
                 f.write(response.text)
             print("Failure report saved to failure_report.json.")
             return
         elif response.status_code == 404:
-            print("Failure report not found. Retrying...") if attempt < retries - 1 else print("Failure report is not available.")
-            time.sleep(delay)  # Wait before retrying
+            if attempt < retries - 1:
+                time.sleep(delay)
         else:
-            print("Failed to download failure report for an unknown reason.")
+            print("Failed to download failure report.")
             break
 
-# Main function
 def main():
     global supplier_code_salt_data
-    supplier_code_salt_data = {}
-    
     elwis_salts_list = fetch_salts()
 
-    # Process and upload compounds
-    sdf_file_path = 'examples/compound_test.sdf'
-    zip_file_name, library_id = process_sdf(sdf_file_path)  # Get library ID from process_sdf
-    send_to_api(zip_file_name)
-    
-    # Fetch batches for specific library ID (in this case "testlibrary1")
-    batches = fetch_batches(library_id)
-    
-    # Upload salts to the correct ORM-code-batch based on supplier product code
-    upload_salts(batches, elwis_salts_list)
-    os.system("rm -f summary.zip")
+    file_path = 'examples/compound_test.sdf' # One SDF file per run enough? Otherwise loop over files
+    sdf_supplier = Chem.SDMolSupplier(file_path)
+    molecules = [mol for mol in sdf_supplier if mol is not None]
+    chunk_size = 2
+
+    for i in range(0, len(molecules), chunk_size): # from 0 to len(molecules), incrementing by chunk_size
+        mol_chunk = molecules[i:i + chunk_size] # slices to sub-lists of size chunk_size, ending at but excluding i + chunk_size
+        
+        ''' Example:
+        If molecules = [m0, m1, m2] and chunk_size = 2:
+        1st iteration (i=0): mol_chunk = molecules[0:2] → [m0, m1]
+        2nd iteration (i=2): mol_chunk = molecules[2:4] → [m2] (last smaller chunk, handled by python automatically in "molecules[i:i + chunk_size]")
+        '''
+        
+        # Reset supplier_code_salt_data for each chunk
+        supplier_code_salt_data = {}
+        
+        # Process the chunk
+        processed_zip_file, library_id = process_sdf(mol_chunk)
+        
+        # Send the processed chunk to the API
+        send_to_api(processed_zip_file)
+
+        # Fetch batches for the processed chunk
+        batches = fetch_batches(library_id)
+        
+        # Upload salts for the fetched batches
+        upload_salts(batches, elwis_salts_list)
 
 if __name__ == "__main__":
     main()

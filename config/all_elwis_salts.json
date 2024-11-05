@@ -1,0 +1,1435 @@
+{
+  "links": {
+    "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts"
+  },
+  "data": [
+    {
+      "type": "salt",
+      "id": "161",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/161"
+      },
+      "attributes": {
+        "id": "161",
+        "type": "SALT",
+        "name": "Hexafluorophosphate(V)",
+        "mf": "F6P-",
+        "mw": "144.96 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "163",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/163"
+      },
+      "attributes": {
+        "id": "163",
+        "type": "SALT",
+        "name": "Dicyclohexylammonium",
+        "mf": "C12H24N+",
+        "mw": "182.33 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "164",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/164"
+      },
+      "attributes": {
+        "id": "164",
+        "type": "SALT",
+        "name": "Acetate_1",
+        "mf": "C2H3O2-",
+        "mw": "59.0445 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "176",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/176"
+      },
+      "attributes": {
+        "id": "176",
+        "type": "SALT",
+        "name": "Calcium Ion",
+        "mf": "C10H20CaN2O8S2",
+        "mw": "40.078 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "178",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/178"
+      },
+      "attributes": {
+        "id": "178",
+        "type": "SALT",
+        "name": "4,4-methylenebis(3-hydroxy-2-naphthoate)",
+        "mf": "C75H70N6O6",
+        "mw": "386.3537 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "180",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/180"
+      },
+      "attributes": {
+        "id": "180",
+        "type": "SALT",
+        "name": "Fumaric Acid",
+        "mf": "C64H110N6O16",
+        "mw": "116.0722 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "181",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/181"
+      },
+      "attributes": {
+        "id": "181",
+        "type": "SALT",
+        "name": "Maleic Acid",
+        "mf": "C20H23ClN2O4",
+        "mw": "116.0722 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "184",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/184"
+      },
+      "attributes": {
+        "id": "184",
+        "type": "SALT",
+        "name": "Hydrobromic Acid",
+        "mf": "C21H34BrNO3",
+        "mw": "79.904 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "186",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/186"
+      },
+      "attributes": {
+        "id": "186",
+        "type": "SALT",
+        "name": "Calcium Ion; Water (4)",
+        "mf": "C30H30CaO8",
+        "mw": "58.0933 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "188",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/188"
+      },
+      "attributes": {
+        "id": "188",
+        "type": "SALT",
+        "name": "Hydrochloric Acid; Water (1)",
+        "mf": "C24H33ClN2O3",
+        "mw": "54.4762 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "190",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/190"
+      },
+      "attributes": {
+        "id": "190",
+        "type": "SALT",
+        "name": "Tosylate",
+        "mf": "C43H42ClFN4O10S3",
+        "mw": "172.2016 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "192",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/192"
+      },
+      "attributes": {
+        "id": "192",
+        "type": "SALT",
+        "name": "hydrogen chloride",
+        "mf": "CLH",
+        "mw": "36.4609 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "193",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/193"
+      },
+      "attributes": {
+        "id": "193",
+        "type": "SALT",
+        "name": "hydrogen bromide",
+        "mf": "BRH",
+        "mw": "39.4609 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "156",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/156"
+      },
+      "attributes": {
+        "id": "156",
+        "type": "SALT",
+        "name": "Gallate",
+        "mf": "C7H6O5",
+        "mw": "170.12 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "159",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/159"
+      },
+      "attributes": {
+        "id": "159",
+        "type": "SALT",
+        "name": "3,4-Dimethylbenzene-1-sulfonate",
+        "mf": "C8H10O3S",
+        "mw": "186.23 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "191",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/191"
+      },
+      "attributes": {
+        "id": "191",
+        "type": "SALT",
+        "name": "(2R,3R)-Tartaric Acid",
+        "mf": "C23H42N2O12",
+        "mw": "149.0789 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "30",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/30"
+      },
+      "attributes": {
+        "id": "30",
+        "type": "SALT",
+        "name": "Ammonium",
+        "mf": "H4N+",
+        "mw": "6.94 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "8",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/8"
+      },
+      "attributes": {
+        "id": "8",
+        "type": "SALT",
+        "name": "Bromide",
+        "mf": "Br-",
+        "mw": "79.90 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "9",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/9"
+      },
+      "attributes": {
+        "id": "9",
+        "type": "SALT",
+        "name": "Calcium",
+        "mf": "Ca 2+",
+        "mw": "40.08 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "10",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/10"
+      },
+      "attributes": {
+        "id": "10",
+        "type": "SALT",
+        "name": "Chloride",
+        "mf": "Cl-",
+        "mw": "35.45 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "13",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/13"
+      },
+      "attributes": {
+        "id": "13",
+        "type": "SALT",
+        "name": "Diethylammonium",
+        "mf": "C4H12N+",
+        "mw": "74.15 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "18",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/18"
+      },
+      "attributes": {
+        "id": "18",
+        "type": "SALT",
+        "name": "Formate",
+        "mf": "CH2O2",
+        "mw": "46.03 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "19",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/19"
+      },
+      "attributes": {
+        "id": "19",
+        "type": "SALT",
+        "name": "HBr",
+        "mf": "BrH",
+        "mw": "80.91 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "20",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/20"
+      },
+      "attributes": {
+        "id": "20",
+        "type": "SALT",
+        "name": "HCl",
+        "mf": "ClH",
+        "mw": "36.46 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "23",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/23"
+      },
+      "attributes": {
+        "id": "23",
+        "type": "SALT",
+        "name": "HI",
+        "mf": "HI",
+        "mw": "127.91 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "24",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/24"
+      },
+      "attributes": {
+        "id": "24",
+        "type": "SALT",
+        "name": "Iodide",
+        "mf": "I-",
+        "mw": "126.91 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "79",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/79"
+      },
+      "attributes": {
+        "id": "79",
+        "type": "SALT",
+        "name": "L-Ascorbate",
+        "mf": "C6H8O6",
+        "mw": "176.12 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "25",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/25"
+      },
+      "attributes": {
+        "id": "25",
+        "type": "SALT",
+        "name": "Lithium",
+        "mf": "Li+",
+        "mw": "18.04 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "11",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/11"
+      },
+      "attributes": {
+        "id": "11",
+        "type": "SALT",
+        "name": "Perchlorate",
+        "mf": "ClHO4",
+        "mw": "100.46 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "34",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/34"
+      },
+      "attributes": {
+        "id": "34",
+        "type": "SALT",
+        "name": "Potassium",
+        "mf": "K+",
+        "mw": "39.10 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "36",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/36"
+      },
+      "attributes": {
+        "id": "36",
+        "type": "SALT",
+        "name": "Pyridinium",
+        "mf": "C5H5N",
+        "mw": "79.10 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "48",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/48"
+      },
+      "attributes": {
+        "id": "48",
+        "type": "SALT",
+        "name": "Saccharin",
+        "mf": "C7H5NO3S",
+        "mw": "183.18 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "37",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/37"
+      },
+      "attributes": {
+        "id": "37",
+        "type": "SALT",
+        "name": "Sodium",
+        "mf": "Na+",
+        "mw": "22.99 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "64",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/64"
+      },
+      "attributes": {
+        "id": "64",
+        "type": "SALT",
+        "name": "Sulfate",
+        "mf": "H2O4S",
+        "mw": "98.08 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "38",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/38"
+      },
+      "attributes": {
+        "id": "38",
+        "type": "SALT",
+        "name": "Tetrabutylammonium",
+        "mf": "C16H36N+",
+        "mw": "242.46 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "101",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/101"
+      },
+      "attributes": {
+        "id": "101",
+        "type": "SALT",
+        "name": "(1R)-(-)-10-Camphorsulfonate",
+        "mf": "C10H16O4S",
+        "mw": "232.29 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "102",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/102"
+      },
+      "attributes": {
+        "id": "102",
+        "type": "SALT",
+        "name": "1-Ethylpyridinium",
+        "mf": "C7H10N+",
+        "mw": "108.16 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "103",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/103"
+      },
+      "attributes": {
+        "id": "103",
+        "type": "SALT",
+        "name": "1-Hydroxy-2-naphthoate",
+        "mf": "C11H8O3",
+        "mw": "188.18 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "104",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/104"
+      },
+      "attributes": {
+        "id": "104",
+        "type": "SALT",
+        "name": "2,5-Dihydroxybenzoate",
+        "mf": "C7H6O4",
+        "mw": "154.12 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "105",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/105"
+      },
+      "attributes": {
+        "id": "105",
+        "type": "SALT",
+        "name": "2-Oxo-1,5-pentanedioate",
+        "mf": "C5H6O5",
+        "mw": "146.10 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "106",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/106"
+      },
+      "attributes": {
+        "id": "106",
+        "type": "SALT",
+        "name": "Adipate",
+        "mf": "C6H10O4",
+        "mw": "146.14 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "107",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/107"
+      },
+      "attributes": {
+        "id": "107",
+        "type": "SALT",
+        "name": "Benzenesulfonate",
+        "mf": "C6H6O3S",
+        "mw": "158.18 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "108",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/108"
+      },
+      "attributes": {
+        "id": "108",
+        "type": "SALT",
+        "name": "Benzylsulfonate",
+        "mf": "C7H8O3S",
+        "mw": "172.20 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "109",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/109"
+      },
+      "attributes": {
+        "id": "109",
+        "type": "SALT",
+        "name": "Borohydride",
+        "mf": "BH3",
+        "mw": "13.83 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "110",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/110"
+      },
+      "attributes": {
+        "id": "110",
+        "type": "SALT",
+        "name": "Choline",
+        "mf": "C5H14NO+",
+        "mw": "104.17 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "111",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/111"
+      },
+      "attributes": {
+        "id": "111",
+        "type": "SALT",
+        "name": "Citrate",
+        "mf": "C6H8O7",
+        "mw": "192.12 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "112",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/112"
+      },
+      "attributes": {
+        "id": "112",
+        "type": "SALT",
+        "name": "Cyclamate",
+        "mf": "C6H13NO3S",
+        "mw": "179.24 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "113",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/113"
+      },
+      "attributes": {
+        "id": "113",
+        "type": "SALT",
+        "name": "Cyclohexylamine",
+        "mf": "C6H13N",
+        "mw": "99.17 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "114",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/114"
+      },
+      "attributes": {
+        "id": "114",
+        "type": "SALT",
+        "name": "Cyclohexylammonium",
+        "mf": "C6H14N+",
+        "mw": "100.18 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "115",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/115"
+      },
+      "attributes": {
+        "id": "115",
+        "type": "SALT",
+        "name": "D-Tartrate",
+        "mf": "C4H6O6",
+        "mw": "150.09 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "116",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/116"
+      },
+      "attributes": {
+        "id": "116",
+        "type": "SALT",
+        "name": "DL-Malate",
+        "mf": "C4H6O5",
+        "mw": "134.09 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "117",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/117"
+      },
+      "attributes": {
+        "id": "117",
+        "type": "SALT",
+        "name": "Di-p-toluoyl-L-tartrate",
+        "mf": "C20H18O8",
+        "mw": "386.35 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "118",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/118"
+      },
+      "attributes": {
+        "id": "118",
+        "type": "SALT",
+        "name": "Diethanolammonium",
+        "mf": "C4H12NO2+",
+        "mw": "106.14 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "119",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/119"
+      },
+      "attributes": {
+        "id": "119",
+        "type": "SALT",
+        "name": "Ethane-1,2-disulfonate",
+        "mf": "C2H6O6S2",
+        "mw": "190.20 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "120",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/120"
+      },
+      "attributes": {
+        "id": "120",
+        "type": "SALT",
+        "name": "Ethylsulfate",
+        "mf": "C2H6O4S",
+        "mw": "126.13 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "121",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/121"
+      },
+      "attributes": {
+        "id": "121",
+        "type": "SALT",
+        "name": "Fumarate",
+        "mf": "C4H4O4",
+        "mw": "116.07 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "122",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/122"
+      },
+      "attributes": {
+        "id": "122",
+        "type": "SALT",
+        "name": "Glycerophosphate",
+        "mf": "C3H9O6P",
+        "mw": "172.07 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "123",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/123"
+      },
+      "attributes": {
+        "id": "123",
+        "type": "SALT",
+        "name": "Hippurate",
+        "mf": "C9H9NO3",
+        "mw": "179.17 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "124",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/124"
+      },
+      "attributes": {
+        "id": "124",
+        "type": "SALT",
+        "name": "L-Arginine",
+        "mf": "C6H14N4O2",
+        "mw": "174.20 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "125",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/125"
+      },
+      "attributes": {
+        "id": "125",
+        "type": "SALT",
+        "name": "L-Lysine",
+        "mf": "C6H15N2O2+",
+        "mw": "147.19 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "126",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/126"
+      },
+      "attributes": {
+        "id": "126",
+        "type": "SALT",
+        "name": "L-Malate",
+        "mf": "C4H6O5",
+        "mw": "134.09 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "127",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/127"
+      },
+      "attributes": {
+        "id": "127",
+        "type": "SALT",
+        "name": "L-Tartrate",
+        "mf": "C4H6O6",
+        "mw": "150.09 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "128",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/128"
+      },
+      "attributes": {
+        "id": "128",
+        "type": "SALT",
+        "name": "Lactate",
+        "mf": "C3H6O3",
+        "mw": "90.08 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "129",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/129"
+      },
+      "attributes": {
+        "id": "129",
+        "type": "SALT",
+        "name": "Magnesium salt",
+        "mf": "Mg 2+",
+        "mw": "24.30 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "130",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/130"
+      },
+      "attributes": {
+        "id": "130",
+        "type": "SALT",
+        "name": "Maleate",
+        "mf": "C4H4O4",
+        "mw": "116.07 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "131",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/131"
+      },
+      "attributes": {
+        "id": "131",
+        "type": "SALT",
+        "name": "Malonate",
+        "mf": "C3H4O4",
+        "mw": "104.06 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "132",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/132"
+      },
+      "attributes": {
+        "id": "132",
+        "type": "SALT",
+        "name": "Mesitylenesulfonate",
+        "mf": "C9H12O3S",
+        "mw": "200.25 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "133",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/133"
+      },
+      "attributes": {
+        "id": "133",
+        "type": "SALT",
+        "name": "Methanesulfonate",
+        "mf": "CH4O3S",
+        "mw": "96.11 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "134",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/134"
+      },
+      "attributes": {
+        "id": "134",
+        "type": "SALT",
+        "name": "Methyl sulfate",
+        "mf": "CH4O4S",
+        "mw": "112.11 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "135",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/135"
+      },
+      "attributes": {
+        "id": "135",
+        "type": "SALT",
+        "name": "N,N-Dimethylethanolammonium",
+        "mf": "C4H12NO+",
+        "mw": "90.14 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "136",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/136"
+      },
+      "attributes": {
+        "id": "136",
+        "type": "SALT",
+        "name": "N-Methyl-D-glucammonium",
+        "mf": "C7H18NO5+",
+        "mw": "196.22 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "137",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/137"
+      },
+      "attributes": {
+        "id": "137",
+        "type": "SALT",
+        "name": "Naphthalene-1,5-disulfonate",
+        "mf": "C10H8O6S2",
+        "mw": "288.30 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "138",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/138"
+      },
+      "attributes": {
+        "id": "138",
+        "type": "SALT",
+        "name": "Naphthalene-2-sulfonate",
+        "mf": "C10H8O3S",
+        "mw": "208.23 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "139",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/139"
+      },
+      "attributes": {
+        "id": "139",
+        "type": "SALT",
+        "name": "Nitrate",
+        "mf": "HNO3",
+        "mw": "63.01 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "140",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/140"
+      },
+      "attributes": {
+        "id": "140",
+        "type": "SALT",
+        "name": "Oxalate",
+        "mf": "C2H2O4",
+        "mw": "90.03 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "141",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/141"
+      },
+      "attributes": {
+        "id": "141",
+        "type": "SALT",
+        "name": "P-Toluenesulfonate",
+        "mf": "C7H8O3S",
+        "mw": "172.20 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "142",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/142"
+      },
+      "attributes": {
+        "id": "142",
+        "type": "SALT",
+        "name": "Perchlorate-1",
+        "mf": "ClO4-",
+        "mw": "99.45 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "143",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/143"
+      },
+      "attributes": {
+        "id": "143",
+        "type": "SALT",
+        "name": "Phosphate, monobasic",
+        "mf": "H3O4P",
+        "mw": "98.00 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "144",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/144"
+      },
+      "attributes": {
+        "id": "144",
+        "type": "SALT",
+        "name": "Picrate",
+        "mf": "C6H3N3O7",
+        "mw": "229.10 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "145",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/145"
+      },
+      "attributes": {
+        "id": "145",
+        "type": "SALT",
+        "name": "Piperidinium",
+        "mf": "C5H11N",
+        "mw": "85.15 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "146",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/146"
+      },
+      "attributes": {
+        "id": "146",
+        "type": "SALT",
+        "name": "Pyruvate",
+        "mf": "C3H4O3",
+        "mw": "88.06 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "147",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/147"
+      },
+      "attributes": {
+        "id": "147",
+        "type": "SALT",
+        "name": "Salicylate",
+        "mf": "C7H6O3",
+        "mw": "138.12 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "148",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/148"
+      },
+      "attributes": {
+        "id": "148",
+        "type": "SALT",
+        "name": "Sebacate",
+        "mf": "C10H18O4",
+        "mw": "202.25 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "149",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/149"
+      },
+      "attributes": {
+        "id": "149",
+        "type": "SALT",
+        "name": "Stearate",
+        "mf": "C18H36O2",
+        "mw": "284.48 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "150",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/150"
+      },
+      "attributes": {
+        "id": "150",
+        "type": "SALT",
+        "name": "Succinate",
+        "mf": "C4H6O4",
+        "mw": "118.09 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "151",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/151"
+      },
+      "attributes": {
+        "id": "151",
+        "type": "SALT",
+        "name": "Tartrate",
+        "mf": "C4H6O6",
+        "mw": "150.09 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "152",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/152"
+      },
+      "attributes": {
+        "id": "152",
+        "type": "SALT",
+        "name": "Trifluoroacetate",
+        "mf": "C2HF3O2",
+        "mw": "114.02 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "153",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/153"
+      },
+      "attributes": {
+        "id": "153",
+        "type": "SALT",
+        "name": "Trifluoromethanesulfonate",
+        "mf": "CHF3O3S",
+        "mw": "150.08 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "154",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/154"
+      },
+      "attributes": {
+        "id": "154",
+        "type": "SALT",
+        "name": "Tris",
+        "mf": "C4H12NO3+",
+        "mw": "122.14 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "155",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/155"
+      },
+      "attributes": {
+        "id": "155",
+        "type": "SALT",
+        "name": "Zinc",
+        "mf": "Zn 2+",
+        "mw": "65.39 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "157",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/157"
+      },
+      "attributes": {
+        "id": "157",
+        "type": "SALT",
+        "name": "Barium",
+        "mf": "Ba2+",
+        "mw": "137.327 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "158",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/158"
+      },
+      "attributes": {
+        "id": "158",
+        "type": "SALT",
+        "name": "2-Hydroxyethanesulfonate",
+        "mf": "C2H6O4S",
+        "mw": "126.13 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "160",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/160"
+      },
+      "attributes": {
+        "id": "160",
+        "type": "SALT",
+        "name": "N,N-dimethylpyridin-4-amine",
+        "mf": "C7H10N2",
+        "mw": "122.17 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "162",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/162"
+      },
+      "attributes": {
+        "id": "162",
+        "type": "SALT",
+        "name": "Phenethylammonium",
+        "mf": "C8H12N+",
+        "mw": "122.19 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "175",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/175"
+      },
+      "attributes": {
+        "id": "175",
+        "type": "SALT",
+        "name": "Hydrate",
+        "mf": "C13H21N5O",
+        "mw": "18.0153 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "177",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/177"
+      },
+      "attributes": {
+        "id": "177",
+        "type": "SALT",
+        "name": "Hydroiodic Acid",
+        "mf": "C10H20IN3O2",
+        "mw": "127.9124 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "179",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/179"
+      },
+      "attributes": {
+        "id": "179",
+        "type": "SALT",
+        "name": "Benzenesulfonic acid",
+        "mf": "C65H82N2O18S2",
+        "mw": "157.1671 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "182",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/182"
+      },
+      "attributes": {
+        "id": "182",
+        "type": "SALT",
+        "name": "Sulfate Ion",
+        "mf": "C16H18ClNO6S2",
+        "mw": "98.0785 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "183",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/183"
+      },
+      "attributes": {
+        "id": "183",
+        "type": "SALT",
+        "name": "Methanesulfonic acid",
+        "mf": "C23H36N4O10S2",
+        "mw": "126.1316 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "185",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/185"
+      },
+      "attributes": {
+        "id": "185",
+        "type": "SALT",
+        "name": "Sodium Ion",
+        "mf": "C3H5Na2O4P",
+        "mw": "22.9898 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "187",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/187"
+      },
+      "attributes": {
+        "id": "187",
+        "type": "SALT",
+        "name": "Hydrochloric Acid",
+        "mf": "C8H9ClN4",
+        "mw": "36.4609 g/mol"
+      }
+    },
+    {
+      "type": "salt",
+      "id": "189",
+      "links": {
+        "self": "https://orionsandbox.signalsresearch.revvitycloud.eu/api/rest/v1.0/fragments/salts/189"
+      },
+      "attributes": {
+        "id": "189",
+        "type": "SALT",
+        "name": "Hydrochloric Acid; Water (0.5)",
+        "mf": "C10H21Cl2N3OS",
+        "mw": "54.4762 g/mol"
+      }
+    }
+  ]
+}
