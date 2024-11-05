@@ -4,7 +4,7 @@ https://orionfi-my.sharepoint.com/:u:/g/personal/robert_kottelin_orionpharma_com
 
 # ELWIS Bulk Upload Tool
 
-This tool automates the process of reading chemical compounds from an SDF file, removing salts, setting compound metadata, and uploading the processed data to the ELWIS API. It also associates salt data with batches if available, handling each compound in manageable chunks for efficiency.
+This tool automates the process of reading chemical compounds from an SDF file, removing salts, setting compound metadata, and uploading the processed data to the ELWIS API. It also associates salt data with batches if available, handling each compound in manageable chunks for API compatibility.
 
 ## Steps Overview
 
