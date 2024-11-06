@@ -41,8 +41,8 @@ def process_sdf(molecules):
         stereochemistry = "No stereochemistry" if CalcNumAtomStereoCenters(mol) == 0 else "Unresolved stereochemistry"
 
         mol.SetProp("Supplier_Product_Code", mol.GetProp("ID"))
-        mol.SetProp("Plate_ID", mol.GetProp("Plate_ID"))
-        mol.SetProp("Well", mol.GetProp("Well"))
+        mol.SetProp("Plate_ID", mol.GetProp("Plate_ID")) 
+        mol.SetProp("Well", mol.GetProp("Well")) # TODO: change to "A1" instead of "A01"
         mol.SetProp("Batch_Code", mol.GetProp("Barcode"))
         mol.SetProp("Amount", mol.GetProp("Amount_mg") + " mg")
         mol.SetProp("Library_ID", libraryID)
